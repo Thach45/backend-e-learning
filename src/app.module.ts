@@ -11,6 +11,7 @@ import { TransformInterceptor } from './shared/interceptor/transform.interceptor
 import { LoggingInterceptor } from './shared/interceptor/logging.interceptor';
 import { CategoriesModule } from './routes/categories/categories.module';
 import { RolesModule } from './routes/roles/roles.module';
+import { PermissionGuard } from './shared/guards/permission.guard';
 
 @Module({
   imports: [SharedModule, AuthModule, PermissionModule, CategoriesModule, RolesModule],
@@ -32,6 +33,10 @@ import { RolesModule } from './routes/roles/roles.module';
   {
     provide: APP_GUARD,
     useClass: AuthenticationGuard,
+  },
+  {
+    provide: APP_GUARD,
+    useClass: PermissionGuard,
   },
   ],
 })

@@ -21,7 +21,7 @@
     "prisma:seed": "prisma db seed",
     "db:push": "prisma generate && prisma db push",
     "db:migrate": "prisma generate && prisma migrate dev --name init",
-    "seed": "ts-node initialScript/seed.ts"
+    "seed": "ts-node initialScript/assign-permission-to-role.ts"
 
   },
   
