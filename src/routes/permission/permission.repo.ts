@@ -10,6 +10,7 @@ export class PermissionRepo {
     async getListPermissions(query: GetPermissionQueryType) {
         try {
             const { page, limit } = query;
+            
             if (page < 1 || limit < 1) {
                 throw new BadRequestException('Page and limit must be positive numbers');
             }
@@ -20,7 +21,7 @@ export class PermissionRepo {
                         deletedAt: null,
                     },
                     skip: (page - 1) * limit,
-                    take: limit,
+                    take: Number(limit),    
                     orderBy: {
                         createdAt: 'desc',
                     },

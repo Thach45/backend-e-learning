@@ -33,8 +33,7 @@ export class PermissionGuard implements CanActivate {
       where: { userId: user.userId },
       include: { role: true },
     });
-    console.log(userRoles);
-    // if (userRoles.some(r => r.role.name === ROLES.ADMIN)) return true;
+    if (userRoles.some(r => r.role.name === ROLES.ADMIN)) return true;
 
     // Map path + method
     const path = req.route?.path; // dạng '/api/roles/:id'

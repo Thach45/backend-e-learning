@@ -5,11 +5,11 @@ import { ZodSerializerDto } from 'nestjs-zod';
 import {  GetPermissionDetailResponseDto, GetPermissionResponseDto } from './permission.dto';
 import { ActiveUser } from 'src/shared/decorator/active-user.decorator';
 
-@Controller('permission')
+@Controller('api/permissions')
 export class PermissionController {
     constructor(private readonly permissionService: PermissionService) {}
     @Get()
-    @ZodSerializerDto(GetPermissionResponseDto)
+    // @ZodSerializerDto(GetPermissionResponseDto)
     async getListPermissions(@Query() query: GetPermissionQueryType) {
         return this.permissionService.getListPermissions(query)
 
