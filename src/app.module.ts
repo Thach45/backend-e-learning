@@ -11,11 +11,12 @@ import { TransformInterceptor } from './shared/interceptor/transform.interceptor
 import { LoggingInterceptor } from './shared/interceptor/logging.interceptor';
 import { CategoriesModule } from './routes/categories/categories.module';
 import { RolesModule } from './routes/roles/roles.module';
+import { CoursesModule } from './routes/courses/courses.module';
 import { PermissionGuard } from './shared/guards/permission.guard';
 import { UsersModule } from './routes/users/users.module';
 
 @Module({
-  imports: [SharedModule, AuthModule, PermissionModule, CategoriesModule, RolesModule, UsersModule],
+  imports: [SharedModule, AuthModule, PermissionModule, CategoriesModule, RolesModule, UsersModule, CoursesModule],
   controllers: [AppController],
   providers: [AppService,
     {

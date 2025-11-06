@@ -29,6 +29,8 @@ enum CourseStatus {
   DRAFT
   PUBLISHED
   ARCHIVED
+  PENDING_PUBLISHED
+  PENDING_DRAFT
 }
 
 enum StorageType {
