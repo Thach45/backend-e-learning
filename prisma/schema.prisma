@@ -211,10 +211,13 @@ model Category {
 model Course {
   id           String      @id @default(uuid())
   title        String
-  description  String?
+  
+  ccourseDetail CourseDetail?
   price        Float       @default(0)
+  salePrice    Float?
   thumbnail    String?
   introVideo   String?
+  isFeatured   Boolean    @default(false)
   level        CourseLevel @default(BEGINNER)
   status       CourseStatus @default(DRAFT)
   instructor   User        @relation("InstructorCourses", fields: [instructorId], references: [id])
@@ -230,6 +233,35 @@ model Course {
   learningProgresses LearningProgress[]
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
+  deletedAt    DateTime?
+  createdBy    String?
+  updatedBy    String?
+  isActive     Boolean    @default(true)
+  @@index([title])
+  @@index([price])
+  @@index([level])
+  @@index([status])
+  @@index([isFeatured])
+  @@index([instructorId]) // Rất quan trọng (FK)
+  @@index([categoryId])   // Rất quan trọng (FK)
+  @@index([createdAt])    // Rất quan trọng (để sort "mới nhất")
+
+}
+model CourseDetail {
+  id         String   @id @default(uuid())
+  courseId   String   @unique
+  course     Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  description  String?
+  content      String?
+  objectives   String?
+  requirements String?
+  targetAudience String?
+  benefits String?
+  relatedCourses String[]
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  deletedAt    DateTime?
+
 }
 
 model CourseContent {

@@ -12,9 +12,10 @@ import { LoggingInterceptor } from './shared/interceptor/logging.interceptor';
 import { CategoriesModule } from './routes/categories/categories.module';
 import { RolesModule } from './routes/roles/roles.module';
 import { PermissionGuard } from './shared/guards/permission.guard';
+import { UsersModule } from './routes/users/users.module';
 
 @Module({
-  imports: [SharedModule, AuthModule, PermissionModule, CategoriesModule, RolesModule],
+  imports: [SharedModule, AuthModule, PermissionModule, CategoriesModule, RolesModule, UsersModule],
   controllers: [AppController],
   providers: [AppService,
     {
