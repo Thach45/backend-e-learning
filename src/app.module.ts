@@ -15,9 +15,10 @@ import { CoursesModule } from './routes/courses/courses.module';
 import { PermissionGuard } from './shared/guards/permission.guard';
 import { UsersModule } from './routes/users/users.module';
 import { CourseDetailModule } from './routes/course-detail/course-detail.module';
+import { CourseContentModule } from './routes/course-content/course-content.module';
 
 @Module({
-  imports: [SharedModule, AuthModule, PermissionModule, CategoriesModule, RolesModule, UsersModule, CoursesModule, CourseDetailModule],
+  imports: [SharedModule, AuthModule, PermissionModule, CategoriesModule, RolesModule, UsersModule, CoursesModule, CourseDetailModule, CourseContentModule],
   controllers: [AppController],
   providers: [AppService,
     {

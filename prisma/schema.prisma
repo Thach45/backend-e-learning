@@ -273,9 +273,25 @@ model CourseContent {
   parentId   String?
   parent     CourseContent? @relation("ContentParent", fields: [parentId], references: [id])
   children   CourseContent[] @relation("ContentParent")
-  title      String
+  title      String 
   orderIndex Int           @default(0)
   lessons    Lesson[]
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  deletedAt    DateTime?
+  createdBy    String?
+  updatedBy    String?
+  isActive     Boolean    @default(true)
+  @@index([courseId])
+  @@index([parentId])
+  @@index([orderIndex])
+  @@index([isActive])
+  @@index([createdAt])
+  @@index([updatedAt])
+  @@index([deletedAt])
+  @@index([createdBy])
+  @@index([updatedBy])
+  @@index([title])
 }
 
 model Lesson {

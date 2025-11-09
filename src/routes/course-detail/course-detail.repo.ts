@@ -33,7 +33,7 @@ export class CourseDetailRepository {
     }
 
     const detail = await this.prisma.courseDetail.findFirst({
-      where: { courseId, deletedAt: null },
+      where: { courseId},
       select: courseDetailSelect,
     });
     if (!detail) {
@@ -57,7 +57,7 @@ export class CourseDetailRepository {
 
     // Check if detail already exists
     const existing = await this.prisma.courseDetail.findFirst({
-      where: { courseId: body.courseId, deletedAt: null },
+      where: { courseId: body.courseId },
       select: { id: true },
     });
     if (existing) {
@@ -94,7 +94,7 @@ export class CourseDetailRepository {
     }
 
     const existing = await this.prisma.courseDetail.findFirst({
-      where: { courseId, deletedAt: null },
+      where: { courseId },
       select: { id: true },
     });
     if (!existing) {
@@ -131,19 +131,16 @@ export class CourseDetailRepository {
     }
 
     const existing = await this.prisma.courseDetail.findFirst({
-      where: { courseId, deletedAt: null },
+      where: { courseId },
       select: { id: true },
     });
     if (!existing) {
       throw new NotFoundException(`Course detail for course ${courseId} not found`);
     }
 
-    const deleted = await this.prisma.courseDetail.update({
+    const deleted = await this.prisma.courseDetail.delete({
       where: { id: existing.id },
-      data: { deletedAt: new Date() },
-      select: courseDetailSelect,
     });
     return deleted;
   }
 }
-
