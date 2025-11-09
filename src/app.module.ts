@@ -19,9 +19,10 @@ import { CourseContentModule } from './routes/course-content/course-content.modu
 import { LessonsModule } from './routes/lessons/lessons.module';
 import { EnrollmentsModule } from './routes/enrollments/enrollments.module';
 import { ReviewsModule } from './routes/reviews/reviews.module';
+import { WishlistModule } from './routes/wishlist/wishlist.module';
 
 @Module({
-  imports: [SharedModule, AuthModule, PermissionModule, CategoriesModule, RolesModule, UsersModule, CoursesModule, CourseDetailModule, CourseContentModule, LessonsModule, EnrollmentsModule, ReviewsModule],
+  imports: [SharedModule, AuthModule, PermissionModule, CategoriesModule, RolesModule, UsersModule, CoursesModule, CourseDetailModule, CourseContentModule, LessonsModule, EnrollmentsModule, ReviewsModule, WishlistModule],
   controllers: [AppController],
   providers: [AppService,
     {
