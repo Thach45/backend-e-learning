@@ -30,5 +30,40 @@ export class UploadController {
       publicId: result.public_id,
     };
   }
+
+  @Post('video')
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadVideo(@UploadedFile() file: Express.Multer.File) {
+    if (!file) {
+      throw new Error('No file uploaded');
+    }
+
+    // Validate video file type
+    const allowedMimeTypes = ['video/mp4', 'video/mov', 'video/avi', 'video/wmv', 'video/flv', 'video/webm'];
+    if (!allowedMimeTypes.includes(file.mimetype)) {
+      throw new Error('Invalid video file type. Allowed types: mp4, mov, avi, wmv, flv, webm');
+    }
+
+    const result = await this.cloudinaryService.uploadVideo(
+      {
+        fieldname: file.fieldname,
+        originalname: file.originalname,
+        encoding: file.encoding,
+        mimetype: file.mimetype,
+        size: file.size,
+        buffer: file.buffer,
+      },
+      'lessons',
+    );
+
+    return {
+      url: result.secure_url,
+      publicId: result.public_id,
+      duration: result.duration, // Duration in seconds
+      format: result.format,
+      width: result.width,
+      height: result.height,
+    };
+  }
 }
 

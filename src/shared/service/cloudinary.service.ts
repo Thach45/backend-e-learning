@@ -45,5 +45,32 @@ export class CloudinaryService {
   async deleteImage(publicId: string): Promise<any> {
     return cloudinary.uploader.destroy(publicId);
   }
+
+  async uploadVideo(
+    file: MulterFile,
+    folder: string = 'videos',
+  ): Promise<UploadApiResponse> {
+    return new Promise((resolve, reject) => {
+      const location = process.env.CLOUDINARY_FOLDER_NAME + '/' + folder;
+      const uploadStream = cloudinary.uploader.upload_stream(
+        {
+          folder: location,
+          resource_type: 'video',
+          allowed_formats: ['mp4', 'mov', 'avi', 'wmv', 'flv', 'webm'],
+          chunk_size: 6000000, // 6MB chunks for large files
+        },
+        (error: UploadApiErrorResponse, result: UploadApiResponse) => {
+          if (error) return reject(error);
+          resolve(result);
+        },
+      );
+
+      uploadStream.end(file.buffer);
+    });
+  }
+
+  async deleteVideo(publicId: string): Promise<any> {
+    return cloudinary.uploader.destroy(publicId, { resource_type: 'video' });
+  }
 }
 
