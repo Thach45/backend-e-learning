@@ -254,5 +254,38 @@ export class EnrollmentsRepository {
 
     return { data, total, page, limit, totalPages: Math.ceil(total / limit) };
   }
+
+  async removeStudent(enrollmentId: string, instructorId: string) {
+    // Validate enrollment exists and belongs to instructor's course
+    const enrollment = await this.prisma.enrollment.findUnique({
+      where: { id: enrollmentId },
+      select: {
+        id: true,
+        courseId: true,
+        course: {
+          select: {
+            id: true,
+            instructorId: true,
+          },
+        },
+      },
+    });
+
+    if (!enrollment) {
+      throw new NotFoundException(`Enrollment with ID ${enrollmentId} not found`);
+    }
+
+    if (enrollment.course.instructorId !== instructorId) {
+      throw new BadRequestException("You can only remove students from your own courses");
+    }
+
+    // Delete enrollment
+    const deleted = await this.prisma.enrollment.delete({
+      where: { id: enrollmentId },
+      select: enrollmentSelect,
+    });
+
+    return deleted;
+  }
 }
 

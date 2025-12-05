@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Put, Query } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Put, Query } from "@nestjs/common";
 import { ZodSerializerDto } from "nestjs-zod";
 import { EnrollmentsService } from "./enrollments.service";
 import { ActiveUser } from "src/shared/decorator/active-user.decorator";
@@ -65,6 +65,15 @@ export class EnrollmentsController {
     @ActiveUser() user: any,
   ) {
     return this.enrollmentsService.getInstructorStudents(user.userId, query as any);
+  }
+
+  @Delete("instructor/enrollments/:enrollmentId")
+  @ZodSerializerDto(GetEnrollmentResponseDto)
+  async removeStudent(
+    @Param() params: { enrollmentId: string },
+    @ActiveUser() user: any,
+  ) {
+    return this.enrollmentsService.removeStudent((params as any).enrollmentId, user.userId);
   }
 
   // Admin endpoints

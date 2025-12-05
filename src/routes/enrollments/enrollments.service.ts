@@ -29,5 +29,9 @@ export class EnrollmentsService {
   async getInstructorStudents(instructorId: string, query: GetEnrollmentsQuery) {
     return this.repo.getInstructorStudents(instructorId, query);
   }
+
+  async removeStudent(enrollmentId: string, instructorId: string) {
+    return this.repo.removeStudent(enrollmentId, instructorId);
+  }
 }
 
