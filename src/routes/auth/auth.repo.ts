@@ -136,4 +136,15 @@ export class AuthRepository {
             data: data,
         });
     }
+    async getUserById(userId: string) {
+        return this.prisma.user.findUnique({
+            where: { id: userId },
+           
+            omit: {
+                password: true,
+                totpSecret: true,
+            }
+        });
+        
+    }
 }

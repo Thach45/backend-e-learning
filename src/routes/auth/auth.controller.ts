@@ -1,4 +1,4 @@
-import { BadRequestException, Body, ClassSerializerInterceptor, Controller, Get, Post, Query, Res, UseGuards, UseInterceptors } from '@nestjs/common';
+import { BadRequestException, Body, ClassSerializerInterceptor, Controller, Get, Post, Query, Req, Res, UseGuards, UseInterceptors } from '@nestjs/common';
 import { AuthService } from './auth.service';
 
 import { Response } from 'express';
@@ -9,6 +9,7 @@ import { GetIp } from 'src/shared/decorator/get-ip.decorator';
 import { Public } from 'src/shared/decorator/auth.decorator';
 import { GoogleService } from './google.service';
 import { ForgotPasswordType, GoogleLinkSchema } from './auth.model';
+import { ActiveUser } from 'src/shared/decorator/active-user.decorator';
 
 
 @Controller('api/auth')
@@ -82,5 +83,11 @@ export class AuthController {
            res.redirect(process.env.GOOGLE_CLIENT_REDIRECT+ "?error=" + message);
         }
     }
-
+    @Get("/me")
+    // @ZodSerializerDto(UserResponseDto)
+    async me(@ActiveUser() user: any) {
+        const userData = await this.authService.me(user.userId);
+        
+        return userData;
+    }
 }

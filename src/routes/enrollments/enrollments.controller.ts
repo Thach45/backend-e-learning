@@ -58,6 +58,15 @@ export class EnrollmentsController {
     );
   }
 
+  @Get("instructor/students")
+  @ZodSerializerDto(GetEnrollmentsResponseDto)
+  async getInstructorStudents(
+    @Query() query: GetEnrollmentsQueryDto,
+    @ActiveUser() user: any,
+  ) {
+    return this.enrollmentsService.getInstructorStudents(user.userId, query as any);
+  }
+
   // Admin endpoints
   @Get("admin/courses/:courseId/enrollments")
   @ZodSerializerDto(GetEnrollmentsResponseDto)

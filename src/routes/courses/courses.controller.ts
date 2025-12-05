@@ -43,7 +43,11 @@ export class CoursesController {
   async createCourse(@Body() body: CreateCourseBodyDto, @ActiveUser() user: any) {
     return this.coursesService.createCourse(body as any, user);
   }
-
+  @Get("instructor/courses/:id")
+  @ZodSerializerDto(GetCourseResponseDto)
+  async getInstructorCourseById(@Param() params: GetCourseParamsDto, @ActiveUser() user: any) {
+    return this.coursesService.getCourseById((params as any).id);
+  }
   @Put("instructor/courses/:id")
   @ZodSerializerDto(GetCourseResponseDto)
   async updateCourse(

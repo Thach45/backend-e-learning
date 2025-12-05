@@ -158,5 +158,101 @@ export class EnrollmentsRepository {
 
     return this.getEnrollments({ ...query, courseId });
   }
+
+  async getInstructorStudents(instructorId: string, query: GetEnrollmentsQuery) {
+    const { page, limit, search } = query;
+    if (page < 1 || limit < 1) {
+      throw new BadRequestException("Page and limit must be positive numbers");
+    }
+
+    // Get all courses of instructor
+    const instructorCourses = await this.prisma.course.findMany({
+      where: {
+        instructorId,
+        deletedAt: null,
+      },
+      select: { id: true },
+    });
+    const courseIds = instructorCourses.map(c => c.id);
+
+    if (courseIds.length === 0) {
+      return { data: [], total: 0, page, limit, totalPages: 0 };
+    }
+
+    // Build where clause
+    const where: Prisma.EnrollmentWhereInput = {
+      courseId: { in: courseIds },
+      ...(search
+        ? {
+            OR: [
+              { user: { name: { contains: search, mode: Prisma.QueryMode.insensitive } } },
+              { user: { email: { contains: search, mode: Prisma.QueryMode.insensitive } } },
+              { course: { title: { contains: search, mode: Prisma.QueryMode.insensitive } } },
+            ],
+          }
+        : {}),
+    };
+
+    const [enrollments, total] = await Promise.all([
+      this.prisma.enrollment.findMany({
+        where,
+        skip: (page - 1) * limit,
+        take: Number(limit),
+        orderBy: { enrolledAt: "desc" },
+        select: enrollmentSelect,
+      }),
+      this.prisma.enrollment.count({ where }),
+    ]);
+
+    // Get learning progress for all enrollments
+    const enrollmentIds = enrollments.map(e => e.id);
+    const allProgress = await this.prisma.learningProgress.findMany({
+      where: {
+        userId: { in: enrollments.map(e => e.userId) },
+        courseId: { in: courseIds },
+      },
+      select: {
+        userId: true,
+        courseId: true,
+        progressPercent: true,
+        lastAccessed: true,
+      },
+    });
+
+    // Calculate overall progress for each enrollment
+    const data = enrollments.map((enrollment) => {
+      // Get all progress records for this user in this course
+      const progressRecords = allProgress.filter(
+        p => p.userId === enrollment.userId && p.courseId === enrollment.courseId
+      );
+      
+      // Calculate average progress
+      const avgProgress = progressRecords.length > 0
+        ? Math.round(progressRecords.reduce((sum, p) => sum + p.progressPercent, 0) / progressRecords.length)
+        : 0;
+      
+      // Get most recent lastAccessed
+      const lastAccessed = progressRecords.length > 0
+        ? progressRecords.reduce((latest, p) => 
+            p.lastAccessed > latest ? p.lastAccessed : latest, 
+            progressRecords[0].lastAccessed
+          )
+        : enrollment.enrolledAt;
+
+      return {
+        id: enrollment.id,
+        userId: enrollment.userId,
+        courseId: enrollment.courseId,
+        enrolledAt: enrollment.enrolledAt,
+        completedAt: enrollment.completedAt,
+        course: enrollment.course,
+        user: enrollment.user,
+        progress: avgProgress,
+        lastAccessed,
+      };
+    });
+
+    return { data, total, page, limit, totalPages: Math.ceil(total / limit) };
+  }
 }
 

@@ -298,5 +298,14 @@ export class AuthService {
             message: 'Password reset successfully'
         };
     }
+    async me(userId: string) {
+        const user = await this.authRepository.getUserById(userId);
+        console.log(user);
+        if(!user){
+            throw new UnauthorizedException('User not found');
+        }
+        return user;
+        
+    }
 }
 

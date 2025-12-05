@@ -6,6 +6,8 @@ export const EnrollmentSchema = z.object({
   courseId: z.string().uuid(),
   enrolledAt: z.date(),
   completedAt: z.date().nullable().optional(),
+  progress: z.number().optional(),
+  lastAccessed: z.date().optional(),
   course: z
     .object({
       id: z.string().uuid(),
@@ -29,6 +31,7 @@ export const EnrollmentSchema = z.object({
 export const GetEnrollmentsQuerySchema = z.object({
   page: z.coerce.number().optional().default(1),
   limit: z.coerce.number().optional().default(10),
+  search: z.string().trim().optional(),
   courseId: z.string().uuid().optional(),
   userId: z.string().uuid().optional(),
   completed: z.coerce.boolean().optional(),

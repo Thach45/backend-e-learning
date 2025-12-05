@@ -25,5 +25,9 @@ export class EnrollmentsService {
   async getEnrollmentsByCourse(courseId: string, instructorId: string, query: GetEnrollmentsQuery) {
     return this.repo.getEnrollmentsByCourse(courseId, instructorId, query);
   }
+
+  async getInstructorStudents(instructorId: string, query: GetEnrollmentsQuery) {
+    return this.repo.getInstructorStudents(instructorId, query);
+  }
 }
 

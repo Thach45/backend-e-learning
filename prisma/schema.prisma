@@ -214,7 +214,7 @@ model Course {
   id           String      @id @default(uuid())
   title        String
   
-  ccourseDetail CourseDetail?
+  courseDetail CourseDetail?
   price        Float       @default(0)
   salePrice    Float?
   thumbnail    String?
