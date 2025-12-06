@@ -26,7 +26,7 @@ export class UsersRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   async getUsers(query: GetUsersQuery) {
-    const { page, limit, search } = query;
+    const { page, limit, search, status, role } = query;
     if (page < 1 || limit < 1) {
       throw new BadRequestException("Page and limit must be positive numbers");
     }
@@ -40,6 +40,18 @@ export class UsersRepository {
               { name: { contains: search, mode: Prisma.QueryMode.insensitive } },
               { phoneNumber: { contains: search, mode: Prisma.QueryMode.insensitive } },
             ],
+          }
+        : {}),
+      ...(status ? { status } : {}),
+      ...(role
+        ? {
+            userRoles: {
+              some: {
+                role: {
+                  name: role,
+                },
+              },
+            },
           }
         : {}),
     };

@@ -18,6 +18,8 @@ export const GetUsersQuerySchema = z.object({
   page: z.coerce.number().optional().default(1),
   limit: z.coerce.number().optional().default(10),
   search: z.string().trim().optional(),
+  status: z.enum(["ACTIVE", "INACTIVE", "BLOCKED"]).optional(),
+  role: z.enum(["ADMIN", "INSTRUCTOR", "CLIENT"]).optional(),
 }).strict();
 
 export const GetUserParamsSchema = z.object({

@@ -12,29 +12,30 @@ import {
   UpdateUserStatusBodyDto,
 } from './users.dto';
 
-@Controller('api/users')
+@Controller('api')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Get()
+  // Admin routes
+  @Get('admin/users')
   @ZodSerializerDto(GetUsersResponseDto)
   async getUsers(@Query() query: GetUsersQueryDto) {
     return this.usersService.getUsers(query as any);
   }
 
-  @Get(':id')
+  @Get('admin/users/:id')
   @ZodSerializerDto(GetUserResponseDto)
   async getUserById(@Param() params: GetUserParamsDto) {
     return this.usersService.getUserById((params as any).id);
   }
 
-  @Post()
+  @Post('admin/users')
   @ZodSerializerDto(GetUserResponseDto)
   async createUser(@Body() body: CreateUserBodyDto, @ActiveUser() user: any) {
     return this.usersService.createUser(body as any, user);
   }
 
-  @Put(':id')
+  @Put('admin/users/:id')
   @ZodSerializerDto(GetUserResponseDto)
   async updateUser(
     @Param() params: GetUserParamsDto,
@@ -44,13 +45,13 @@ export class UsersController {
     return this.usersService.updateUser((params as any).id, body as any, user);
   }
 
-  @Delete(':id')
+  @Delete('admin/users/:id')
   @ZodSerializerDto(GetUserResponseDto)
   async deleteUser(@Param() params: GetUserParamsDto) {
     return this.usersService.deleteUser((params as any).id);
   }
 
-  @Put(':id/status')
+  @Put('admin/users/:id/status')
   @ZodSerializerDto(GetUserResponseDto)
   async updateStatus(
     @Param() params: GetUserParamsDto,
