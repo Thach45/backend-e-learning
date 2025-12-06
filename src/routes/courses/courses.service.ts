@@ -50,6 +50,10 @@ export class CoursesService {
   async rejectDelete(id: string, adminId: string) {
     return this.repo.rejectDelete(id, adminId);
   }
+
+  async getCourseByIdAdmin(id: string) {
+    return this.repo.getCourseByIdAdmin(id);
+  }
 }
 
 

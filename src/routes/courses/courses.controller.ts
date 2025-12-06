@@ -107,4 +107,10 @@ export class CoursesController {
   async adminListCourses(@Query() query: GetCoursesQueryDto) {
     return this.coursesService.getCourses(query as any);
   }
+  @Get("admin/courses/:id")
+  // chi tiết khóa học bao gồm cả cả course detail, course content, course lessons
+  // @ZodSerializerDto(GetCourseResponseDto)
+  async adminGetCourseById(@Param() params: GetCourseParamsDto) {
+    return this.coursesService.getCourseByIdAdmin((params as any).id);
+  }
 }

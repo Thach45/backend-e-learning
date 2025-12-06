@@ -4,25 +4,25 @@ import { CreateCategoryBodyDto, UpdateCategoryBodyDto, CategoryResponseDto, GetL
 import { CategoriesService } from './categories.service';
 import { ActiveUser } from 'src/shared/decorator/active-user.decorator';
 
-@Controller('api/categories')
+@Controller('api/admin')
 export class CategoriesController {
     constructor(private readonly categoriesService: CategoriesService) {}
-    @Get()
+    @Get("categories")
     // @ZodSerializerDto(GetListCategoriesResponseDto)
     async getAllCategories() { 
         return this.categoriesService.getAllCategories()
     }
-    @Get(":id")
+    @Get("categories/:id")
     @ZodSerializerDto(CategoryResponseDto)
     async getCategoryById(@Param("id") id: string) {
         return this.categoriesService.getCategoryById(id);
     }
-    @Post()
+    @Post("categories")
     @ZodSerializerDto(CategoryResponseDto)
     async createCategory(@Body() body: CreateCategoryBodyDto, @ActiveUser() user: any) {
         return this.categoriesService.createCategory(body, user);
     }
-    @Put(":id")
+    @Put("categories/:id")
     @ZodSerializerDto(CategoryResponseDto)
     async updateCategory(@Param("id") id: string, @Body() body: UpdateCategoryBodyDto, @ActiveUser() user: any) {
         return this.categoriesService.updateCategory(id, body, user);

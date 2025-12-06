@@ -21,5 +21,6 @@ export class CourseDetailService {
   async deleteCourseDetail(courseId: string, instructorId: string) {
     return this.repo.deleteCourseDetail(courseId, instructorId);
   }
+ 
 }
 

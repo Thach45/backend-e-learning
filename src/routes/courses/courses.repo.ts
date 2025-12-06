@@ -273,6 +273,98 @@ export class CoursesRepository {
     });
     return updated;
   }
+
+  async getCourseByIdAdmin(id: string) {
+    // Get course with all related data
+    const course = await this.prisma.course.findFirst({
+      where: { id, deletedAt: null },
+      select: {
+        ...courseSelect,
+        courseDetail: {
+          select: {
+            id: true,
+            courseId: true,
+            description: true,
+            content: true,
+            objectives: true,
+            requirements: true,
+            targetAudience: true,
+            benefits: true,
+            relatedCourses: true,
+            createdAt: true,
+            updatedAt: true,
+          },
+        },
+        courseContents: {
+          where: { deletedAt: null },
+          select: {
+            id: true,
+            courseId: true,
+            parentId: true,
+            title: true,
+            orderIndex: true,
+            createdAt: true,
+            updatedAt: true,
+            lessons: {
+              where: { deletedAt: null },
+              select: {
+                id: true,
+                contentId: true,
+                title: true,
+                storageType: true,
+                storageUrl: true,
+                contentText: true,
+                duration: true,
+                createdAt: true,
+                updatedAt: true,
+              },
+              
+            },
+          },
+          orderBy: { orderIndex: "asc" },
+        },
+      },
+    });
+
+    if (!course) throw new NotFoundException(`Course with ID ${id} not found`);
+
+    // Get stats
+    const [sum, learners, likes] = await Promise.all([
+      this.prisma.review.aggregate({ _sum: { rating: true }, where: { courseId: id } }),
+      this.prisma.enrollment.count({ where: { courseId: id } }),
+      this.prisma.wishlist.count({ where: { courseId: id } }),
+    ]);
+
+    // Build hierarchical structure for courseContents
+    type ContentNode = typeof course.courseContents[0] & { children: ContentNode[] };
+    const contentMap = new Map<string, ContentNode>(
+      course.courseContents.map(c => [c.id, { ...c, children: [] }])
+    );
+    const rootContents: ContentNode[] = [];
+
+    for (const content of course.courseContents) {
+      const node = contentMap.get(content.id)!;
+      if (content.parentId) {
+        const parent = contentMap.get(content.parentId);
+        if (parent) {
+          parent.children.push(node);
+        } else {
+          rootContents.push(node);
+        }
+      } else {
+        rootContents.push(node);
+      }
+    }
+
+    return {
+      ...course,
+      courseDetail: course.courseDetail || null,
+      courseContents: rootContents,
+      totalStars: sum._sum.rating ?? 0,
+      totalLearners: learners,
+      totalLikes: likes,
+    };
+  }
 }
 
 
