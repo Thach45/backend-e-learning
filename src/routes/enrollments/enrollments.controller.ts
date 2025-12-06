@@ -4,6 +4,7 @@ import { EnrollmentsService } from "./enrollments.service";
 import { ActiveUser } from "src/shared/decorator/active-user.decorator";
 import {
   CreateEnrollmentBodyDto,
+  CreateEnrollmentByInstructorBodyDto,
   GetEnrollmentsQueryDto,
   GetEnrollmentParamsDto,
   GetEnrollmentsByCourseParamsDto,
@@ -100,6 +101,20 @@ export class EnrollmentsController {
     @ActiveUser() user: any,
   ) {
     return this.enrollmentsService.removeStudent((params as any).enrollmentId, user.userId);
+  }
+
+  @Post("instructor/courses/:courseId/enrollments")
+  @ZodSerializerDto(GetEnrollmentResponseDto)
+  async addStudentToCourse(
+    @Param() params: GetEnrollmentsByCourseParamsDto,
+    @Body() body: CreateEnrollmentByInstructorBodyDto,
+    @ActiveUser() user: any,
+  ) {
+    return this.enrollmentsService.createEnrollmentByInstructor(
+      (params as any).courseId,
+      body as any,
+      user.userId,
+    );
   }
 
   // Admin endpoints

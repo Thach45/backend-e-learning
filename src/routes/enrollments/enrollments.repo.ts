@@ -173,6 +173,53 @@ export class EnrollmentsRepository {
     return created;
   }
 
+  async createEnrollmentByInstructor(courseId: string, userId: string, instructorId: string) {
+    // Validate course exists and belongs to instructor
+    const course = await this.prisma.course.findFirst({
+      where: { id: courseId, deletedAt: null },
+      select: { id: true, instructorId: true, status: true },
+    });
+    if (!course) {
+      throw new NotFoundException(`Course with ID ${courseId} not found`);
+    }
+    if (course.instructorId !== instructorId) {
+      throw new BadRequestException("You can only enroll students in your own courses");
+    }
+
+    // Check if user exists
+    const user = await this.prisma.user.findFirst({
+      where: { id: userId, deletedAt: null },
+      select: { id: true },
+    });
+    if (!user) {
+      throw new NotFoundException(`User with ID ${userId} not found`);
+    }
+
+    // Check if already enrolled (unique constraint)
+    const existing = await this.prisma.enrollment.findUnique({
+      where: {
+        userId_courseId: {
+          userId,
+          courseId,
+        },
+      },
+      select: { id: true },
+    });
+    if (existing) {
+      throw new ConflictException("User is already enrolled in this course");
+    }
+
+    const created = await this.prisma.enrollment.create({
+      data: {
+        userId,
+        courseId,
+        completedAt: new Date(),
+      },
+      select: enrollmentSelect,
+    });
+    return created;
+  }
+
   async completeEnrollment(courseId: string, userId: string) {
     const existing = await this.prisma.enrollment.findUnique({
       where: {
@@ -373,6 +420,7 @@ export class EnrollmentsRepository {
       select: {
         id: true,
         title: true,
+        thumbnail: true,
       },
     });
 
@@ -462,6 +510,7 @@ export class EnrollmentsRepository {
     return {
       courseId: course.id,
       courseTitle: course.title,
+      thumbnailUrl: course.thumbnail,
       contents,
     };
   }

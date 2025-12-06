@@ -57,6 +57,10 @@ export const CreateEnrollmentBodySchema = z.object({
   courseId: z.string().uuid(),
 }).strict();
 
+export const CreateEnrollmentByInstructorBodySchema = z.object({
+  userId: z.string().uuid(),
+}).strict();
+
 export const GetEnrollmentResponseSchema = EnrollmentSchema;
 
 export const GetEnrollmentsResponseSchema = z.object({
@@ -87,6 +91,7 @@ export const CourseContentSectionSchema = z.object({
 export const GetCourseContentsResponseSchema = z.object({
   courseId: z.string().uuid(),
   courseTitle: z.string(),
+  thumbnailUrl: z.string().nullable().optional(),
   contents: z.array(CourseContentSectionSchema),
 }).strict();
 
@@ -120,6 +125,7 @@ export type GetEnrollmentsQuery = z.infer<typeof GetEnrollmentsQuerySchema>;
 export type GetEnrollmentParams = z.infer<typeof GetEnrollmentParamsSchema>;
 export type GetEnrollmentsByCourseParams = z.infer<typeof GetEnrollmentsByCourseParamsSchema>;
 export type CreateEnrollmentBody = z.infer<typeof CreateEnrollmentBodySchema>;
+export type CreateEnrollmentByInstructorBody = z.infer<typeof CreateEnrollmentByInstructorBodySchema>;
 export type GetEnrollmentResponse = z.infer<typeof GetEnrollmentResponseSchema>;
 export type GetEnrollmentsResponse = z.infer<typeof GetEnrollmentsResponseSchema>;
 export type EnrollmentStats = z.infer<typeof EnrollmentStatsSchema>;

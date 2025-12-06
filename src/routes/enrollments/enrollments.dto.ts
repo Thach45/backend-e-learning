@@ -1,6 +1,7 @@
 import { createZodDto } from "nestjs-zod";
 import {
   CreateEnrollmentBodySchema,
+  CreateEnrollmentByInstructorBodySchema,
   GetEnrollmentsQuerySchema,
   GetEnrollmentParamsSchema,
   GetEnrollmentsByCourseParamsSchema,
@@ -13,6 +14,7 @@ import {
 } from "./enrollments.model";
 
 export class CreateEnrollmentBodyDto extends createZodDto(CreateEnrollmentBodySchema) {}
+export class CreateEnrollmentByInstructorBodyDto extends createZodDto(CreateEnrollmentByInstructorBodySchema) {}
 export class GetEnrollmentsQueryDto extends createZodDto(GetEnrollmentsQuerySchema) {}
 export class GetEnrollmentParamsDto extends createZodDto(GetEnrollmentParamsSchema) {}
 export class GetEnrollmentsByCourseParamsDto extends createZodDto(GetEnrollmentsByCourseParamsSchema) {}

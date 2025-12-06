@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { EnrollmentsRepository } from "./enrollments.repo";
-import { CreateEnrollmentBody, GetEnrollmentsQuery } from "./enrollments.model";
+import { CreateEnrollmentBody, CreateEnrollmentByInstructorBody, GetEnrollmentsQuery } from "./enrollments.model";
 
 @Injectable()
 export class EnrollmentsService {
@@ -44,6 +44,10 @@ export class EnrollmentsService {
 
   async getLessonDetailForEnrolledUser(courseId: string, lessonId: string, userId: string) {
     return this.repo.getLessonDetailForEnrolledUser(courseId, lessonId, userId);
+  }
+
+  async createEnrollmentByInstructor(courseId: string, body: CreateEnrollmentByInstructorBody, instructorId: string) {
+    return this.repo.createEnrollmentByInstructor(courseId, body.userId, instructorId);
   }
 }
 
