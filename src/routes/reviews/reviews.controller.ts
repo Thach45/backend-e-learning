@@ -91,6 +91,12 @@ export class ReviewsController {
   }
 
   // Admin endpoints
+  @Get("admin/reviews")
+  @ZodSerializerDto(GetReviewsResponseDto)
+  async getReviewsAdmin(@Query() query: GetReviewsQueryDto) {
+    return this.reviewsService.getReviews(query as any);
+  }
+
   @Get("admin/courses/:courseId/reviews")
   @ZodSerializerDto(GetReviewsResponseDto)
   async getCourseReviewsAdmin(

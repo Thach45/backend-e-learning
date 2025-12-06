@@ -34,7 +34,7 @@ export class EnrollmentsRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   async getEnrollments(query: GetEnrollmentsQuery, userId?: string) {
-    const { page, limit, courseId, userId: queryUserId, completed } = query;
+    const { page, limit, courseId, userId: queryUserId, completed, search } = query;
     if (page < 1 || limit < 1) {
       throw new BadRequestException("Page and limit must be positive numbers");
     }
@@ -44,6 +44,15 @@ export class EnrollmentsRepository {
       ...(queryUserId ? { userId: queryUserId } : {}),
       ...(courseId ? { courseId } : {}),
       ...(completed !== undefined ? { completedAt: completed ? { not: null } : null } : {}),
+      ...(search
+        ? {
+            OR: [
+              { user: { name: { contains: search, mode: Prisma.QueryMode.insensitive } } },
+              { user: { email: { contains: search, mode: Prisma.QueryMode.insensitive } } },
+              { course: { title: { contains: search, mode: Prisma.QueryMode.insensitive } } },
+            ],
+          }
+        : {}),
     };
 
     const [data, total] = await Promise.all([

@@ -77,6 +77,12 @@ export class EnrollmentsController {
   }
 
   // Admin endpoints
+  @Get("admin/enrollments")
+  @ZodSerializerDto(GetEnrollmentsResponseDto)
+  async getEnrollmentsAdmin(@Query() query: GetEnrollmentsQueryDto) {
+    return this.enrollmentsService.getEnrollments(query as any);
+  }
+
   @Get("admin/courses/:courseId/enrollments")
   @ZodSerializerDto(GetEnrollmentsResponseDto)
   async getCourseEnrollmentsAdmin(
