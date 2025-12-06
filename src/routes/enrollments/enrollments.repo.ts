@@ -69,6 +69,57 @@ export class EnrollmentsRepository {
     return { data, total, page, limit, totalPages: Math.ceil(total / limit) };
   }
 
+  async getEnrollmentStats(userId: string) {
+    // Get total enrollments
+    const totalCourses = await this.prisma.enrollment.count({
+      where: { userId },
+    });
+
+    // Get completed enrollments
+    const completedCourses = await this.prisma.enrollment.count({
+      where: {
+        userId,
+        completedAt: { not: null },
+      },
+    });
+
+    // Certificates = completed courses (can be extended later)
+    const certificates = completedCourses;
+
+    // Calculate learning hours from lesson durations
+    const enrollments = await this.prisma.enrollment.findMany({
+      where: { userId },
+      select: { courseId: true },
+    });
+
+    const courseIds = enrollments.map(e => e.courseId);
+    const lessons = await this.prisma.lesson.findMany({
+      where: {
+        content: {
+          courseId: { in: courseIds },
+          deletedAt: null,
+          isActive: true,
+        },
+        deletedAt: null,
+        isActive: true,
+      },
+      select: {
+        duration: true,
+      },
+    });
+
+    // Sum all lesson durations (in seconds) and convert to hours
+    const totalSeconds = lessons.reduce((sum, lesson) => sum + (lesson.duration ?? 0), 0);
+    const learningHours = Math.round((totalSeconds / 3600) * 10) / 10; // Round to 1 decimal
+
+    return {
+      totalCourses,
+      completedCourses,
+      certificates,
+      learningHours,
+    };
+  }
+
   async getEnrollmentByCourseId(courseId: string, userId: string) {
     const enrollment = await this.prisma.enrollment.findUnique({
       where: {
@@ -295,6 +346,218 @@ export class EnrollmentsRepository {
     });
 
     return deleted;
+  }
+
+  async getCourseContentsForEnrolledUser(courseId: string, userId: string) {
+    // Check if user is enrolled
+    const enrollment = await this.prisma.enrollment.findUnique({
+      where: {
+        userId_courseId: {
+          userId,
+          courseId,
+        },
+      },
+      select: { id: true },
+    });
+    if (!enrollment) {
+      throw new NotFoundException("You are not enrolled in this course");
+    }
+
+    // Get course with contents
+    const course = await this.prisma.course.findFirst({
+      where: {
+        id: courseId,
+        deletedAt: null,
+        status: "PUBLISHED",
+      },
+      select: {
+        id: true,
+        title: true,
+      },
+    });
+
+    // Get course contents separately
+    const courseContents = await this.prisma.courseContent.findMany({
+      where: {
+        courseId,
+        deletedAt: null,
+        isActive: true,
+        parentId: null, // Only top-level contents (chapters)
+      },
+      select: {
+        id: true,
+        title: true,
+        orderIndex: true,
+        lessons: {
+          where: {
+            deletedAt: null,
+          },
+          select: {
+            id: true,
+            title: true,
+            storageType: true,
+            duration: true,
+            createdAt: true,
+          },
+          orderBy: { createdAt: "asc" },
+        },
+      },
+      orderBy: { orderIndex: "asc" },
+    });
+
+    if (!course) {
+      throw new NotFoundException(`Course with ID ${courseId} not found`);
+    }
+
+    // Format lesson duration
+    const formatLessonDuration = (seconds: number | null): string => {
+      if (!seconds) return "0:00";
+      const minutes = Math.floor(seconds / 60);
+      const secs = seconds % 60;
+      return `${minutes}:${secs.toString().padStart(2, "0")}`;
+    };
+
+    // Calculate section duration
+    const calculateSectionDuration = (lessons: any[]): string => {
+      const totalSeconds = lessons.reduce((sum, lesson) => sum + (lesson.duration ?? 0), 0);
+      const hours = Math.floor(totalSeconds / 3600);
+      const minutes = Math.floor((totalSeconds % 3600) / 60);
+      if (hours > 0) {
+        return `${hours}h ${minutes}p`;
+      }
+      return `${minutes}p`;
+    };
+
+    // Transform content structure
+    const contents = courseContents.map((section) => {
+      const lessons = section.lessons.map((lesson) => {
+        // Determine lesson type based on storageType
+        let type: "VIDEO" | "TEXT" | "QUIZ" | "GAME" = "TEXT";
+        if (
+          lesson.storageType === "YOUTUBE" ||
+          lesson.storageType === "CLOUDINARY" ||
+          lesson.storageType === "DIRECT_UPLOAD"
+        ) {
+          type = "VIDEO";
+        }
+
+        return {
+          id: lesson.id,
+          title: lesson.title,
+          type,
+          duration: formatLessonDuration(lesson.duration),
+          isLocked: false, // Will be determined by learning progress later
+        };
+      });
+
+      return {
+        id: section.id,
+        title: section.title,
+        orderIndex: section.orderIndex,
+        duration: calculateSectionDuration(section.lessons),
+        lessons,
+      };
+    });
+
+    return {
+      courseId: course.id,
+      courseTitle: course.title,
+      contents,
+    };
+  }
+
+  async getLessonDetailForEnrolledUser(courseId: string, lessonId: string, userId: string) {
+    // Check if user is enrolled
+    const enrollment = await this.prisma.enrollment.findUnique({
+      where: {
+        userId_courseId: {
+          userId,
+          courseId,
+        },
+      },
+      select: { id: true },
+    });
+    if (!enrollment) {
+      throw new NotFoundException("You are not enrolled in this course");
+    }
+
+    // Get lesson with course content
+    const lesson = await this.prisma.lesson.findFirst({
+      where: {
+        id: lessonId,
+        deletedAt: null,
+        isActive: true,
+        content: {
+          courseId,
+          deletedAt: null,
+          isActive: true,
+        },
+      },
+      select: {
+        id: true,
+        title: true,
+        storageType: true,
+        storageUrl: true,
+        contentText: true,
+        duration: true,
+        content: {
+          select: {
+            courseId: true,
+          },
+        },
+      },
+    });
+
+    if (!lesson) {
+      throw new NotFoundException(`Lesson with ID ${lessonId} not found`);
+    }
+
+    // Determine lesson type
+    let type: "VIDEO" | "TEXT" | "QUIZ" | "GAME" = "TEXT";
+    if (
+      lesson.storageType === "YOUTUBE" ||
+      lesson.storageType === "CLOUDINARY" ||
+      lesson.storageType === "DIRECT_UPLOAD"
+    ) {
+      type = "VIDEO";
+    }
+
+    // Get supplementary materials as resources (for this lesson)
+    const resources = await this.prisma.supplementaryMaterial.findMany({
+      where: {
+        lessonId,
+      },
+      select: {
+        id: true,
+        title: true,
+        url: true,
+        materialType: true,
+      },
+    });
+
+    // Get course detail for description
+    const courseDetail = await this.prisma.courseDetail.findUnique({
+      where: { courseId },
+      select: {
+        description: true,
+      },
+    });
+
+    return {
+      id: lesson.id,
+      title: lesson.title,
+      type,
+      storageType: lesson.storageType,
+      storageUrl: lesson.storageUrl,
+      contentText: lesson.contentText,
+      duration: lesson.duration,
+      description: courseDetail?.description || null,
+      resources: resources.map((res) => ({
+        name: res.title,
+        url: res.url,
+        type: res.materialType || "FILE",
+      })),
+    };
   }
 }
 

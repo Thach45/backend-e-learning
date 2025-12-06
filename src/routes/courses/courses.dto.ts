@@ -14,5 +14,6 @@ export class GetCourseParamsDto extends createZodDto(GetCourseParamsSchema) {}
 export class GetCoursesQueryDto extends createZodDto(GetCoursesQuerySchema) {}
 export class GetCourseResponseDto extends createZodDto(GetCourseResponseSchema) {}
 export class GetCoursesResponseDto extends createZodDto(GetCoursesResponseSchema) {}
+// export class OverviewResponseDto extends createZodDto(OverviewResponseSchema) {}
 
 

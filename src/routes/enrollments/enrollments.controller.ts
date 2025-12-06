@@ -9,6 +9,10 @@ import {
   GetEnrollmentsByCourseParamsDto,
   GetEnrollmentResponseDto,
   GetEnrollmentsResponseDto,
+  GetEnrollmentStatsResponseDto,
+  GetCourseContentsResponseDto,
+  GetLessonDetailResponseDto,
+  GetLessonParamsDto,
 } from "./enrollments.dto";
 
 @Controller("api")
@@ -31,6 +35,12 @@ export class EnrollmentsController {
     return this.enrollmentsService.getEnrollments(query as any, user.userId);
   }
 
+  @Get("my-enrollments/stats")
+  @ZodSerializerDto(GetEnrollmentStatsResponseDto)
+  async getMyEnrollmentStats(@ActiveUser() user: any) {
+    return this.enrollmentsService.getEnrollmentStats(user.userId);
+  }
+
   @Get("my-enrollments/:courseId")
   @ZodSerializerDto(GetEnrollmentResponseDto)
   async getMyEnrollmentByCourseId(@Param() params: GetEnrollmentParamsDto, @ActiveUser() user: any) {
@@ -41,6 +51,22 @@ export class EnrollmentsController {
   @ZodSerializerDto(GetEnrollmentResponseDto)
   async completeCourse(@Param() params: GetEnrollmentParamsDto, @ActiveUser() user: any) {
     return this.enrollmentsService.completeEnrollment((params as any).courseId, user.userId);
+  }
+
+  @Get("my-enrollments/:courseId/contents")
+  @ZodSerializerDto(GetCourseContentsResponseDto)
+  async getCourseContents(@Param() params: GetEnrollmentParamsDto, @ActiveUser() user: any) {
+    return this.enrollmentsService.getCourseContentsForEnrolledUser((params as any).courseId, user.userId);
+  }
+
+  @Get("my-enrollments/:courseId/lessons/:lessonId")
+  @ZodSerializerDto(GetLessonDetailResponseDto)
+  async getLessonDetail(@Param() params: GetLessonParamsDto, @ActiveUser() user: any) {
+    return this.enrollmentsService.getLessonDetailForEnrolledUser(
+      (params as any).courseId,
+      (params as any).lessonId,
+      user.userId,
+    );
   }
 
   // Instructor endpoints

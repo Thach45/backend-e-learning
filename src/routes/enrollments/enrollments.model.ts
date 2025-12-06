@@ -6,8 +6,6 @@ export const EnrollmentSchema = z.object({
   courseId: z.string().uuid(),
   enrolledAt: z.date(),
   completedAt: z.date().nullable().optional(),
-  progress: z.number().optional(),
-  lastAccessed: z.date().optional(),
   course: z
     .object({
       id: z.string().uuid(),
@@ -27,6 +25,16 @@ export const EnrollmentSchema = z.object({
     })
     .optional(),
 });
+
+// Stats schema
+export const EnrollmentStatsSchema = z.object({
+  totalCourses: z.number(),
+  completedCourses: z.number(),
+  certificates: z.number(),
+  learningHours: z.number(),
+});
+
+export const GetEnrollmentStatsResponseSchema = EnrollmentStatsSchema;
 
 export const GetEnrollmentsQuerySchema = z.object({
   page: z.coerce.number().optional().default(1),
@@ -59,6 +67,54 @@ export const GetEnrollmentsResponseSchema = z.object({
   totalPages: z.number(),
 }).strict();
 
+// Course Content Schema for enrolled users
+export const CourseContentSectionSchema = z.object({
+  id: z.string().uuid(),
+  title: z.string(),
+  orderIndex: z.number(),
+  duration: z.string().optional(),
+  lessons: z.array(
+    z.object({
+      id: z.string().uuid(),
+      title: z.string(),
+      type: z.enum(['VIDEO', 'TEXT', 'QUIZ', 'GAME']),
+      duration: z.string().optional(),
+      isLocked: z.boolean().optional(),
+    })
+  ),
+});
+
+export const GetCourseContentsResponseSchema = z.object({
+  courseId: z.string().uuid(),
+  courseTitle: z.string(),
+  contents: z.array(CourseContentSectionSchema),
+}).strict();
+
+// Lesson Detail Schema for enrolled users
+export const LessonDetailSchema = z.object({
+  id: z.string().uuid(),
+  title: z.string(),
+  type: z.enum(['VIDEO', 'TEXT', 'QUIZ', 'GAME']),
+  storageType: z.enum(['YOUTUBE', 'CLOUDINARY', 'DIRECT_UPLOAD', 'TEXT']),
+  storageUrl: z.string().nullable().optional(),
+  contentText: z.string().nullable().optional(),
+  duration: z.number().nullable().optional(),
+  description: z.string().nullable().optional(),
+  resources: z.array(
+    z.object({
+      name: z.string(),
+      url: z.string(),
+      type: z.string(),
+      size: z.string().optional(),
+    })
+  ).optional(),
+}).strict();
+
+export const GetLessonParamsSchema = z.object({
+  courseId: z.string().uuid(),
+  lessonId: z.string().uuid(),
+}).strict();
+
 export type Enrollment = z.infer<typeof EnrollmentSchema>;
 export type GetEnrollmentsQuery = z.infer<typeof GetEnrollmentsQuerySchema>;
 export type GetEnrollmentParams = z.infer<typeof GetEnrollmentParamsSchema>;
@@ -66,4 +122,9 @@ export type GetEnrollmentsByCourseParams = z.infer<typeof GetEnrollmentsByCourse
 export type CreateEnrollmentBody = z.infer<typeof CreateEnrollmentBodySchema>;
 export type GetEnrollmentResponse = z.infer<typeof GetEnrollmentResponseSchema>;
 export type GetEnrollmentsResponse = z.infer<typeof GetEnrollmentsResponseSchema>;
+export type EnrollmentStats = z.infer<typeof EnrollmentStatsSchema>;
+export type GetEnrollmentStatsResponse = z.infer<typeof GetEnrollmentStatsResponseSchema>;
+export type GetCourseContentsResponse = z.infer<typeof GetCourseContentsResponseSchema>;
+export type GetLessonDetailResponse = z.infer<typeof LessonDetailSchema>;
+export type GetLessonParams = z.infer<typeof GetLessonParamsSchema>;
 

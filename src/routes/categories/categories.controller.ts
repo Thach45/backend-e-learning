@@ -3,26 +3,28 @@ import { ZodSerializerDto } from 'nestjs-zod';
 import { CreateCategoryBodyDto, UpdateCategoryBodyDto, CategoryResponseDto, GetListCategoriesResponseDto } from './categories.dto';
 import { CategoriesService } from './categories.service';
 import { ActiveUser } from 'src/shared/decorator/active-user.decorator';
+import { Public } from 'src/shared/decorator/auth.decorator';
 
-@Controller('api/admin')
+@Controller('api')
 export class CategoriesController {
     constructor(private readonly categoriesService: CategoriesService) {}
     @Get("categories")
     // @ZodSerializerDto(GetListCategoriesResponseDto)
+    @Public()
     async getAllCategories() { 
         return this.categoriesService.getAllCategories()
     }
-    @Get("categories/:id")
+    @Get("/admin/categories/:id")
     @ZodSerializerDto(CategoryResponseDto)
     async getCategoryById(@Param("id") id: string) {
         return this.categoriesService.getCategoryById(id);
     }
-    @Post("categories")
+    @Post("/admin/categories")
     @ZodSerializerDto(CategoryResponseDto)
     async createCategory(@Body() body: CreateCategoryBodyDto, @ActiveUser() user: any) {
         return this.categoriesService.createCategory(body, user);
     }
-    @Put("categories/:id")
+    @Put("/admin/categories/:id")
     @ZodSerializerDto(CategoryResponseDto)
     async updateCategory(@Param("id") id: string, @Body() body: UpdateCategoryBodyDto, @ActiveUser() user: any) {
         return this.categoriesService.updateCategory(id, body, user);

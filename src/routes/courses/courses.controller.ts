@@ -30,6 +30,11 @@ export class CoursesController {
   async getCourseById(@Param() params: GetCourseParamsDto) {
     return this.coursesService.getCourseById((params as any).id);
   }
+  // @Get("courses/:id/overview")
+  // @ZodSerializerDto(OverviewResponseDto)
+  // async getCourseOverview(@Param() params: GetCourseParamsDto) {
+  //   return this.coursesService.getCourseById((params as any).id);
+  // }
 
   // Instructor-only
   @Get("instructor/courses")

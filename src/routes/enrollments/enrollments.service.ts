@@ -33,5 +33,17 @@ export class EnrollmentsService {
   async removeStudent(enrollmentId: string, instructorId: string) {
     return this.repo.removeStudent(enrollmentId, instructorId);
   }
+
+  async getEnrollmentStats(userId: string) {
+    return this.repo.getEnrollmentStats(userId);
+  }
+
+  async getCourseContentsForEnrolledUser(courseId: string, userId: string) {
+    return this.repo.getCourseContentsForEnrolledUser(courseId, userId);
+  }
+
+  async getLessonDetailForEnrolledUser(courseId: string, lessonId: string, userId: string) {
+    return this.repo.getLessonDetailForEnrolledUser(courseId, lessonId, userId);
+  }
 }
 
