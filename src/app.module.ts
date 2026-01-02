@@ -21,9 +21,11 @@ import { EnrollmentsModule } from './routes/enrollments/enrollments.module';
 import { ReviewsModule } from './routes/reviews/reviews.module';
 import { WishlistModule } from './routes/wishlist/wishlist.module';
 import { UploadModule } from './routes/upload/upload.module';
+import { CartModule } from './routes/cart/cart.module';
+import { OrdersModule } from './routes/orders/orders.module';
 
 @Module({
-  imports: [SharedModule, AuthModule, PermissionModule, CategoriesModule, RolesModule, UsersModule, CoursesModule, CourseDetailModule, CourseContentModule, LessonsModule, EnrollmentsModule, ReviewsModule, WishlistModule, UploadModule],
+  imports: [SharedModule, AuthModule, PermissionModule, CategoriesModule, RolesModule, UsersModule, CoursesModule, CourseDetailModule, CourseContentModule, LessonsModule, EnrollmentsModule, ReviewsModule, WishlistModule, UploadModule, CartModule, OrdersModule],
   controllers: [AppController],
   providers: [AppService,
     {

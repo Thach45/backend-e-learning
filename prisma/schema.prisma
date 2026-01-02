@@ -111,6 +111,7 @@ model User {
   orders             Order[]
   wishlists          Wishlist[]
   learningProgresses LearningProgress[]
+  cart               Cart?
 }
 
 model Device {
@@ -233,6 +234,7 @@ model Course {
   wishlists    Wishlist[]
   orderItems   OrderItem[]
   learningProgresses LearningProgress[]
+  cartItems    CartItem[]
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
   deletedAt    DateTime?
@@ -407,4 +409,31 @@ model Wishlist {
   createdAt  DateTime @default(now())
 
   @@unique([userId, courseId])
+}
+
+model Cart {
+  id         String    @id @default(uuid())
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     String    @unique
+  cartItems  CartItem[]
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  expiresAt  DateTime? // Tự động xóa sau 30 ngày không hoạt động
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model CartItem {
+  id         String   @id @default(uuid())
+  cart       Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  cartId     String
+  course     Course   @relation(fields: [courseId], references: [id])
+  courseId   String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([cartId, courseId])
+  @@index([cartId])
+  @@index([courseId])
 }
