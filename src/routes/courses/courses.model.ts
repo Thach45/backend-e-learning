@@ -143,6 +143,7 @@ export const GetCourseResponseSchema = z.object({
   rating: z.number(),
   reviewsCount: z.number(),
   studentsCount: z.number(),
+  totalWishlist: z.number(),
 });
 
 // export const OverviewResponseSchema = z.object({

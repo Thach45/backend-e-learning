@@ -174,7 +174,7 @@ export class CoursesRepository {
 
     // Get instructor with stats
     const instructorId = course.instructorId;
-    const [instructor, instructorStats, courseReviews, courseEnrollments, allLessons] = await Promise.all([
+    const [instructor, instructorStats, courseReviews, courseEnrollments, allLessons, totalWishlist] = await Promise.all([
       this.prisma.user.findUnique({
         where: { id: instructorId },
         select: {
@@ -231,6 +231,7 @@ export class CoursesRepository {
           duration: true,
         },
       }),
+      this.prisma.wishlist.count({ where: { courseId: id } }),
     ]);
 
     // Calculate instructor stats
@@ -362,6 +363,7 @@ export class CoursesRepository {
       rating: courseRating,
       reviewsCount: totalReviewsCount,
       studentsCount: courseEnrollments,
+      totalWishlist: totalWishlist,
     };
   }
 
