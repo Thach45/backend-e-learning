@@ -13,22 +13,21 @@ export class PermissionGuard implements CanActivate {
 
   async canActivate(ctx: ExecutionContext): Promise<boolean> {
     const req = ctx.switchToHttp().getRequest();
-    const user = req.user
+    const user = req.user;
+    
     // Bypass nếu có @Public() hoặc metadata 'auth' được gắn
     const meta = this.reflector.getAllAndOverride<AuthType>('auth', [
-        ctx.getHandler(),
-        ctx.getClass(),
-      ]);
+      ctx.getHandler(),
+      ctx.getClass(),
+    ]);
     
-      // Chỉ bypass khi có PUBLIC
-      const isPublic = meta?.Type?.includes(Type.PUBLIC) === true;
-      console.log(isPublic);
-      if (isPublic) return true;
+    // Chỉ bypass khi có PUBLIC
+    const isPublic = meta?.Type?.includes(Type.PUBLIC) === true;
+    if (isPublic) return true;
     
     if (!user) throw new ForbiddenException('Unauthenticated');
 
     // ADMIN bypass
-    console.log(user);
     const userRoles = await this.prisma.userRole.findMany({
       where: { userId: user.userId },
       include: { role: true },
@@ -36,23 +35,51 @@ export class PermissionGuard implements CanActivate {
     if (userRoles.some(r => r.role.name === ROLES.ADMIN)) return true;
 
     // Map path + method
-    const path = req.route?.path; // dạng '/api/roles/:id'
+    // NestJS: req.route?.path hoặc req.url (cần parse)
+    // Ưu tiên req.route?.path vì nó là route pattern (có :id), không phải actual path
+    let path = req.route?.path;
+    
+    // Fallback: nếu không có route.path, dùng req.url và normalize
+    if (!path) {
+      const url = req.url?.split('?')[0]; // Remove query params
+      // Try to get from route pattern if available
+      path = url;
+    }
+    
     const method = String(req.method).toUpperCase();
-    console.log(path, method);
-    if (!path) throw new ForbiddenException('Route not resolvable');
+    
+    if (!path) {
+      console.warn(`[PermissionGuard] Cannot resolve path for ${method} ${req.url}`);
+      throw new ForbiddenException('Route not resolvable');
+    }
+
+    // Normalize path: remove trailing slash, ensure starts with /
+    path = path.replace(/\/$/, '').replace(/^\/?/, '/');
 
     const perm = await this.prisma.permission.findUnique({
       where: { path_method: { path, method } },
       select: { id: true },
     });
 
-    // Chưa sync permission -> cho qua (tuỳ chính sách bạn có thể đổi thành reject)
-    if (!perm) return true;
+    // Chưa sync permission -> reject để đảm bảo bảo mật
+    // Hoặc có thể log warning và cho qua trong development
+    if (!perm) {
+      console.warn(`[PermissionGuard] Permission not found: ${method} ${path}`);
+      // Reject để đảm bảo bảo mật - chỉ cho qua khi đã sync đầy đủ permissions
+      throw new ForbiddenException(`Permission not configured for ${method} ${path}`);
+    }
 
     const count = await this.prisma.rolePermission.count({
-      where: { roleId: { in: userRoles.map(r => r.roleId) }, permissionId: perm.id },
+      where: { 
+        roleId: { in: userRoles.map(r => r.roleId) }, 
+        permissionId: perm.id 
+      },
     });
-    if (!count) throw new ForbiddenException('Permission denied');
+    
+    if (!count) {
+      throw new ForbiddenException('Permission denied');
+    }
+    
     return true;
   }
 }

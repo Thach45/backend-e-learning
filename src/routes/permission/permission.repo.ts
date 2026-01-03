@@ -10,6 +10,7 @@ export class PermissionRepo {
     async getListPermissions(query: GetPermissionQueryType) {
         try {
             const { page, limit } = query;
+            console.log(page, limit);
             
             if (page < 1 || limit < 1) {
                 throw new BadRequestException('Page and limit must be positive numbers');
@@ -33,7 +34,7 @@ export class PermissionRepo {
                 }),
             ]);
 
-            return { permissions, total, page, limit, totalPages: Math.ceil(total / limit) };
+            return { data: permissions, total, page, limit, totalPages: Math.ceil(total / limit) };
         } catch (error) {
             if (error instanceof BadRequestException) {
                 throw error;

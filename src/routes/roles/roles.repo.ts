@@ -6,11 +6,25 @@ export class RolesRepo {
     constructor(private readonly prisma: PrismaService) {}
 
     async listRoles() {
-        return this.prisma.role.findMany({});
+        const [roles, total] = await Promise.all([
+            this.prisma.role.findMany({ where: { deletedAt: null }, include: { rolePermissions: { include: { permission: true } } } }),
+            this.prisma.role.count({ where: { deletedAt: null } }),
+        ]);
+        console.log(roles);
+        return { data: roles, total };
     }
 
     async getRoleById(id: string) {
-        return this.prisma.role.findUnique({ where: { id } });
+        return this.prisma.role.findUnique({ 
+            where: { id },
+            include: { 
+                rolePermissions: { 
+                    include: { 
+                        permission: true 
+                    } 
+                } 
+            } 
+        });
     }
 
     async createRole(data: { name: any; description?: string; isActive?: boolean }) {

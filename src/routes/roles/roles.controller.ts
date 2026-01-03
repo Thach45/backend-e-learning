@@ -6,16 +6,17 @@ import { AssignPermissionsBodyDto, AssignPermissionsResponseDto, CreateRoleBodyD
 @Controller('api/roles')
 export class RolesController {
     constructor(private readonly rolesService: RolesService) {}
-
     @Get()
-    @ZodSerializerDto(GetListRolesResponseDto)
+    // @ZodSerializerDto(GetListRolesResponseDto)
     async listRoles() {
+        console.log("listRoles");
         return this.rolesService.listRoles();
     }
 
     @Get(':id')
-    @ZodSerializerDto(RoleResponseDto)
+    // @ZodSerializerDto(RoleResponseDto)
     async getRole(@Param('id') id: string) {
+        
         return this.rolesService.getRole(id);
     }
 

@@ -1,4 +1,16 @@
 import z from "zod";
+import { GetPermissionResponseSchema, PermissionSchema } from "../permission/permission.model";
+
+
+// Schema for RolePermission relation (from Prisma include)
+export const RolePermissionSchema = z.object({
+    id: z.string().uuid(),
+    roleId: z.string().uuid(),
+    permissionId: z.string().uuid(),
+    createdAt: z.date(),
+    updatedAt: z.date(),
+    permission: PermissionSchema, // Nested permission from Prisma include
+});
 
 export const RoleSchema = z.object({
     id: z.string().uuid(),
@@ -10,6 +22,8 @@ export const RoleSchema = z.object({
     deletedAt: z.date().nullable().optional(),
     createdById: z.string().nullable().optional(),
     updatedById: z.string().nullable().optional(),
+    rolePermissions: z.array(RolePermissionSchema).optional(), // From Prisma include (raw)
+    permissions: z.array(PermissionSchema).optional(), // Transformed flat array for frontend
 });
 
 export const CreateRoleBodySchema = z.object({
@@ -31,7 +45,10 @@ export const AssignPermissionsBodySchema = z.object({
 export const UnassignPermissionsBodySchema = AssignPermissionsBodySchema;
 
 export const RoleResponseSchema = RoleSchema;
-export const GetListRolesResponseSchema = z.array(RoleResponseSchema);
+export const GetListRolesResponseSchema = z.object({
+    data: z.array(RoleResponseSchema),
+    total: z.number()
+});
 export const AssignPermissionsResponseSchema = z.object({
     success: z.boolean(),
 });

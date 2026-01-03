@@ -6,13 +6,25 @@ export class RolesService {
     constructor(private readonly repo: RolesRepo) {}
 
     async listRoles() {
-        return this.repo.listRoles();
+        const result = await this.repo.listRoles();
+        // Transform rolePermissions from [{ permission: {...} }] to permissions: [...]
+        if (result.data) {
+            result.data = result.data.map((role: any) => ({
+                ...role,
+                permissions: role.rolePermissions?.map((rp: any) => rp.permission).filter(Boolean) || [],
+            }));
+        }
+        return result;
     }
 
     async getRole(id: string) {
         const role = await this.repo.getRoleById(id);
         if (!role) throw new NotFoundException('Role not found');
-        return role;
+        // Transform rolePermissions from [{ permission: {...} }] to permissions: [...]
+        return {
+            ...role,
+            permissions: role.rolePermissions?.map((rp: any) => rp.permission).filter(Boolean) || [],
+        };
     }
 
     async createRole(body: { name: any; description?: string; isActive?: boolean }) {

@@ -14,6 +14,12 @@ export class CategoriesController {
     async getAllCategories() { 
         return this.categoriesService.getAllCategories()
     }
+    @Get("admin/categories")
+    // @ZodSerializerDto(GetListCategoriesResponseDto)
+    @Public()
+    async getAllAdminCategories() { 
+        return this.categoriesService.getAllCategories()
+    }
     @Get("/admin/categories/:id")
     @ZodSerializerDto(CategoryResponseDto)
     async getCategoryById(@Param("id") id: string) {
