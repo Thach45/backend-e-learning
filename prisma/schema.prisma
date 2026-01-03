@@ -112,6 +112,12 @@ model User {
   wishlists          Wishlist[]
   learningProgresses LearningProgress[]
   cart               Cart?
+
+  // Community/Documents
+  uploadedMaterials  SupplementaryMaterial[] @relation("UserUploads")
+  documentLikes      UserDocumentLike[]
+  documentDownloads  UserDocumentDownload[]
+  documentViews      UserDocumentView[]
 }
 
 model Device {
@@ -330,6 +336,59 @@ model SupplementaryMaterial {
   materialType MaterialType
   url         String
   uploadedAt  DateTime    @default(now())
+  materialDetail MaterialDetail?
+  
+  // Community/Documents
+  uploader          User?                  @relation("UserUploads", fields: [uploaderId], references: [id])
+  uploaderId        String?
+  category          DocumentCategory?       @relation(fields: [categoryId], references: [id])
+  categoryId        String?
+  likes             UserDocumentLike[]
+  downloads         UserDocumentDownload[]
+  views             UserDocumentView[]
+  
+  @@index([uploaderId])
+  @@index([categoryId])
+  @@index([uploadedAt])
+}
+model MaterialDetail {
+  id         String   @id @default(uuid())
+  materialId String   @unique
+  schoolName String?  // Optional: chỉ cần cho Community documents, không bắt buộc cho course/lesson materials
+  totalDownload Int @default(0)
+  totalView Int @default(0)
+  totalLike Int @default(0)
+  tags String[] @default([]) // Default empty array để không bắt buộc
+  material   SupplementaryMaterial @relation(fields: [materialId], references: [id])
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  deletedAt  DateTime?
+  createdBy  String?
+  updatedBy  String?
+  isActive   Boolean @default(true)
+  
+  // Community/Documents fields (all optional)
+  pages        Int?      // Số trang - chỉ cần cho Community documents
+  thumbnail    String?    // Ảnh preview - chỉ cần cho Community documents
+  subject      String?    // Môn học - chỉ cần cho Community documents
+  isVerified   Boolean    @default(false) // Badge uy tín - chỉ cần cho Community documents
+  
+  @@index([materialId])
+  @@index([schoolName])
+  @@index([totalDownload])
+  @@index([totalView])
+  @@index([totalLike])
+  @@index([tags])
+  @@index([createdAt])
+  @@index([updatedAt])
+  @@index([deletedAt])
+  @@index([createdBy])
+  @@index([updatedBy])
+  @@index([isActive])
+  @@index([pages])
+  @@index([subject])
+  @@index([isVerified])
+  
 }
 
 model Enrollment {
@@ -439,4 +498,68 @@ model CartItem {
   @@unique([cartId, courseId])
   @@index([cartId])
   @@index([courseId])
+}
+
+// Community/Documents Models
+
+model DocumentCategory {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  slug        String?  @unique
+  icon        String?
+  isActive    Boolean  @default(true)
+  documents   SupplementaryMaterial[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  deletedAt   DateTime?
+  
+  @@index([name])
+  @@index([slug])
+  @@index([isActive])
+}
+
+model UserDocumentLike {
+  id         String   @id @default(uuid())
+  userId     String
+  materialId String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  material   SupplementaryMaterial @relation(fields: [materialId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+  
+  @@unique([userId, materialId])
+  @@index([userId])
+  @@index([materialId])
+  @@index([createdAt])
+}
+
+model UserDocumentDownload {
+  id         String   @id @default(uuid())
+  userId     String?
+  materialId String
+  user       User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  material   SupplementaryMaterial @relation(fields: [materialId], references: [id], onDelete: Cascade)
+  downloadedAt DateTime @default(now())
+  ipAddress  String?  // Track anonymous downloads
+  
+  @@index([materialId])
+  @@index([userId])
+  @@index([downloadedAt])
+  @@index([ipAddress])
+}
+
+model UserDocumentView {
+  id         String   @id @default(uuid())
+  userId     String?
+  materialId String
+  user       User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  material   SupplementaryMaterial @relation(fields: [materialId], references: [id], onDelete: Cascade)
+  viewedAt   DateTime @default(now())
+  ipAddress  String?  // Track anonymous views
+  duration   Int?     // Thời gian xem (seconds)
+  
+  @@index([materialId])
+  @@index([userId])
+  @@index([viewedAt])
+  @@index([ipAddress])
 }

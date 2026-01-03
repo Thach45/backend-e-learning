@@ -24,9 +24,11 @@ import { UploadModule } from './routes/upload/upload.module';
 import { CartModule } from './routes/cart/cart.module';
 import { OrdersModule } from './routes/orders/orders.module';
 import { CommentsModule } from './routes/comments/comments.module';
+import { DocumentCategoriesModule } from './routes/document-categories/document-categories.module';
+import { DocumentsModule } from './routes/documents/documents.module';
 
 @Module({
-  imports: [SharedModule, AuthModule, PermissionModule, CategoriesModule, RolesModule, UsersModule, CoursesModule, CourseDetailModule, CourseContentModule, LessonsModule, EnrollmentsModule, ReviewsModule, WishlistModule, UploadModule, CartModule, OrdersModule, CommentsModule],
+  imports: [SharedModule, AuthModule, PermissionModule, CategoriesModule, RolesModule, UsersModule, CoursesModule, CourseDetailModule, CourseContentModule, LessonsModule, EnrollmentsModule, ReviewsModule, WishlistModule, UploadModule, CartModule, OrdersModule, CommentsModule, DocumentCategoriesModule, DocumentsModule],
   controllers: [AppController],
   providers: [AppService,
     {

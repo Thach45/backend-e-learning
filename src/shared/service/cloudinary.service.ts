@@ -72,5 +72,31 @@ export class CloudinaryService {
   async deleteVideo(publicId: string): Promise<any> {
     return cloudinary.uploader.destroy(publicId, { resource_type: 'video' });
   }
+
+  async uploadFile(
+    file: MulterFile,
+    folder: string = 'documents',
+  ): Promise<UploadApiResponse> {
+    return new Promise((resolve, reject) => {
+      const location = process.env.CLOUDINARY_FOLDER_NAME + '/' + folder;
+      const uploadStream = cloudinary.uploader.upload_stream(
+        {
+          folder: location,
+          resource_type: 'raw', // For non-image/video files like PDF, DOC, etc.
+          allowed_formats: ['pdf', 'doc', 'docx', 'ppt', 'pptx', 'xls', 'xlsx', 'zip', 'rar'],
+        },
+        (error: UploadApiErrorResponse, result: UploadApiResponse) => {
+          if (error) return reject(error);
+          resolve(result);
+        },
+      );
+
+      uploadStream.end(file.buffer);
+    });
+  }
+
+  async deleteFile(publicId: string): Promise<any> {
+    return cloudinary.uploader.destroy(publicId, { resource_type: 'raw' });
+  }
 }
 
