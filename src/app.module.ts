@@ -28,9 +28,10 @@ import { DocumentCategoriesModule } from './routes/document-categories/document-
 import { DocumentTagsModule } from './routes/document-tags/document-tags.module';
 import { DocumentsModule } from './routes/documents/documents.module';
 import { DashboardModule } from './routes/dashboard/dashboard.module';
+import { InstructorModule } from './routes/instructor/instructor.module';
 
 @Module({
-  imports: [SharedModule, AuthModule, PermissionModule, CategoriesModule, RolesModule, UsersModule, CoursesModule, CourseDetailModule, CourseContentModule, LessonsModule, EnrollmentsModule, ReviewsModule, WishlistModule, UploadModule, CartModule, OrdersModule, CommentsModule, DocumentCategoriesModule, DocumentTagsModule, DocumentsModule, DashboardModule],
+  imports: [SharedModule, AuthModule, PermissionModule, CategoriesModule, RolesModule, UsersModule, CoursesModule, CourseDetailModule, CourseContentModule, LessonsModule, EnrollmentsModule, ReviewsModule, WishlistModule, UploadModule, CartModule, OrdersModule, CommentsModule, DocumentCategoriesModule, DocumentTagsModule, DocumentsModule, DashboardModule, InstructorModule],
   controllers: [AppController],
   providers: [AppService,
     {
