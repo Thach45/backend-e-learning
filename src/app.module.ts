@@ -25,10 +25,12 @@ import { CartModule } from './routes/cart/cart.module';
 import { OrdersModule } from './routes/orders/orders.module';
 import { CommentsModule } from './routes/comments/comments.module';
 import { DocumentCategoriesModule } from './routes/document-categories/document-categories.module';
+import { DocumentTagsModule } from './routes/document-tags/document-tags.module';
 import { DocumentsModule } from './routes/documents/documents.module';
+import { DashboardModule } from './routes/dashboard/dashboard.module';
 
 @Module({
-  imports: [SharedModule, AuthModule, PermissionModule, CategoriesModule, RolesModule, UsersModule, CoursesModule, CourseDetailModule, CourseContentModule, LessonsModule, EnrollmentsModule, ReviewsModule, WishlistModule, UploadModule, CartModule, OrdersModule, CommentsModule, DocumentCategoriesModule, DocumentsModule],
+  imports: [SharedModule, AuthModule, PermissionModule, CategoriesModule, RolesModule, UsersModule, CoursesModule, CourseDetailModule, CourseContentModule, LessonsModule, EnrollmentsModule, ReviewsModule, WishlistModule, UploadModule, CartModule, OrdersModule, CommentsModule, DocumentCategoriesModule, DocumentTagsModule, DocumentsModule, DashboardModule],
   controllers: [AppController],
   providers: [AppService,
     {

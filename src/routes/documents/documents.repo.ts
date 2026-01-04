@@ -15,6 +15,14 @@ export class DocumentsRepository {
   // Helper to transform database result to document response
   private transformDocument(doc: any, userId?: string) {
     const detail = doc.materialDetail;
+    // Transform tags from junction table
+    const tags = detail?.documentTags?.map((dt: any) => ({
+      id: dt.documentTag.id,
+      name: dt.documentTag.name,
+      slug: dt.documentTag.slug,
+      color: dt.documentTag.color,
+    })) || [];
+    
     return {
       id: doc.id,
       title: doc.title,
@@ -38,7 +46,7 @@ export class DocumentsRepository {
       views: detail?.totalView || 0,
       downloads: detail?.totalDownload || 0,
       likes: detail?.totalLike || 0,
-      tags: detail?.tags || [],
+      tags,
       isLiked: userId ? doc.likes?.some((like: any) => like.userId === userId) : undefined,
     };
   }
@@ -86,7 +94,7 @@ export class DocumentsRepository {
         OR: [
           { title: { contains: search, mode: 'insensitive' } },
           { materialDetail: { subject: { contains: search, mode: 'insensitive' } } },
-          { materialDetail: { tags: { has: search } } },
+          { materialDetail: { documentTags: { some: { documentTag: { name: { contains: search, mode: 'insensitive' } } } } } },
         ],
       } : {}),
     };
@@ -98,7 +106,17 @@ export class DocumentsRepository {
       category: {
         select: { id: true, name: true },
       },
-      materialDetail: true,
+      materialDetail: {
+        include: {
+          documentTags: {
+            include: {
+              documentTag: {
+                select: { id: true, name: true, slug: true, color: true },
+              },
+            },
+          },
+        },
+      },
       ...(userId ? {
         likes: {
           where: { userId },
@@ -136,7 +154,17 @@ export class DocumentsRepository {
       category: {
         select: { id: true, name: true },
       },
-      materialDetail: true,
+      materialDetail: {
+        include: {
+          documentTags: {
+            include: {
+              documentTag: {
+                select: { id: true, name: true, slug: true, color: true },
+              },
+            },
+          },
+        },
+      },
       ...(userId ? {
         likes: {
           where: { userId },
@@ -193,7 +221,17 @@ export class DocumentsRepository {
         category: {
           select: { id: true, name: true },
         },
-        materialDetail: true,
+        materialDetail: {
+          include: {
+            documentTags: {
+              include: {
+                documentTag: {
+                  select: { id: true, name: true, slug: true, color: true },
+                },
+              },
+            },
+          },
+        },
         ...(userId ? {
           likes: {
             where: { userId },
@@ -273,6 +311,8 @@ export class DocumentsRepository {
 
   // Create document
   async createDocument(body: CreateDocumentBody, userId: string) {
+    const tagIds = body.tagIds || [];
+    
     const document = await this.prisma.supplementaryMaterial.create({
       data: {
         title: body.title,
@@ -286,8 +326,13 @@ export class DocumentsRepository {
             subject: body.subject,
             pages: body.pages,
             thumbnail: body.thumbnail,
-            tags: body.tags || [],
             createdBy: userId,
+            // Create tag relations
+            documentTags: tagIds.length > 0 ? {
+              create: tagIds.map(tagId => ({
+                documentTag: { connect: { id: tagId } },
+              })),
+            } : undefined,
           },
         },
       },
@@ -298,7 +343,17 @@ export class DocumentsRepository {
         category: {
           select: { id: true, name: true },
         },
-        materialDetail: true,
+        materialDetail: {
+          include: {
+            documentTags: {
+              include: {
+                documentTag: {
+                  select: { id: true, name: true, slug: true, color: true },
+                },
+              },
+            },
+          },
+        },
       },
     });
 
@@ -331,7 +386,23 @@ export class DocumentsRepository {
     if (body.subject !== undefined) detailUpdateData.subject = body.subject;
     if (body.pages !== undefined) detailUpdateData.pages = body.pages;
     if (body.thumbnail !== undefined) detailUpdateData.thumbnail = body.thumbnail;
-    if (body.tags !== undefined) detailUpdateData.tags = body.tags;
+
+    // Handle tags update if provided
+    if (body.tagIds !== undefined && document.materialDetail) {
+      // Delete existing tag relations and create new ones
+      await this.prisma.documentTagOnMaterial.deleteMany({
+        where: { materialDetailId: document.materialDetail.id },
+      });
+      
+      if (body.tagIds.length > 0) {
+        await this.prisma.documentTagOnMaterial.createMany({
+          data: body.tagIds.map(tagId => ({
+            materialDetailId: document.materialDetail!.id,
+            documentTagId: tagId,
+          })),
+        });
+      }
+    }
 
     if (Object.keys(detailUpdateData).length > 0 && document.materialDetail) {
       updateData.materialDetail = {
@@ -349,7 +420,17 @@ export class DocumentsRepository {
         category: {
           select: { id: true, name: true },
         },
-        materialDetail: true,
+        materialDetail: {
+          include: {
+            documentTags: {
+              include: {
+                documentTag: {
+                  select: { id: true, name: true, slug: true, color: true },
+                },
+              },
+            },
+          },
+        },
       },
     });
 
@@ -487,7 +568,17 @@ export class DocumentsRepository {
               category: {
                 select: { id: true, name: true },
               },
-              materialDetail: true,
+              materialDetail: {
+                include: {
+                  documentTags: {
+                    include: {
+                      documentTag: {
+                        select: { id: true, name: true, slug: true, color: true },
+                      },
+                    },
+                  },
+                },
+              },
             },
           },
         },
@@ -535,7 +626,17 @@ export class DocumentsRepository {
           category: {
             select: { id: true, name: true },
           },
-          materialDetail: true,
+          materialDetail: {
+            include: {
+              documentTags: {
+                include: {
+                  documentTag: {
+                    select: { id: true, name: true, slug: true, color: true },
+                  },
+                },
+              },
+            },
+          },
         },
       }),
       this.prisma.supplementaryMaterial.count({ where }),

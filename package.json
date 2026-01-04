@@ -21,7 +21,7 @@
     "prisma:seed": "prisma db seed",
     "db:push": "prisma generate && prisma db push",
     "db:migrate": "prisma generate && prisma migrate dev --name init",
-    "db:seed": "ts-node initialScript/assign-permission-to-role.ts"
+    "db:seed": "ts-node initialScript/create-permission.ts"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",

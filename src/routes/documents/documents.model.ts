@@ -35,7 +35,13 @@ export const DocumentSchema = z.object({
   views: z.number(),
   downloads: z.number(),
   likes: z.number(),
-  tags: z.array(z.string()),
+  // Tags from DocumentTag relation
+  tags: z.array(z.object({
+    id: z.string().uuid(),
+    name: z.string(),
+    slug: z.string(),
+    color: z.string().nullable().optional(),
+  })),
   // For authenticated users
   isLiked: z.boolean().optional(),
 });
@@ -75,7 +81,7 @@ export const CreateDocumentBodySchema = z.object({
   subject: z.string().max(100).optional(),
   pages: z.number().int().positive().optional(),
   thumbnail: z.string().url().optional(),
-  tags: z.array(z.string().max(50)).max(10).default([]),
+  tagIds: z.array(z.string().uuid()).max(10).default([]),
 }).strict();
 
 export type CreateDocumentBody = z.infer<typeof CreateDocumentBodySchema>;
@@ -88,7 +94,7 @@ export const UpdateDocumentBodySchema = z.object({
   subject: z.string().max(100).optional(),
   pages: z.number().int().positive().optional(),
   thumbnail: z.string().url().optional(),
-  tags: z.array(z.string().max(50)).max(10).optional(),
+  tagIds: z.array(z.string().uuid()).max(10).optional(),
 }).strict();
 
 export type UpdateDocumentBody = z.infer<typeof UpdateDocumentBodySchema>;

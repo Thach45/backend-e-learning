@@ -358,7 +358,6 @@ model MaterialDetail {
   totalDownload Int @default(0)
   totalView Int @default(0)
   totalLike Int @default(0)
-  tags String[] @default([]) // Default empty array để không bắt buộc
   material   SupplementaryMaterial @relation(fields: [materialId], references: [id])
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
@@ -373,12 +372,14 @@ model MaterialDetail {
   subject      String?    // Môn học - chỉ cần cho Community documents
   isVerified   Boolean    @default(false) // Badge uy tín - chỉ cần cho Community documents
   
+  // Relation to DocumentTag (many-to-many)
+  documentTags DocumentTagOnMaterial[]
+  
   @@index([materialId])
   @@index([schoolName])
   @@index([totalDownload])
   @@index([totalView])
   @@index([totalLike])
-  @@index([tags])
   @@index([createdAt])
   @@index([updatedAt])
   @@index([deletedAt])
@@ -389,6 +390,41 @@ model MaterialDetail {
   @@index([subject])
   @@index([isVerified])
   
+}
+
+// Document Tag - Từ khóa nổi bật cho tài liệu cộng đồng
+model DocumentTag {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  slug        String   @unique
+  description String?
+  color       String?  // Màu hiển thị (hex color)
+  isActive    Boolean  @default(true)
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relation to MaterialDetail (many-to-many)
+  materials   DocumentTagOnMaterial[]
+  
+  @@index([name])
+  @@index([slug])
+  @@index([isActive])
+  @@index([sortOrder])
+}
+
+// Junction table for DocumentTag <-> MaterialDetail
+model DocumentTagOnMaterial {
+  id             String         @id @default(uuid())
+  materialDetail MaterialDetail @relation(fields: [materialDetailId], references: [id], onDelete: Cascade)
+  materialDetailId String
+  documentTag    DocumentTag    @relation(fields: [documentTagId], references: [id], onDelete: Cascade)
+  documentTagId  String
+  createdAt      DateTime       @default(now())
+  
+  @@unique([materialDetailId, documentTagId])
+  @@index([materialDetailId])
+  @@index([documentTagId])
 }
 
 model Enrollment {

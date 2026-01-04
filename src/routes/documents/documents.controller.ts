@@ -135,5 +135,6 @@ export class DocumentsController {
   async adminDeleteDocument(@Param() params: GetDocumentParamsDto) {
     return this.service.adminDeleteDocument((params as any).id);
   }
-}
 
+  
+}
