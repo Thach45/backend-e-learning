@@ -93,8 +93,8 @@ export type GetEnrolledStudentsQuery = z.infer<typeof GetEnrolledStudentsQuerySc
 // Revenue Chart Query
 export const GetRevenueChartQuerySchema = z.object({
   days: z.coerce.number().int().positive().max(365).optional(),
-  startDate: z.string().datetime().optional(),
-  endDate: z.string().datetime().optional(),
+  startDate: z.string().optional(),
+  endDate: z.string().optional(),
 }).strict().refine(
   (data) => {
     // Either days or (startDate and endDate) must be provided
@@ -102,11 +102,11 @@ export const GetRevenueChartQuerySchema = z.object({
     if (data.startDate && data.endDate) {
       const start = new Date(data.startDate);
       const end = new Date(data.endDate);
-      return start <= end;
+      return !isNaN(start.getTime()) && !isNaN(end.getTime()) && start <= end;
     }
     return false;
   },
-  { message: 'Either days or both startDate and endDate must be provided' }
+  { message: 'Either days or both startDate and endDate must be provided, and startDate must be <= endDate' }
 );
 
 export type GetRevenueChartQuery = z.infer<typeof GetRevenueChartQuerySchema>;

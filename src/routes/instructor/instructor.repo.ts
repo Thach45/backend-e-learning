@@ -50,6 +50,7 @@ export class InstructorRepo {
         },
         _sum: { price: true },
       }),
+      
       this.prisma.orderItem.aggregate({
         where: {
           course: { instructorId },
@@ -78,7 +79,7 @@ export class InstructorRepo {
         },
       }),
     ]);
-
+    
     return {
       totalCourses,
       publishedCourses,
