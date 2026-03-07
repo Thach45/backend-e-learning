@@ -55,12 +55,6 @@ export class OrdersService {
             const sepayAccountNumber = process.env.SO_TAI_KHOAN;
             const sepayApiToken = process.env.SEPAY_API_KEY;
 
-            console.log('=== PAYMENT CHECK DEBUG START ===');
-            console.log('Order ID:', order.id);
-            console.log('Expected Order Number:', expectedOrderNumber);
-            console.log('Expected Amount:', expectedAmount);
-            console.log('Order Status:', order.status);
-
             if (!sepayAccountNumber || !sepayApiToken) {
                 throw new BadRequestException('SePay configuration is missing');
             }
@@ -97,11 +91,6 @@ export class OrdersService {
                     const transactionContent = transaction.transaction_content;
                     const amountInStr = transaction.amount_in;
 
-                    console.log(`\n--- Transaction ${i + 1} ---`);
-                    console.log('Transaction Content:', transactionContent);
-                    console.log('Amount In:', amountInStr);
-                    console.log('Transaction Date:', transaction.transaction_date);
-
                     // Kiểm tra transaction_content có chứa OrderID
                     if (transactionContent) {
                         // Tìm pattern "OrderID " + UUID bằng regex (case insensitive)
@@ -109,12 +98,11 @@ export class OrdersService {
                         const pattern = /orderid\s+([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}|[a-f0-9]{32})/i;
                         const matcher = transactionContent.match(pattern);
                         
-                        console.log('Regex Match Result:', matcher ? 'MATCHED' : 'NO MATCH');
+           
                         
                         if (matcher) {
                             let extractedUuid = matcher[1].toLowerCase(); // Normalize to lowercase
-                            console.log('Extracted UUID (raw):', extractedUuid);
-                            console.log('Extracted UUID length:', extractedUuid.length);
+                           
                             
                             // Chuyển extracted UUID về format chuẩn để so sánh
                             let normalizedExtractedUuid: string;
@@ -126,35 +114,20 @@ export class OrdersService {
                                     extractedUuid.substring(12, 16) + '-' +
                                     extractedUuid.substring(16, 20) + '-' +
                                     extractedUuid.substring(20, 32);
-                                console.log('Normalized UUID (from 32 chars):', normalizedExtractedUuid);
                             } else {
                                 normalizedExtractedUuid = extractedUuid.toLowerCase();
-                                console.log('Normalized UUID (already formatted):', normalizedExtractedUuid);
                             }
                             
                             // Normalize order.id to lowercase for comparison
                             const normalizedOrderId = order.id.toLowerCase();
                             
-                            console.log('--- UUID Comparison ---');
-                            console.log('Normalized Extracted UUID:', normalizedExtractedUuid);
-                            console.log('Normalized Order ID:', normalizedOrderId);
-                            console.log('UUID Match:', normalizedExtractedUuid === normalizedOrderId);
-                            
                             // So khớp UUID với order ID (case insensitive)
                             if (normalizedExtractedUuid === normalizedOrderId) {
-                                console.log('✅ UUID MATCHES! Checking amount...');
-                                
                                 // Kiểm tra số tiền
                                 if (amountInStr) {
                                     try {
                                         const amountIn = parseFloat(amountInStr);
                                         const expectedAmountInVND = expectedAmount;
-                                        
-                                        console.log('--- Amount Comparison ---');
-                                        console.log('Amount In (from transaction):', amountIn);
-                                        console.log('Expected Amount:', expectedAmountInVND);
-                                        console.log('Amount Difference:', Math.abs(amountIn - expectedAmountInVND));
-                                        console.log('Amount Match (< 1 VND difference):', Math.abs(amountIn - expectedAmountInVND) < 1);
                                         
                                         // So sánh số tiền (cho phép sai số nhỏ do làm tròn)
                                         if (Math.abs(amountIn - expectedAmountInVND) < 1) {

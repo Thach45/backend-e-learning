@@ -1,9 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { RolesRepo } from './roles.repo';
+import { RedisService } from '../../shared/service/redis.service';
 
 @Injectable()
 export class RolesService {
-    constructor(private readonly repo: RolesRepo) {}
+    constructor(
+        private readonly repo: RolesRepo,
+        private readonly redis: RedisService,
+    ) {}
 
     async listRoles() {
         const result = await this.repo.listRoles();
@@ -28,27 +32,37 @@ export class RolesService {
     }
 
     async createRole(body: { name: any; description?: string; isActive?: boolean }) {
-        return this.repo.createRole(body);
+        const result = await this.repo.createRole(body);
+        await this.redis.delByPattern('perm:allow:*');
+        return result;
     }
 
     async updateRole(id: string, body: { name?: any; description?: string; isActive?: boolean }) {
         await this.getRole(id);
-        return this.repo.updateRole(id, body);
+        const result = await this.repo.updateRole(id, body);
+        await this.redis.delByPattern('perm:allow:*');
+        return result;
     }
 
     async deleteRole(id: string) {
         await this.getRole(id);
-        return this.repo.deleteRole(id);
+        const result = await this.repo.deleteRole(id);
+        await this.redis.delByPattern('perm:allow:*');
+        return result;
     }
 
     async assignPermissions(id: string, permissionIds: string[]) {
         await this.getRole(id);
-        return this.repo.assignPermissions(id, permissionIds);
+        const result = await this.repo.assignPermissions(id, permissionIds);
+        await this.redis.delByPattern('perm:allow:*');
+        return result;
     }
 
     async unassignPermissions(id: string, permissionIds: string[]) {
         await this.getRole(id);
-        return this.repo.unassignPermissions(id, permissionIds);
+        const result = await this.repo.unassignPermissions(id, permissionIds);
+        await this.redis.delByPattern('perm:allow:*');
+        return result;
     }
 }
 

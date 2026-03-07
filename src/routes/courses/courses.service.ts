@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { CoursesRepository } from "./courses.repo";
 import { CreateCourseBody, GetCoursesQuery, UpdateCourseBody } from "./courses.model";
 
+
 @Injectable()
 export class CoursesService {
   constructor(private readonly repo: CoursesRepository) {}

@@ -2,12 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { UsersRepository } from './users.repo';
 import { CreateUserBody, GetUsersQuery, UpdateUserBody, UpdateUserStatusBody } from './users.model';
 import { HashingService } from 'src/shared/service/hashing.service';
+import { RedisService } from 'src/shared/service/redis.service';
 
 @Injectable()
 export class UsersService {
   constructor(
     private readonly usersRepo: UsersRepository,
     private readonly hashingService: HashingService,
+    private readonly redis: RedisService,
   ) {}
 
   async getUsers(query: GetUsersQuery) {
@@ -35,14 +37,21 @@ export class UsersService {
     if (body.password) {
       next.password = await this.hashingService.hashPassword(body.password);
     }
-    return this.usersRepo.updateUser(id, next);
+    const result = await this.usersRepo.updateUser(id, next);
+    // User roles/status có thể thay đổi -> xóa cache permission cho user này
+    await this.redis.delByPattern(`perm:allow:${id}:*`);
+    return result;
   }
 
   async deleteUser(id: string) {
-    return this.usersRepo.deleteUser(id);
+    const result = await this.usersRepo.deleteUser(id);
+    await this.redis.delByPattern(`perm:allow:${id}:*`);
+    return result;
   }
 
   async updateUserStatus(id: string, body: UpdateUserStatusBody, actor?: { userId: string }) {
-    return this.usersRepo.updateUserStatus(id, body.status, actor);
+    const result = await this.usersRepo.updateUserStatus(id, body.status, actor);
+    await this.redis.delByPattern(`perm:allow:${id}:*`);
+    return result;
   }
 }

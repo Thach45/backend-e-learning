@@ -10,12 +10,14 @@ import {
   GetCoursesResponseDto,
   UpdateCourseBodyDto,
 } from "./courses.dto";
+import { Public } from "src/shared/decorator/auth.decorator";
 
 @Controller("api")
 export class CoursesController {
   constructor(private readonly coursesService: CoursesService) {}
 
   // Client-facing
+  @Public()
   @Get("courses")
   @ZodSerializerDto(GetCoursesResponseDto)
   async getCourses(@Query() query: GetCoursesQueryDto) {

@@ -1,23 +1,28 @@
-import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Get, Logger, Param, Post, Put } from '@nestjs/common';
 import { ZodSerializerDto } from 'nestjs-zod';
 import { CreateCategoryBodyDto, UpdateCategoryBodyDto, CategoryResponseDto, GetListCategoriesResponseDto } from './categories.dto';
 import { CategoriesService } from './categories.service';
 import { ActiveUser } from 'src/shared/decorator/active-user.decorator';
 import { Public } from 'src/shared/decorator/auth.decorator';
 
+
 @Controller('api')
 export class CategoriesController {
     constructor(private readonly categoriesService: CategoriesService) {}
+    private readonly logger = new Logger(CategoriesController.name);
     @Get("categories")
     // @ZodSerializerDto(GetListCategoriesResponseDto)
     @Public()
     async getAllCategories() { 
+        this.logger.log('Getting all categories');
+        
         return this.categoriesService.getAllCategories()
     }
     @Get("admin/categories")
     // @ZodSerializerDto(GetListCategoriesResponseDto)
     @Public()
     async getAllAdminCategories() { 
+        this.logger.log('Getting all admin categories');
         return this.categoriesService.getAllCategories()
     }
     @Get("/admin/categories/:id")

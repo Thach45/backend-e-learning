@@ -1,13 +1,17 @@
 import { CanActivate, ExecutionContext, ForbiddenException, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { PrismaService } from '../service/prisma.service';
+import { RedisService } from '../service/redis.service';
 import { ROLES } from '@prisma/client';
 import { AuthType, Type } from '../types/auth.type';
+
+const PERM_CACHE_TTL = 300; // 5 phút
 
 @Injectable()
 export class PermissionGuard implements CanActivate {
   constructor(
     private readonly prisma: PrismaService,
+    private readonly redis: RedisService,
     private readonly reflector: Reflector,
   ) {}
 
@@ -27,34 +31,29 @@ export class PermissionGuard implements CanActivate {
     
     if (!user) throw new ForbiddenException('Unauthenticated');
 
-    // ADMIN bypass
-    const userRoles = await this.prisma.userRole.findMany({
-      where: { userId: user.userId },
-      include: { role: true },
-    });
-    if (userRoles.some(r => r.role.name === ROLES.ADMIN)) return true;
-
-    // Map path + method
-    // NestJS: req.route?.path hoặc req.url (cần parse)
-    // Ưu tiên req.route?.path vì nó là route pattern (có :id), không phải actual path
-    let path = req.route?.path;
-    
-    // Fallback: nếu không có route.path, dùng req.url và normalize
-    if (!path) {
-      const url = req.url?.split('?')[0]; // Remove query params
-      // Try to get from route pattern if available
-      path = url;
-    }
-    
+    // Map path + method (dùng cho cache key và logic DB)
+    let path = req.route?.path ?? req.url?.split('?')[0] ?? '';
     const method = String(req.method).toUpperCase();
-    
     if (!path) {
       console.warn(`[PermissionGuard] Cannot resolve path for ${method} ${req.url}`);
       throw new ForbiddenException('Route not resolvable');
     }
-
-    // Normalize path: remove trailing slash, ensure starts with /
     path = path.replace(/\/$/, '').replace(/^\/?/, '/');
+
+    const cacheKey = `perm:allow:${user.userId}:${method}:${path}`;
+    const cached = await this.redis.get(cacheKey);
+    if (cached === '1') return true;
+    if (cached === '0') throw new ForbiddenException('Permission denied');
+
+    
+    const userRoles = await this.prisma.userRole.findMany({
+      where: { userId: user.userId },
+      include: { role: true },
+    });
+    if (userRoles.some(r => r.role.name === ROLES.ADMIN)) {
+      await this.redis.set(cacheKey, '1', PERM_CACHE_TTL);
+      return true;
+    }
 
     const perm = await this.prisma.permission.findUnique({
       where: { path_method: { path, method } },
@@ -70,16 +69,18 @@ export class PermissionGuard implements CanActivate {
     }
 
     const count = await this.prisma.rolePermission.count({
-      where: { 
-        roleId: { in: userRoles.map(r => r.roleId) }, 
-        permissionId: perm.id 
+      where: {
+        roleId: { in: userRoles.map(r => r.roleId) },
+        permissionId: perm.id,
       },
     });
-    
+
     if (!count) {
+      await this.redis.set(cacheKey, '0', PERM_CACHE_TTL);
       throw new ForbiddenException('Permission denied');
     }
-    
+
+    await this.redis.set(cacheKey, '1', PERM_CACHE_TTL);
     return true;
   }
 }
