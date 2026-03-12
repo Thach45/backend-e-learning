@@ -31,6 +31,7 @@ import { DashboardModule } from "./routes/dashboard/dashboard.module";
 import { InstructorModule } from "./routes/instructor/instructor.module";
 import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
 import { UserThrottlerGuard } from "./shared/guards/throttler.guard";
+import { RealtimeModule } from "./realtime/core/realtime.module";
 
 @Module({
   imports: [
@@ -61,6 +62,7 @@ import { UserThrottlerGuard } from "./shared/guards/throttler.guard";
     DocumentsModule,
     DashboardModule,
     InstructorModule,
+    RealtimeModule,
   ],
   controllers: [AppController],
   providers: [

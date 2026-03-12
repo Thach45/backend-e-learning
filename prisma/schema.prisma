@@ -252,6 +252,7 @@ model Course {
   reviews      Review[]
   wishlists    Wishlist[]
   orderItems   OrderItem[]
+  notifications Notification[]
   learningProgresses LearningProgress[]
   cartItems    CartItem[]
   createdAt    DateTime   @default(now())
@@ -327,6 +328,7 @@ model Lesson {
   supplementaryMaterials SupplementaryMaterial[]
   comments     Comment[]
   learningProgresses LearningProgress[]
+  notifications Notification[]
   createdAt    DateTime     @default(now())
   updatedAt    DateTime?     @updatedAt
   deletedAt    DateTime?
@@ -489,6 +491,7 @@ model Comment {
   parentId   String?  // Thêm field này
   parent     Comment? @relation("CommentReplies", fields: [parentId], references: [id])
   replies    Comment[] @relation("CommentReplies") // Thêm relation
+  notifications Notification[]
   createdAt  DateTime @default(now())
 }
 
@@ -499,6 +502,7 @@ model Order {
   totalAmount Float
   status     OrderStatus @default(PENDING)
   orderItems OrderItem[]
+  notifications Notification[]
   createdAt  DateTime @default(now())
 }
 
