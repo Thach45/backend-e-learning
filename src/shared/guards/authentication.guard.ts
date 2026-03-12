@@ -26,7 +26,7 @@ export class AuthenticationGuard implements CanActivate {
         context.getClass(),
       ]) || {Type: [Type.BEARER], options: authOptions.OR};
     if(authType.Type.includes(Type.PUBLIC)){
-        console.log('public');
+      
         return true;
     }
    

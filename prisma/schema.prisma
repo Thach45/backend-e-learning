@@ -66,6 +66,18 @@ enum ROLES {
   CLIENT
   INSTRUCTOR
 }
+enum NotificationType {
+  SYSTEM           // Thông báo hệ thống chung
+  COURSE_ENROLL    // Đăng ký khóa học thành công
+  NEW_COMMENT      // Có bình luận mới trong bài học
+  NEW_REPLY        // Có trả lời mới cho bình luận
+  ORDER_STATUS     // Cập nhật trạng thái đơn hàng
+  LEARNING_PROGRESS // Hoàn thành bài học/khóa
+}
+enum NotificationStatus {
+  UNREAD
+  READ
+}
 // Core models for authentication and RBAC
 model Role {
   id             String           @id @default(uuid())
@@ -118,6 +130,7 @@ model User {
   documentLikes      UserDocumentLike[]
   documentDownloads  UserDocumentDownload[]
   documentViews      UserDocumentView[]
+  notifications      Notification[]
 }
 
 model Device {
@@ -598,4 +611,29 @@ model UserDocumentView {
   @@index([userId])
   @@index([viewedAt])
   @@index([ipAddress])
+}
+
+model Notification {
+  id          String              @id @default(uuid())
+  user        User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String
+  type        NotificationType
+  title       String
+  message     String
+  data        Json?               // payload thêm: { courseId, lessonId, ... }
+  course      Course?             @relation(fields: [courseId], references: [id])
+  courseId    String?
+  lesson      Lesson?             @relation(fields: [lessonId], references: [id])
+  lessonId    String?
+  order       Order?              @relation(fields: [orderId], references: [id])
+  orderId     String?
+  comment     Comment?            @relation(fields: [commentId], references: [id])
+  commentId   String?
+  status      NotificationStatus  @default(UNREAD)
+  readAt      DateTime?
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+  deletedAt   DateTime?
+  @@index([userId, status])
+  @@index([userId, createdAt])
 }
