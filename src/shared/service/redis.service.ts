@@ -17,6 +17,13 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
     });
     await this.client.connect();
   }
+  
+  // getRedisUrl = (): string => {
+  //   if (!process.env.REDIS_URL) {
+  //     throw new Error('REDIS_URL is required (Redis Cloud connection string)');
+  //   }
+  //   return process.env.REDIS_URL;
+  // }
 
   async onModuleDestroy() {
     if (this.client) {

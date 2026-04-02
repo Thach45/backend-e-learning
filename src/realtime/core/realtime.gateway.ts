@@ -37,11 +37,17 @@ import {
       @ConnectedSocket() client: Socket,
     ) {
       const userId = client.handshake.auth.userId;
-      const event: RealtimeEvent = {
+    const event: RealtimeEvent = {
         ...data,
         userId: userId ?? data.userId,
       };
   
-      await this.dispatcher.dispatch(event);
+    // Emit realtime tới client trước (generic)
+    if (event.userId) {
+      this.server.to(`user:${event.userId}`).emit('event', event);
+    }
+
+    // Sau đó cho dispatcher xử lý các side-effect khác
+    await this.dispatcher.dispatch(event);
     }
   }

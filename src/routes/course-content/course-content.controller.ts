@@ -11,10 +11,14 @@ import {
   UpdateCourseContentBodyDto,
   ReorderCourseContentsBodyDto,
 } from "./course-content.dto";
+import { VideoService } from "./translate-video.service";
+import { Public } from "src/shared/decorator/auth.decorator";
 
 @Controller("api")
 export class CourseContentController {
-  constructor(private readonly courseContentService: CourseContentService) {}
+  constructor(private readonly courseContentService: CourseContentService,
+    private readonly videoService: VideoService,
+  ) {}
 
   // Instructor-only
   @Get("instructor/courses/:courseId/contents")
@@ -78,6 +82,42 @@ export class CourseContentController {
   ) {
     console.log(body);
     return this.courseContentService.reorderCourseContents((params as any).courseId, body as any, user.userId);
+  }
+  @Public()
+  @Post('translate-video')
+  async handleExpertUpload(@Body() body: any) {
+    // 1. Lấy thông tin từ Frontend gửi lên
+    const videoUrl = body.videoUrl; // Link video đã upload (ví dụ S3 URL)
+    
+    // 2. LƯU VÀO DATABASE (tui giả lập cái ID mới tạo ra nhé)
+    const newVideoId = "vid_" + Date.now().toString();
+    console.log(`[DB] Đã lưu video mới vào Database, ID: ${newVideoId}, trạng thái: PROCESSING`);
+
+    // 3. ĐIỂM KÍCH HOẠT NẰM Ở ĐÂY ĐÂY ÔNG ƠI !!!
+    // Gọi VideoService ném việc cho thằng Python
+    await this.videoService.triggerDubbingJob(newVideoId, videoUrl);
+
+    // 4. Trả kết quả về ngay và luôn cho Frontend, không bắt user chờ
+    return {
+      success: true,
+      message: "Video đã lên sàn! Hệ thống AI đang tự động lồng tiếng, vui lòng chờ trong ít phút.",
+      videoId: newVideoId
+    };
+  }
+  // Webhook nhận kết quả xử lý dubbing video từ worker Python
+  @Public()
+  @Post("webhook/video-done")
+  async handleVideoDoneWebhook(
+    @Body()
+    body: {
+      video_id: string;
+      status: string;
+      new_url: string;
+    },
+  ): Promise<{ received: boolean }> {
+    // TODO: cập nhật DB / trạng thái video theo video_id, new_url, status
+    console.log("[WEBHOOK] Video done payload:", body);
+    return { received: true };
   }
 }
 
