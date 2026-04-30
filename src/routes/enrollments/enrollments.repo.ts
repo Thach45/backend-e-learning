@@ -1,4 +1,10 @@
-import { Injectable, BadRequestException, ConflictException, NotFoundException } from "@nestjs/common";
+import {
+  Injectable,
+  BadRequestException,
+  ConflictException,
+  NotFoundException,
+  UnprocessableEntityException,
+} from "@nestjs/common";
 import { PrismaService } from "src/shared/service/prisma.service";
 import { CreateEnrollmentBody, GetEnrollmentsQuery } from "./enrollments.model";
 import { Prisma } from "@prisma/client";
@@ -561,10 +567,16 @@ export class EnrollmentsRepository {
       throw new NotFoundException(`Lesson with ID ${lessonId} not found`);
     }
 
+    const allowedStorageTypes = ["YOUTUBE", "GOOGLE_DRIVE", "CLOUDINARY", "DIRECT_UPLOAD", "OTHER"] as const;
+    if (!allowedStorageTypes.includes(lesson.storageType as (typeof allowedStorageTypes)[number])) {
+      throw new UnprocessableEntityException("Invalid lesson storage type");
+    }
+
     // Determine lesson type
     let type: "VIDEO" | "TEXT" | "QUIZ" | "GAME" = "TEXT";
     if (
       lesson.storageType === "YOUTUBE" ||
+      lesson.storageType === "GOOGLE_DRIVE" ||
       lesson.storageType === "CLOUDINARY" ||
       lesson.storageType === "DIRECT_UPLOAD"
     ) {
