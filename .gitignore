@@ -10,3 +10,4 @@ node_modules
 initialScript
 dist
 test
+scripts/*

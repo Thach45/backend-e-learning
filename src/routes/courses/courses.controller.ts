@@ -7,6 +7,7 @@ import {
   GetCourseParamsDto,
   GetCoursesQueryDto,
   GetCourseResponseDto,
+  GetCourseSummaryResponseDto,
   GetCoursesResponseDto,
   UpdateCourseBodyDto,
 } from "./courses.dto";
@@ -46,7 +47,7 @@ export class CoursesController {
   }
 
   @Post("instructor/courses")
-  @ZodSerializerDto(GetCourseResponseDto)
+  @ZodSerializerDto(GetCourseSummaryResponseDto)
   async createCourse(@Body() body: CreateCourseBodyDto, @ActiveUser() user: any) {
     return this.coursesService.createCourse(body as any, user);
   }
@@ -56,7 +57,7 @@ export class CoursesController {
     return this.coursesService.getCourseById((params as any).id);
   }
   @Put("instructor/courses/:id")
-  @ZodSerializerDto(GetCourseResponseDto)
+  @ZodSerializerDto(GetCourseSummaryResponseDto)
   async updateCourse(
     @Param() params: GetCourseParamsDto,
     @Body() body: UpdateCourseBodyDto,
@@ -66,44 +67,44 @@ export class CoursesController {
   }
 
   @Delete("instructor/courses/:id")
-  @ZodSerializerDto(GetCourseResponseDto)
+  @ZodSerializerDto(GetCourseSummaryResponseDto)
   async deleteCourse(@Param() params: GetCourseParamsDto) {
     return this.coursesService.deleteCourse((params as any).id);
   }
 
   @Post("instructor/courses/:id/request-approval")
-  @ZodSerializerDto(GetCourseResponseDto)
+  @ZodSerializerDto(GetCourseSummaryResponseDto)
   async requestApproval(@Param() params: GetCourseParamsDto, @ActiveUser() user: any) {
     return this.coursesService.requestApproval((params as any).id, user.userId);
   }
 
   @Post("instructor/courses/:id/request-delete")
-  @ZodSerializerDto(GetCourseResponseDto)
+  @ZodSerializerDto(GetCourseSummaryResponseDto)
   async requestDelete(@Param() params: GetCourseParamsDto, @ActiveUser() user: any) {
     return this.coursesService.requestDelete((params as any).id, user.userId);
   }
 
   // Admin-only
   @Post("admin/courses/:id/approve-publish")
-  @ZodSerializerDto(GetCourseResponseDto)
+  @ZodSerializerDto(GetCourseSummaryResponseDto)
   async approvePublish(@Param() params: GetCourseParamsDto, @ActiveUser() user: any) {
     return this.coursesService.approvePublish((params as any).id, user.userId);
   }
 
   @Post("admin/courses/:id/reject-publish")
-  @ZodSerializerDto(GetCourseResponseDto)
+  @ZodSerializerDto(GetCourseSummaryResponseDto)
   async rejectPublish(@Param() params: GetCourseParamsDto, @ActiveUser() user: any) {
     return this.coursesService.rejectPublish((params as any).id, user.userId);
   }
 
   @Post("admin/courses/:id/approve-delete")
-  @ZodSerializerDto(GetCourseResponseDto)
+  @ZodSerializerDto(GetCourseSummaryResponseDto)
   async approveDelete(@Param() params: GetCourseParamsDto, @ActiveUser() user: any) {
     return this.coursesService.approveDelete((params as any).id, user.userId);
   }
 
   @Post("admin/courses/:id/reject-delete")
-  @ZodSerializerDto(GetCourseResponseDto)
+  @ZodSerializerDto(GetCourseSummaryResponseDto)
   async rejectDelete(@Param() params: GetCourseParamsDto, @ActiveUser() user: any) {
     return this.coursesService.rejectDelete((params as any).id, user.userId);
   }

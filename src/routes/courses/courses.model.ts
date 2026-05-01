@@ -177,6 +177,9 @@ export const GetCoursesResponseSchema = z.object({
   totalPages: z.number(),
 }).strict();
 
+// Summary response used by create/update/delete instructor/admin actions
+export const GetCourseSummaryResponseSchema = CourseSchema;
+
 export type Course = z.infer<typeof CourseSchema>;
 export type GetCoursesQuery = z.infer<typeof GetCoursesQuerySchema>;
 export type GetCourseParams = z.infer<typeof GetCourseParamsSchema>;
@@ -184,5 +187,6 @@ export type CreateCourseBody = z.infer<typeof CreateCourseBodySchema>;
 export type UpdateCourseBody = z.infer<typeof UpdateCourseBodySchema>;
 export type GetCourseResponse = z.infer<typeof GetCourseResponseSchema>;
 export type GetCoursesResponse = z.infer<typeof GetCoursesResponseSchema>;
+export type GetCourseSummaryResponse = z.infer<typeof GetCourseSummaryResponseSchema>;
 
 

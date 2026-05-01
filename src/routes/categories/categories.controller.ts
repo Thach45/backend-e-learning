@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Logger, Param, Post, Put } from '@nestjs/common';
 import { ZodSerializerDto } from 'nestjs-zod';
-import { CreateCategoryBodyDto, UpdateCategoryBodyDto, CategoryResponseDto, GetListCategoriesResponseDto } from './categories.dto';
+import { CreateCategoryBodyDto, UpdateCategoryBodyDto, CategoryResponseDto, GetListAdminCategoriesResponseDto, GetListCategoriesResponseDto } from './categories.dto';
 import { CategoriesService } from './categories.service';
 import { ActiveUser } from 'src/shared/decorator/active-user.decorator';
 import { Public } from 'src/shared/decorator/auth.decorator';
@@ -11,7 +11,7 @@ export class CategoriesController {
     constructor(private readonly categoriesService: CategoriesService) {}
     private readonly logger = new Logger(CategoriesController.name);
     @Get("categories")
-    // @ZodSerializerDto(GetListCategoriesResponseDto)
+    @ZodSerializerDto(GetListCategoriesResponseDto)
     @Public()
     async getAllCategories() { 
         this.logger.log('Getting all categories');
@@ -19,11 +19,11 @@ export class CategoriesController {
         return this.categoriesService.getAllCategories()
     }
     @Get("admin/categories")
-    // @ZodSerializerDto(GetListCategoriesResponseDto)
+    @ZodSerializerDto(GetListAdminCategoriesResponseDto)
     @Public()
     async getAllAdminCategories() { 
         this.logger.log('Getting all admin categories');
-        return this.categoriesService.getAllCategories()
+        return this.categoriesService.getAllAdminCategories()
     }
     @Get("/admin/categories/:id")
     @ZodSerializerDto(CategoryResponseDto)

@@ -34,9 +34,39 @@ export type CreateCategoryBody = z.infer<typeof CreateCategoryBodySchema>;
 export type UpdateCategoryBody = z.infer<typeof UpdateCategoryBodySchema>;
 
 // Response Schemas
-export const CategoryResponseSchema = CategorySchema;
+const CategoryBaseResponseSchema = CategorySchema.pick({
+    id: true,
+    name: true,
+    imageUrl: true,
+    parentId: true,
+}).extend({
+    countCourses: z.number(),
+});
 
-export const GetListCategoriesResponseSchema = z.array(CategoryResponseSchema);
+export type CategoryResponse = z.infer<typeof CategoryBaseResponseSchema> & {
+    children: CategoryResponse[];
+};
+
+export const CategoryResponseSchema: z.ZodType<CategoryResponse> =
+    CategoryBaseResponseSchema.extend({
+        children: z.array(z.lazy(() => CategoryResponseSchema)),
+    });
+
+export const AdminCategoryResponseSchema = CategoryBaseResponseSchema;
+
+export const GetListCategoriesResponseSchema = z.object({
+    data: z.array(CategoryResponseSchema),
+    total: z.number(),
+    page: z.number(),
+    limit: z.number(),
+});
+
+export const GetListAdminCategoriesResponseSchema = z.object({
+    data: z.array(AdminCategoryResponseSchema),
+    total: z.number(),
+    page: z.number(),
+    limit: z.number(),
+});
 
 export const DeleteCategoryResponseSchema = z.object({
     success: z.boolean(),
