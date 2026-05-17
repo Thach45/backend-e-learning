@@ -34,6 +34,9 @@ export class SepayPaymentProvider implements PaymentProvider {
     if (!sepayAccountNumber || !sepayApiToken) {
       throw new BadRequestException('SePay configuration is missing');
     }
+    if(order.totalAmount === 0){
+        return { paid: true, meta: {} };
+    }
 
     const url = `https://my.sepay.vn/userapi/transactions/list?account_number=${sepayAccountNumber}&limit=20`;
 
