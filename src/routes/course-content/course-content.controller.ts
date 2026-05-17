@@ -11,14 +11,19 @@ import {
   UpdateCourseContentBodyDto,
   ReorderCourseContentsBodyDto,
 } from "./course-content.dto";
-import { VideoService } from "./translate-video.service";
 import { Public } from "src/shared/decorator/auth.decorator";
+import { PrismaService } from "src/shared/service/prisma.service";
+
+
 
 @Controller("api")
 export class CourseContentController {
-  constructor(private readonly courseContentService: CourseContentService,
-    private readonly videoService: VideoService,
+  constructor(
+    private readonly courseContentService: CourseContentService,
+    private readonly prisma: PrismaService,
   ) {}
+
+
 
   // Instructor-only
   @Get("instructor/courses/:courseId/contents")
@@ -83,27 +88,7 @@ export class CourseContentController {
     console.log(body);
     return this.courseContentService.reorderCourseContents((params as any).courseId, body as any, user.userId);
   }
-  @Public()
-  @Post('translate-video')
-  async handleExpertUpload(@Body() body: any) {
-    // 1. Lấy thông tin từ Frontend gửi lên
-    const videoUrl = body.videoUrl; // Link video đã upload (ví dụ S3 URL)
-    
-    // 2. LƯU VÀO DATABASE (tui giả lập cái ID mới tạo ra nhé)
-    const newVideoId = "vid_" + Date.now().toString();
-    console.log(`[DB] Đã lưu video mới vào Database, ID: ${newVideoId}, trạng thái: PROCESSING`);
 
-    // 3. ĐIỂM KÍCH HOẠT NẰM Ở ĐÂY ĐÂY ÔNG ƠI !!!
-    // Gọi VideoService ném việc cho thằng Python
-    await this.videoService.triggerDubbingJob(newVideoId, videoUrl);
-
-    // 4. Trả kết quả về ngay và luôn cho Frontend, không bắt user chờ
-    return {
-      success: true,
-      message: "Video đã lên sàn! Hệ thống AI đang tự động lồng tiếng, vui lòng chờ trong ít phút.",
-      videoId: newVideoId
-    };
-  }
   // Webhook nhận kết quả xử lý dubbing video từ worker Python
   @Public()
   @Post("webhook/video-done")
@@ -115,9 +100,33 @@ export class CourseContentController {
       new_url: string;
     },
   ): Promise<{ received: boolean }> {
-    // TODO: cập nhật DB / trạng thái video theo video_id, new_url, status
     console.log("[WEBHOOK] Video done payload:", body);
+
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (uuidRegex.test(body.video_id)) {
+      try {
+        if (body.status === "SUCCESS" && body.new_url) {
+          await this.prisma.lesson.update({
+            where: { id: body.video_id },
+            data: {
+              storageUrl: body.new_url,
+              storageType: "CLOUDFLARE_R2" as any,
+              isActive: true,
+            },
+          });
+          console.log(`[WEBHOOK] Successfully updated Lesson ${body.video_id} with HLS R2 URL: ${body.new_url}`);
+        } else {
+          console.warn(`[WEBHOOK] Task failed or missing URL for Lesson ${body.video_id}`);
+        }
+      } catch (error) {
+        console.error(`[WEBHOOK] Failed to update database for Lesson ${body.video_id}:`, error.message);
+      }
+    } else {
+      console.log(`[WEBHOOK] Received mock or non-UUID video_id: ${body.video_id}`);
+    }
+
     return { received: true };
   }
+
 }
 

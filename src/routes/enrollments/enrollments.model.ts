@@ -100,7 +100,7 @@ export const LessonDetailSchema = z.object({
   id: z.string().uuid(),
   title: z.string(),
   type: z.enum(['VIDEO', 'TEXT', 'QUIZ', 'GAME']),
-  storageType: z.enum(['YOUTUBE', 'GOOGLE_DRIVE', 'CLOUDINARY', 'DIRECT_UPLOAD', 'OTHER']),
+  storageType: z.enum(['YOUTUBE', 'GOOGLE_DRIVE', 'CLOUDINARY', 'DIRECT_UPLOAD', 'OTHER', 'CLOUDFLARE_R2']),
   storageUrl: z.string().nullable().optional(),
   contentText: z.string().nullable().optional(),
   duration: z.number().nullable().optional(),

@@ -1,10 +1,22 @@
-import { Controller, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Controller, Post, Get, Query, UploadedFile, UseInterceptors, Body, BadRequestException } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CloudinaryService } from 'src/shared/service/cloudinary.service';
+import { R2Service } from 'src/shared/service/r2.service';
+import * as celery from 'celery-node';
 
 @Controller('api/upload')
+
 export class UploadController {
-  constructor(private readonly cloudinaryService: CloudinaryService) {}
+  private celeryClient: any;
+
+  constructor(
+    private readonly cloudinaryService: CloudinaryService,
+    private readonly r2Service: R2Service,
+  ) {
+    const redisUrl = process.env.REDIS_URL ?? '';
+    const redisUrlDb0 = redisUrl.replace(/\/\d+$/, '') + '/0';
+    this.celeryClient = celery.createClient(redisUrlDb0, redisUrlDb0);
+  }
 
   @Post('image')
   @UseInterceptors(FileInterceptor('file'))
@@ -31,42 +43,51 @@ export class UploadController {
     };
   }
 
-  @Post('video')
-  @UseInterceptors(FileInterceptor('file'))
-  async uploadVideo(@UploadedFile() file: Express.Multer.File) {
-    if (!file) {
-      throw new Error('No file uploaded');
+
+  @Get('r2-presigned-url')
+  async getR2PresignedUrl(
+    @Query('fileName') fileName: string,
+    @Query('contentType') contentType: string,
+  ) {
+    if (!fileName || !contentType) {
+      throw new BadRequestException('fileName and contentType query parameters are required.');
     }
 
-    // Validate video file type
-    const allowedMimeTypes = ['video/mp4', 'video/mov', 'video/avi', 'video/wmv', 'video/flv', 'video/webm'];
-    if (!allowedMimeTypes.includes(file.mimetype)) {
-      throw new Error('Invalid video file type. Allowed types: mp4, mov, avi, wmv, flv, webm');
-    }
-
-    const result = await this.cloudinaryService.uploadVideo(
-      {
-        fieldname: file.fieldname,
-        originalname: file.originalname,
-        encoding: file.encoding,
-        mimetype: file.mimetype,
-        size: file.size,
-        buffer: file.buffer,
-      },
-      'lessons',
-    );
+    console.log(`[R2] Requesting presigned upload URL for: ${fileName} (${contentType})`);
+    const result = await this.r2Service.getPresignedUploadUrl(fileName, contentType, 'raw-videos');
 
     return {
-      url: result.secure_url,
-      publicId: result.public_id,
-      duration: result.duration, // Duration in seconds
-      format: result.format,
-      width: result.width,
-      height: result.height,
+      success: true,
+      ...result,
     };
   }
 
+  @Post('r2-process-video')
+  async processDirectUploadedVideo(
+    @Body('lessonId') lessonId: string,
+    @Body('videoUrl') videoUrl: string,
+    @Body('isTranslate') isTranslate?: boolean,
+  ) {
+    if (!lessonId || !videoUrl) {
+      throw new BadRequestException('lessonId and videoUrl are required in request body.');
+    }
+
+    console.log(`[Celery] Dispatching dubbing & HLS job for direct uploaded video ${lessonId} at url: ${videoUrl} (isTranslate: ${!!isTranslate})...`);
+    const task = this.celeryClient.createTask('worker.process_dubbing_video');
+    task.delay(lessonId, videoUrl, !!isTranslate);
+
+    return {
+      success: true,
+      message: 'AI HLS video transcoding background task successfully registered!',
+      videoId: lessonId,
+      videoUrl,
+      isTranslate: !!isTranslate,
+    };
+  }
+
+
   @Post('file')
+
   @UseInterceptors(FileInterceptor('file'))
   async uploadFile(@UploadedFile() file: Express.Multer.File) {
     if (!file) {

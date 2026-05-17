@@ -487,13 +487,16 @@ export class EnrollmentsRepository {
       const lessons = section.lessons.map((lesson) => {
         // Determine lesson type based on storageType
         let type: "VIDEO" | "TEXT" | "QUIZ" | "GAME" = "TEXT";
+        const storageType = lesson.storageType as string;
         if (
-          lesson.storageType === "YOUTUBE" ||
-          lesson.storageType === "CLOUDINARY" ||
-          lesson.storageType === "DIRECT_UPLOAD"
+          storageType === "YOUTUBE" ||
+          storageType === "CLOUDINARY" ||
+          storageType === "DIRECT_UPLOAD" ||
+          storageType === "CLOUDFLARE_R2"
         ) {
           type = "VIDEO";
         }
+
 
         return {
           id: lesson.id,
@@ -567,21 +570,24 @@ export class EnrollmentsRepository {
       throw new NotFoundException(`Lesson with ID ${lessonId} not found`);
     }
 
-    const allowedStorageTypes = ["YOUTUBE", "GOOGLE_DRIVE", "CLOUDINARY", "DIRECT_UPLOAD", "OTHER"] as const;
+    const allowedStorageTypes = ["YOUTUBE", "GOOGLE_DRIVE", "CLOUDINARY", "DIRECT_UPLOAD", "CLOUDFLARE_R2", "OTHER"] as const;
     if (!allowedStorageTypes.includes(lesson.storageType as (typeof allowedStorageTypes)[number])) {
       throw new UnprocessableEntityException("Invalid lesson storage type");
     }
 
     // Determine lesson type
     let type: "VIDEO" | "TEXT" | "QUIZ" | "GAME" = "TEXT";
+    const storageType = lesson.storageType as string;
     if (
-      lesson.storageType === "YOUTUBE" ||
-      lesson.storageType === "GOOGLE_DRIVE" ||
-      lesson.storageType === "CLOUDINARY" ||
-      lesson.storageType === "DIRECT_UPLOAD"
+      storageType === "YOUTUBE" ||
+      storageType === "GOOGLE_DRIVE" ||
+      storageType === "CLOUDINARY" ||
+      storageType === "DIRECT_UPLOAD" ||
+      storageType === "CLOUDFLARE_R2"
     ) {
       type = "VIDEO";
     }
+
 
     // Get supplementary materials as resources (for this lesson)
     const resources = await this.prisma.supplementaryMaterial.findMany({

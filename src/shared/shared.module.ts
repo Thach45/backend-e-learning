@@ -11,6 +11,7 @@ import { SendEmailService } from './service/send-email.service';
 import { PermissionGuard } from './guards/permission.guard';
 import { RedisService } from './service/redis.service';
 import { AppLogger } from './service/logging.service';
+import { R2Service } from './service/r2.service';
 
 const sharedServices = [
     PrismaService,
@@ -23,7 +24,8 @@ const sharedServices = [
     SendEmailService,
     PermissionGuard,
     AppLogger,
-    RedisService
+    RedisService,
+    R2Service
 ];
 @Global()
 @Module({

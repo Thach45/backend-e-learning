@@ -1,4 +1,8 @@
-import { Injectable, BadRequestException, NotFoundException } from "@nestjs/common";
+import {
+  Injectable,
+  BadRequestException,
+  NotFoundException,
+} from "@nestjs/common";
 import { PrismaService } from "src/shared/service/prisma.service";
 import { Prisma, StorageType } from "@prisma/client";
 import { CreateLessonBody, UpdateLessonBody } from "./lessons.model";
@@ -53,7 +57,10 @@ export class LessonsRepository {
    * Normalize storageUrl based on storageType
    * For YouTube: extract video ID and return it
    */
-  private normalizeStorageUrl(storageType: StorageType, storageUrl?: string | null): string | null {
+  private normalizeStorageUrl(
+    storageType: StorageType,
+    storageUrl?: string | null,
+  ): string | null {
     if (!storageUrl) return null;
 
     if (storageType === "YOUTUBE") {
@@ -77,7 +84,9 @@ export class LessonsRepository {
       throw new NotFoundException(`Course with ID ${courseId} not found`);
     }
     if (course.instructorId !== instructorId) {
-      throw new BadRequestException("You can only view lessons for your own courses");
+      throw new BadRequestException(
+        "You can only view lessons for your own courses",
+      );
     }
 
     // Validate content exists and belongs to course
@@ -86,7 +95,9 @@ export class LessonsRepository {
       select: { id: true },
     });
     if (!content) {
-      throw new NotFoundException(`Course content with ID ${contentId} not found`);
+      throw new NotFoundException(
+        `Course content with ID ${contentId} not found`,
+      );
     }
 
     const lessons = await this.prisma.lesson.findMany({
@@ -98,7 +109,12 @@ export class LessonsRepository {
     return lessons;
   }
 
-  async getLessonById(id: string, courseId: string, contentId: string, instructorId: string) {
+  async getLessonById(
+    id: string,
+    courseId: string,
+    contentId: string,
+    instructorId: string,
+  ) {
     // Validate course exists and belongs to instructor
     const course = await this.prisma.course.findFirst({
       where: { id: courseId, deletedAt: null },
@@ -108,7 +124,9 @@ export class LessonsRepository {
       throw new NotFoundException(`Course with ID ${courseId} not found`);
     }
     if (course.instructorId !== instructorId) {
-      throw new BadRequestException("You can only view lessons for your own courses");
+      throw new BadRequestException(
+        "You can only view lessons for your own courses",
+      );
     }
 
     // Validate content exists and belongs to course
@@ -117,7 +135,9 @@ export class LessonsRepository {
       select: { id: true },
     });
     if (!content) {
-      throw new NotFoundException(`Course content with ID ${contentId} not found`);
+      throw new NotFoundException(
+        `Course content with ID ${contentId} not found`,
+      );
     }
 
     const lesson = await this.prisma.lesson.findFirst({
@@ -134,16 +154,24 @@ export class LessonsRepository {
     // Validate course exists and belongs to instructor
     const content = await this.prisma.courseContent.findFirst({
       where: { id: body.contentId },
-      select: { id: true, courseId: true, course: { select: { id: true, instructorId: true, deletedAt: true } } },
+      select: {
+        id: true,
+        courseId: true,
+        course: { select: { id: true, instructorId: true, deletedAt: true } },
+      },
     });
     if (!content) {
-      throw new NotFoundException(`Course content with ID ${body.contentId} not found`);
+      throw new NotFoundException(
+        `Course content with ID ${body.contentId} not found`,
+      );
     }
     if (!content.course || content.course.deletedAt) {
       throw new NotFoundException(`Course not found`);
     }
     if (content.course.instructorId !== instructorId) {
-      throw new BadRequestException("You can only create lessons for your own courses");
+      throw new BadRequestException(
+        "You can only create lessons for your own courses",
+      );
     }
 
     // Normalize storageUrl based on storageType
@@ -163,8 +191,10 @@ export class LessonsRepository {
       },
       select: lessonSelect,
     });
+
     return created;
   }
+
 
   async updateLesson(
     id: string,
@@ -182,7 +212,9 @@ export class LessonsRepository {
       throw new NotFoundException(`Course with ID ${courseId} not found`);
     }
     if (course.instructorId !== instructorId) {
-      throw new BadRequestException("You can only update lessons for your own courses");
+      throw new BadRequestException(
+        "You can only update lessons for your own courses",
+      );
     }
 
     // Validate content exists and belongs to course
@@ -191,7 +223,9 @@ export class LessonsRepository {
       select: { id: true },
     });
     if (!content) {
-      throw new NotFoundException(`Course content with ID ${contentId} not found`);
+      throw new NotFoundException(
+        `Course content with ID ${contentId} not found`,
+      );
     }
 
     const existing = await this.prisma.lesson.findFirst({
@@ -203,12 +237,17 @@ export class LessonsRepository {
     }
 
     // Determine storageType (use existing if not provided)
-    const storageType = (body.storageType ?? existing.storageType) as StorageType;
+    const storageType = (body.storageType ??
+      existing.storageType) as StorageType;
 
     // Normalize storageUrl if provided and storageType is YOUTUBE
-    let normalizedStorageUrl: string | null | undefined = body.storageUrl ?? undefined;
+    let normalizedStorageUrl: string | null | undefined =
+      body.storageUrl ?? undefined;
     if (body.storageUrl !== undefined && storageType === "YOUTUBE") {
-      normalizedStorageUrl = this.normalizeStorageUrl(storageType, body.storageUrl);
+      normalizedStorageUrl = this.normalizeStorageUrl(
+        storageType,
+        body.storageUrl,
+      );
     } else if (body.storageUrl === null) {
       normalizedStorageUrl = null;
     }
@@ -217,17 +256,26 @@ export class LessonsRepository {
       where: { id },
       data: {
         title: body.title ?? undefined,
-        storageType: body.storageType ? (body.storageType as StorageType) : undefined,
+        storageType: body.storageType
+          ? (body.storageType as StorageType)
+          : undefined,
         storageUrl: normalizedStorageUrl,
         contentText: body.contentText ?? undefined,
         duration: body.duration ?? undefined,
       },
       select: lessonSelect,
     });
+
     return updated;
   }
 
-  async deleteLesson(id: string, courseId: string, contentId: string, instructorId: string) {
+
+  async deleteLesson(
+    id: string,
+    courseId: string,
+    contentId: string,
+    instructorId: string,
+  ) {
     // Validate course exists and belongs to instructor
     const course = await this.prisma.course.findFirst({
       where: { id: courseId, deletedAt: null },
@@ -237,7 +285,9 @@ export class LessonsRepository {
       throw new NotFoundException(`Course with ID ${courseId} not found`);
     }
     if (course.instructorId !== instructorId) {
-      throw new BadRequestException("You can only delete lessons for your own courses");
+      throw new BadRequestException(
+        "You can only delete lessons for your own courses",
+      );
     }
 
     // Validate content exists and belongs to course
@@ -246,7 +296,9 @@ export class LessonsRepository {
       select: { id: true },
     });
     if (!content) {
-      throw new NotFoundException(`Course content with ID ${contentId} not found`);
+      throw new NotFoundException(
+        `Course content with ID ${contentId} not found`,
+      );
     }
 
     const existing = await this.prisma.lesson.findFirst({
@@ -263,4 +315,3 @@ export class LessonsRepository {
     return { success: true };
   }
 }
-
