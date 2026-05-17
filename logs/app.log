@@ -31693,3 +31693,1239 @@ Please make sure your database server is running at `ep-lucky-waterfall-adzaqyfa
 [2026-05-17T08:08:14.085Z] [LOG][RouterExplorer] Mapped {/api/instructor/revenue/chart, GET} route
 [2026-05-17T08:08:14.085Z] [LOG][RouterExplorer] Mapped {/api/instructor/students, GET} route
 [2026-05-17T08:08:19.960Z] [LOG][NestApplication] Nest application successfully started
+[2026-05-17T08:35:50.994Z] [LOG][WebSocketsController] RealtimeGateway subscribed to the "event" message
+[2026-05-17T08:35:50.995Z] [LOG][RoutesResolver] AppController {/}:
+[2026-05-17T08:35:50.996Z] [LOG][RouterExplorer] Mapped {/, GET} route
+[2026-05-17T08:35:50.996Z] [LOG][RoutesResolver] AuthController {/api/auth}:
+[2026-05-17T08:35:50.996Z] [LOG][RouterExplorer] Mapped {/api/auth/register, POST} route
+[2026-05-17T08:35:50.996Z] [LOG][RouterExplorer] Mapped {/api/auth/send-otp, POST} route
+[2026-05-17T08:35:50.996Z] [LOG][RouterExplorer] Mapped {/api/auth/login, POST} route
+[2026-05-17T08:35:50.997Z] [LOG][RouterExplorer] Mapped {/api/auth/refresh-token, POST} route
+[2026-05-17T08:35:50.997Z] [LOG][RouterExplorer] Mapped {/api/auth/forgot-password, POST} route
+[2026-05-17T08:35:50.997Z] [LOG][RouterExplorer] Mapped {/api/auth/logout, POST} route
+[2026-05-17T08:35:50.997Z] [LOG][RouterExplorer] Mapped {/api/auth/google-link, GET} route
+[2026-05-17T08:35:50.997Z] [LOG][RouterExplorer] Mapped {/api/auth/google/callback, GET} route
+[2026-05-17T08:35:50.997Z] [LOG][RouterExplorer] Mapped {/api/auth/me, GET} route
+[2026-05-17T08:35:50.997Z] [LOG][RoutesResolver] PermissionController {/api/permissions}:
+[2026-05-17T08:35:50.997Z] [LOG][RouterExplorer] Mapped {/api/permissions, GET} route
+[2026-05-17T08:35:50.998Z] [LOG][RouterExplorer] Mapped {/api/permissions/:id, GET} route
+[2026-05-17T08:35:50.998Z] [LOG][RouterExplorer] Mapped {/api/permissions, POST} route
+[2026-05-17T08:35:50.998Z] [LOG][RouterExplorer] Mapped {/api/permissions/:id, PUT} route
+[2026-05-17T08:35:50.998Z] [LOG][RouterExplorer] Mapped {/api/permissions/:id, DELETE} route
+[2026-05-17T08:35:50.998Z] [LOG][RoutesResolver] CategoriesController {/api}:
+[2026-05-17T08:35:50.998Z] [LOG][RouterExplorer] Mapped {/api/categories, GET} route
+[2026-05-17T08:35:50.998Z] [LOG][RouterExplorer] Mapped {/api/admin/categories, GET} route
+[2026-05-17T08:35:50.998Z] [LOG][RouterExplorer] Mapped {/api/admin/categories/:id, GET} route
+[2026-05-17T08:35:50.998Z] [LOG][RouterExplorer] Mapped {/api/admin/categories, POST} route
+[2026-05-17T08:35:50.998Z] [LOG][RouterExplorer] Mapped {/api/admin/categories/:id, PUT} route
+[2026-05-17T08:35:50.998Z] [LOG][RoutesResolver] RolesController {/api/roles}:
+[2026-05-17T08:35:50.998Z] [LOG][RouterExplorer] Mapped {/api/roles, GET} route
+[2026-05-17T08:35:50.999Z] [LOG][RouterExplorer] Mapped {/api/roles/:id, GET} route
+[2026-05-17T08:35:50.999Z] [LOG][RouterExplorer] Mapped {/api/roles, POST} route
+[2026-05-17T08:35:50.999Z] [LOG][RouterExplorer] Mapped {/api/roles/:id, PATCH} route
+[2026-05-17T08:35:50.999Z] [LOG][RouterExplorer] Mapped {/api/roles/:id, DELETE} route
+[2026-05-17T08:35:50.999Z] [LOG][RouterExplorer] Mapped {/api/roles/:id/permissions/assign, POST} route
+[2026-05-17T08:35:50.999Z] [LOG][RouterExplorer] Mapped {/api/roles/:id/permissions/unassign, POST} route
+[2026-05-17T08:35:50.999Z] [LOG][RoutesResolver] UsersController {/api}:
+[2026-05-17T08:35:50.999Z] [LOG][RouterExplorer] Mapped {/api/admin/users, GET} route
+[2026-05-17T08:35:50.999Z] [LOG][RouterExplorer] Mapped {/api/admin/users/:id, GET} route
+[2026-05-17T08:35:50.999Z] [LOG][RouterExplorer] Mapped {/api/admin/users, POST} route
+[2026-05-17T08:35:50.999Z] [LOG][RouterExplorer] Mapped {/api/admin/users/:id, PUT} route
+[2026-05-17T08:35:50.999Z] [LOG][RouterExplorer] Mapped {/api/admin/users/:id, DELETE} route
+[2026-05-17T08:35:50.999Z] [LOG][RouterExplorer] Mapped {/api/admin/users/:id/status, PUT} route
+[2026-05-17T08:35:50.999Z] [LOG][RoutesResolver] CoursesController {/api}:
+[2026-05-17T08:35:51.000Z] [LOG][RouterExplorer] Mapped {/api/courses, GET} route
+[2026-05-17T08:35:51.000Z] [LOG][RouterExplorer] Mapped {/api/courses/:id, GET} route
+[2026-05-17T08:35:51.000Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses, GET} route
+[2026-05-17T08:35:51.000Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses, POST} route
+[2026-05-17T08:35:51.000Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:id, GET} route
+[2026-05-17T08:35:51.000Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:id, PUT} route
+[2026-05-17T08:35:51.000Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:id, DELETE} route
+[2026-05-17T08:35:51.000Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:id/request-approval, POST} route
+[2026-05-17T08:35:51.000Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:id/request-delete, POST} route
+[2026-05-17T08:35:51.000Z] [LOG][RouterExplorer] Mapped {/api/admin/courses/:id/approve-publish, POST} route
+[2026-05-17T08:35:51.000Z] [LOG][RouterExplorer] Mapped {/api/admin/courses/:id/reject-publish, POST} route
+[2026-05-17T08:35:51.000Z] [LOG][RouterExplorer] Mapped {/api/admin/courses/:id/approve-delete, POST} route
+[2026-05-17T08:35:51.000Z] [LOG][RouterExplorer] Mapped {/api/admin/courses/:id/reject-delete, POST} route
+[2026-05-17T08:35:51.000Z] [LOG][RouterExplorer] Mapped {/api/admin/courses, GET} route
+[2026-05-17T08:35:51.000Z] [LOG][RouterExplorer] Mapped {/api/admin/courses/:id, GET} route
+[2026-05-17T08:35:51.000Z] [LOG][RoutesResolver] CourseDetailController {/api}:
+[2026-05-17T08:35:51.001Z] [LOG][RouterExplorer] Mapped {/api/courses/:courseId/detail, GET} route
+[2026-05-17T08:35:51.001Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/detail, GET} route
+[2026-05-17T08:35:51.001Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/detail, POST} route
+[2026-05-17T08:35:51.001Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/detail, PUT} route
+[2026-05-17T08:35:51.001Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/detail, DELETE} route
+[2026-05-17T08:35:51.001Z] [LOG][RoutesResolver] CourseContentController {/api}:
+[2026-05-17T08:35:51.001Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/contents, GET} route
+[2026-05-17T08:35:51.001Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/contents/:id, GET} route
+[2026-05-17T08:35:51.001Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/contents, POST} route
+[2026-05-17T08:35:51.001Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/contents/:id, PUT} route
+[2026-05-17T08:35:51.001Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/contents/:id, DELETE} route
+[2026-05-17T08:35:51.001Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/contents/reorder, PUT} route
+[2026-05-17T08:35:51.001Z] [LOG][RouterExplorer] Mapped {/api/webhook/video-done, POST} route
+[2026-05-17T08:35:51.001Z] [LOG][RoutesResolver] LessonsController {/api}:
+[2026-05-17T08:35:51.001Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/contents/:contentId/lessons, GET} route
+[2026-05-17T08:35:51.001Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/contents/:contentId/lessons/:id, GET} route
+[2026-05-17T08:35:51.001Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/contents/:contentId/lessons, POST} route
+[2026-05-17T08:35:51.002Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/contents/:contentId/lessons/:id, PUT} route
+[2026-05-17T08:35:51.002Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/contents/:contentId/lessons/:id, DELETE} route
+[2026-05-17T08:35:51.002Z] [LOG][RoutesResolver] EnrollmentsController {/api}:
+[2026-05-17T08:35:51.002Z] [LOG][RouterExplorer] Mapped {/api/courses/:courseId/enroll, POST} route
+[2026-05-17T08:35:51.002Z] [LOG][RouterExplorer] Mapped {/api/my-enrollments, GET} route
+[2026-05-17T08:35:51.002Z] [LOG][RouterExplorer] Mapped {/api/my-enrollments/stats, GET} route
+[2026-05-17T08:35:51.002Z] [LOG][RouterExplorer] Mapped {/api/my-enrollments/:courseId, GET} route
+[2026-05-17T08:35:51.002Z] [LOG][RouterExplorer] Mapped {/api/my-enrollments/:courseId/complete, PUT} route
+[2026-05-17T08:35:51.002Z] [LOG][RouterExplorer] Mapped {/api/my-enrollments/:courseId/contents, GET} route
+[2026-05-17T08:35:51.002Z] [LOG][RouterExplorer] Mapped {/api/my-enrollments/:courseId/lessons/:lessonId, GET} route
+[2026-05-17T08:35:51.002Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/enrollments, GET} route
+[2026-05-17T08:35:51.002Z] [LOG][RouterExplorer] Mapped {/api/instructor/students, GET} route
+[2026-05-17T08:35:51.002Z] [LOG][RouterExplorer] Mapped {/api/instructor/enrollments/:enrollmentId, DELETE} route
+[2026-05-17T08:35:51.002Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/enrollments, POST} route
+[2026-05-17T08:35:51.002Z] [LOG][RouterExplorer] Mapped {/api/admin/enrollments, GET} route
+[2026-05-17T08:35:51.003Z] [LOG][RouterExplorer] Mapped {/api/admin/courses/:courseId/enrollments, GET} route
+[2026-05-17T08:35:51.003Z] [LOG][RoutesResolver] ReviewsController {/api}:
+[2026-05-17T08:35:51.003Z] [LOG][RouterExplorer] Mapped {/api/courses/:courseId/reviews, POST} route
+[2026-05-17T08:35:51.003Z] [LOG][RouterExplorer] Mapped {/api/courses/:courseId/reviews, GET} route
+[2026-05-17T08:35:51.003Z] [LOG][RouterExplorer] Mapped {/api/my-reviews/:courseId, GET} route
+[2026-05-17T08:35:51.003Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/reviews, GET} route
+[2026-05-17T08:35:51.003Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/reviews/:reviewId, PUT} route
+[2026-05-17T08:35:51.003Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/reviews/:reviewId, DELETE} route
+[2026-05-17T08:35:51.004Z] [LOG][RouterExplorer] Mapped {/api/admin/reviews, GET} route
+[2026-05-17T08:35:51.004Z] [LOG][RouterExplorer] Mapped {/api/admin/courses/:courseId/reviews, GET} route
+[2026-05-17T08:35:51.004Z] [LOG][RouterExplorer] Mapped {/api/admin/courses/:courseId/reviews/:reviewId, PUT} route
+[2026-05-17T08:35:51.004Z] [LOG][RouterExplorer] Mapped {/api/admin/courses/:courseId/reviews/:reviewId, DELETE} route
+[2026-05-17T08:35:51.004Z] [LOG][RoutesResolver] WishlistController {/api}:
+[2026-05-17T08:35:51.004Z] [LOG][RouterExplorer] Mapped {/api/courses/:courseId/wishlist, POST} route
+[2026-05-17T08:35:51.004Z] [LOG][RouterExplorer] Mapped {/api/courses/:courseId/wishlist, DELETE} route
+[2026-05-17T08:35:51.004Z] [LOG][RouterExplorer] Mapped {/api/my-wishlist, GET} route
+[2026-05-17T08:35:51.004Z] [LOG][RouterExplorer] Mapped {/api/courses/:courseId/wishlist, GET} route
+[2026-05-17T08:35:51.004Z] [LOG][RoutesResolver] UploadController {/api/upload}:
+[2026-05-17T08:35:51.004Z] [LOG][RouterExplorer] Mapped {/api/upload/image, POST} route
+[2026-05-17T08:35:51.004Z] [LOG][RouterExplorer] Mapped {/api/upload/r2-presigned-url, GET} route
+[2026-05-17T08:35:51.004Z] [LOG][RouterExplorer] Mapped {/api/upload/r2-process-video, POST} route
+[2026-05-17T08:35:51.004Z] [LOG][RouterExplorer] Mapped {/api/upload/file, POST} route
+[2026-05-17T08:35:51.004Z] [LOG][RoutesResolver] CartController {/api/cart}:
+[2026-05-17T08:35:51.004Z] [LOG][RouterExplorer] Mapped {/api/cart, GET} route
+[2026-05-17T08:35:51.004Z] [LOG][RouterExplorer] Mapped {/api/cart/items, POST} route
+[2026-05-17T08:35:51.004Z] [LOG][RouterExplorer] Mapped {/api/cart/items/:courseId, DELETE} route
+[2026-05-17T08:35:51.005Z] [LOG][RouterExplorer] Mapped {/api/cart, DELETE} route
+[2026-05-17T08:35:51.005Z] [LOG][RoutesResolver] OrdersController {/api}:
+[2026-05-17T08:35:51.005Z] [LOG][RouterExplorer] Mapped {/api/orders, POST} route
+[2026-05-17T08:35:51.005Z] [LOG][RouterExplorer] Mapped {/api/my-orders, GET} route
+[2026-05-17T08:35:51.005Z] [LOG][RouterExplorer] Mapped {/api/my-orders/:orderId, GET} route
+[2026-05-17T08:35:51.005Z] [LOG][RouterExplorer] Mapped {/api/orders/:orderId/qr-code, GET} route
+[2026-05-17T08:35:51.005Z] [LOG][RouterExplorer] Mapped {/api/orders/:orderId/check-payment, POST} route
+[2026-05-17T08:35:51.005Z] [LOG][RouterExplorer] Mapped {/api/admin/orders, GET} route
+[2026-05-17T08:35:51.005Z] [LOG][RouterExplorer] Mapped {/api/admin/orders/:orderId, GET} route
+[2026-05-17T08:35:51.005Z] [LOG][RouterExplorer] Mapped {/api/admin/orders/:orderId/status, PUT} route
+[2026-05-17T08:35:51.005Z] [LOG][RoutesResolver] CommentsController {/api}:
+[2026-05-17T08:35:51.005Z] [LOG][RouterExplorer] Mapped {/api/lessons/:lessonId/comments, POST} route
+[2026-05-17T08:35:51.005Z] [LOG][RouterExplorer] Mapped {/api/lessons/:lessonId/comments, GET} route
+[2026-05-17T08:35:51.005Z] [LOG][RouterExplorer] Mapped {/api/lessons/:lessonId/comments/:commentId, GET} route
+[2026-05-17T08:35:51.005Z] [LOG][RouterExplorer] Mapped {/api/lessons/:lessonId/comments/:commentId, PUT} route
+[2026-05-17T08:35:51.005Z] [LOG][RouterExplorer] Mapped {/api/lessons/:lessonId/comments/:commentId, DELETE} route
+[2026-05-17T08:35:51.005Z] [LOG][RouterExplorer] Mapped {/api/admin/comments, GET} route
+[2026-05-17T08:35:51.006Z] [LOG][RouterExplorer] Mapped {/api/admin/lessons/:lessonId/comments/:commentId, PUT} route
+[2026-05-17T08:35:51.006Z] [LOG][RouterExplorer] Mapped {/api/admin/lessons/:lessonId/comments/:commentId, DELETE} route
+[2026-05-17T08:35:51.006Z] [LOG][RoutesResolver] DocumentCategoriesController {/api}:
+[2026-05-17T08:35:51.006Z] [LOG][RouterExplorer] Mapped {/api/document-categories, GET} route
+[2026-05-17T08:35:51.006Z] [LOG][RouterExplorer] Mapped {/api/document-categories/:id, GET} route
+[2026-05-17T08:35:51.006Z] [LOG][RouterExplorer] Mapped {/api/admin/document-categories, POST} route
+[2026-05-17T08:35:51.006Z] [LOG][RouterExplorer] Mapped {/api/admin/document-categories/:id, PUT} route
+[2026-05-17T08:35:51.006Z] [LOG][RouterExplorer] Mapped {/api/admin/document-categories/:id, DELETE} route
+[2026-05-17T08:35:51.006Z] [LOG][RoutesResolver] DocumentTagsController {/api/document-tags}:
+[2026-05-17T08:35:51.006Z] [LOG][RouterExplorer] Mapped {/api/document-tags, GET} route
+[2026-05-17T08:35:51.006Z] [LOG][RouterExplorer] Mapped {/api/document-tags/trending, GET} route
+[2026-05-17T08:35:51.006Z] [LOG][RouterExplorer] Mapped {/api/document-tags/:id, GET} route
+[2026-05-17T08:35:51.006Z] [LOG][RouterExplorer] Mapped {/api/document-tags, POST} route
+[2026-05-17T08:35:51.006Z] [LOG][RouterExplorer] Mapped {/api/document-tags/:id, PUT} route
+[2026-05-17T08:35:51.006Z] [LOG][RouterExplorer] Mapped {/api/document-tags/:id, DELETE} route
+[2026-05-17T08:35:51.006Z] [LOG][RoutesResolver] DocumentsController {/api}:
+[2026-05-17T08:35:51.006Z] [LOG][RouterExplorer] Mapped {/api/documents, GET} route
+[2026-05-17T08:35:51.006Z] [LOG][RouterExplorer] Mapped {/api/documents/trending, GET} route
+[2026-05-17T08:35:51.006Z] [LOG][RouterExplorer] Mapped {/api/documents/top-contributors, GET} route
+[2026-05-17T08:35:51.006Z] [LOG][RouterExplorer] Mapped {/api/documents/:id, GET} route
+[2026-05-17T08:35:51.007Z] [LOG][RouterExplorer] Mapped {/api/documents, POST} route
+[2026-05-17T08:35:51.007Z] [LOG][RouterExplorer] Mapped {/api/documents/:id, PUT} route
+[2026-05-17T08:35:51.007Z] [LOG][RouterExplorer] Mapped {/api/documents/:id, DELETE} route
+[2026-05-17T08:35:51.007Z] [LOG][RouterExplorer] Mapped {/api/documents/:id/like, POST} route
+[2026-05-17T08:35:51.007Z] [LOG][RouterExplorer] Mapped {/api/documents/:id/like, DELETE} route
+[2026-05-17T08:35:51.007Z] [LOG][RouterExplorer] Mapped {/api/documents/:id/download, POST} route
+[2026-05-17T08:35:51.007Z] [LOG][RouterExplorer] Mapped {/api/my-documents, GET} route
+[2026-05-17T08:35:51.007Z] [LOG][RouterExplorer] Mapped {/api/my-liked-documents, GET} route
+[2026-05-17T08:35:51.007Z] [LOG][RouterExplorer] Mapped {/api/admin/documents, GET} route
+[2026-05-17T08:35:51.007Z] [LOG][RouterExplorer] Mapped {/api/admin/documents/:id/verify, PUT} route
+[2026-05-17T08:35:51.007Z] [LOG][RouterExplorer] Mapped {/api/admin/documents/:id, DELETE} route
+[2026-05-17T08:35:51.007Z] [LOG][RoutesResolver] DashboardController {/api/admin/dashboard}:
+[2026-05-17T08:35:51.007Z] [LOG][RouterExplorer] Mapped {/api/admin/dashboard/overview, GET} route
+[2026-05-17T08:35:51.007Z] [LOG][RouterExplorer] Mapped {/api/admin/dashboard/revenue, GET} route
+[2026-05-17T08:35:51.007Z] [LOG][RouterExplorer] Mapped {/api/admin/dashboard/users, GET} route
+[2026-05-17T08:35:51.007Z] [LOG][RouterExplorer] Mapped {/api/admin/dashboard/courses, GET} route
+[2026-05-17T08:35:51.007Z] [LOG][RouterExplorer] Mapped {/api/admin/dashboard/documents, GET} route
+[2026-05-17T08:35:51.007Z] [LOG][RouterExplorer] Mapped {/api/admin/dashboard/charts/revenue, GET} route
+[2026-05-17T08:35:51.007Z] [LOG][RouterExplorer] Mapped {/api/admin/dashboard/charts/users, GET} route
+[2026-05-17T08:35:51.007Z] [LOG][RoutesResolver] InstructorController {/api/instructor}:
+[2026-05-17T08:35:51.007Z] [LOG][RouterExplorer] Mapped {/api/instructor/dashboard/stats, GET} route
+[2026-05-17T08:35:51.007Z] [LOG][RouterExplorer] Mapped {/api/instructor/analytics/courses, GET} route
+[2026-05-17T08:35:51.007Z] [LOG][RouterExplorer] Mapped {/api/instructor/revenue/chart, GET} route
+[2026-05-17T08:35:51.008Z] [LOG][RouterExplorer] Mapped {/api/instructor/students, GET} route
+[2026-05-17T08:36:33.915Z] [LOG][WebSocketsController] RealtimeGateway subscribed to the "event" message
+[2026-05-17T08:36:33.916Z] [LOG][RoutesResolver] AppController {/}:
+[2026-05-17T08:36:33.917Z] [LOG][RouterExplorer] Mapped {/, GET} route
+[2026-05-17T08:36:33.917Z] [LOG][RoutesResolver] AuthController {/api/auth}:
+[2026-05-17T08:36:33.917Z] [LOG][RouterExplorer] Mapped {/api/auth/register, POST} route
+[2026-05-17T08:36:33.918Z] [LOG][RouterExplorer] Mapped {/api/auth/send-otp, POST} route
+[2026-05-17T08:36:33.918Z] [LOG][RouterExplorer] Mapped {/api/auth/login, POST} route
+[2026-05-17T08:36:33.918Z] [LOG][RouterExplorer] Mapped {/api/auth/refresh-token, POST} route
+[2026-05-17T08:36:33.918Z] [LOG][RouterExplorer] Mapped {/api/auth/forgot-password, POST} route
+[2026-05-17T08:36:33.918Z] [LOG][RouterExplorer] Mapped {/api/auth/logout, POST} route
+[2026-05-17T08:36:33.918Z] [LOG][RouterExplorer] Mapped {/api/auth/google-link, GET} route
+[2026-05-17T08:36:33.918Z] [LOG][RouterExplorer] Mapped {/api/auth/google/callback, GET} route
+[2026-05-17T08:36:33.918Z] [LOG][RouterExplorer] Mapped {/api/auth/me, GET} route
+[2026-05-17T08:36:33.919Z] [LOG][RoutesResolver] PermissionController {/api/permissions}:
+[2026-05-17T08:36:33.919Z] [LOG][RouterExplorer] Mapped {/api/permissions, GET} route
+[2026-05-17T08:36:33.919Z] [LOG][RouterExplorer] Mapped {/api/permissions/:id, GET} route
+[2026-05-17T08:36:33.919Z] [LOG][RouterExplorer] Mapped {/api/permissions, POST} route
+[2026-05-17T08:36:33.919Z] [LOG][RouterExplorer] Mapped {/api/permissions/:id, PUT} route
+[2026-05-17T08:36:33.919Z] [LOG][RouterExplorer] Mapped {/api/permissions/:id, DELETE} route
+[2026-05-17T08:36:33.919Z] [LOG][RoutesResolver] CategoriesController {/api}:
+[2026-05-17T08:36:33.919Z] [LOG][RouterExplorer] Mapped {/api/categories, GET} route
+[2026-05-17T08:36:33.920Z] [LOG][RouterExplorer] Mapped {/api/admin/categories, GET} route
+[2026-05-17T08:36:33.920Z] [LOG][RouterExplorer] Mapped {/api/admin/categories/:id, GET} route
+[2026-05-17T08:36:33.920Z] [LOG][RouterExplorer] Mapped {/api/admin/categories, POST} route
+[2026-05-17T08:36:33.920Z] [LOG][RouterExplorer] Mapped {/api/admin/categories/:id, PUT} route
+[2026-05-17T08:36:33.920Z] [LOG][RoutesResolver] RolesController {/api/roles}:
+[2026-05-17T08:36:33.920Z] [LOG][RouterExplorer] Mapped {/api/roles, GET} route
+[2026-05-17T08:36:33.921Z] [LOG][RouterExplorer] Mapped {/api/roles/:id, GET} route
+[2026-05-17T08:36:33.921Z] [LOG][RouterExplorer] Mapped {/api/roles, POST} route
+[2026-05-17T08:36:33.921Z] [LOG][RouterExplorer] Mapped {/api/roles/:id, PATCH} route
+[2026-05-17T08:36:33.921Z] [LOG][RouterExplorer] Mapped {/api/roles/:id, DELETE} route
+[2026-05-17T08:36:33.921Z] [LOG][RouterExplorer] Mapped {/api/roles/:id/permissions/assign, POST} route
+[2026-05-17T08:36:33.921Z] [LOG][RouterExplorer] Mapped {/api/roles/:id/permissions/unassign, POST} route
+[2026-05-17T08:36:33.921Z] [LOG][RoutesResolver] UsersController {/api}:
+[2026-05-17T08:36:33.921Z] [LOG][RouterExplorer] Mapped {/api/admin/users, GET} route
+[2026-05-17T08:36:33.921Z] [LOG][RouterExplorer] Mapped {/api/admin/users/:id, GET} route
+[2026-05-17T08:36:33.921Z] [LOG][RouterExplorer] Mapped {/api/admin/users, POST} route
+[2026-05-17T08:36:33.921Z] [LOG][RouterExplorer] Mapped {/api/admin/users/:id, PUT} route
+[2026-05-17T08:36:33.921Z] [LOG][RouterExplorer] Mapped {/api/admin/users/:id, DELETE} route
+[2026-05-17T08:36:33.922Z] [LOG][RouterExplorer] Mapped {/api/admin/users/:id/status, PUT} route
+[2026-05-17T08:36:33.922Z] [LOG][RoutesResolver] CoursesController {/api}:
+[2026-05-17T08:36:33.922Z] [LOG][RouterExplorer] Mapped {/api/courses, GET} route
+[2026-05-17T08:36:33.922Z] [LOG][RouterExplorer] Mapped {/api/courses/:id, GET} route
+[2026-05-17T08:36:33.922Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses, GET} route
+[2026-05-17T08:36:33.922Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses, POST} route
+[2026-05-17T08:36:33.922Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:id, GET} route
+[2026-05-17T08:36:33.922Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:id, PUT} route
+[2026-05-17T08:36:33.922Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:id, DELETE} route
+[2026-05-17T08:36:33.922Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:id/request-approval, POST} route
+[2026-05-17T08:36:33.922Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:id/request-delete, POST} route
+[2026-05-17T08:36:33.923Z] [LOG][RouterExplorer] Mapped {/api/admin/courses/:id/approve-publish, POST} route
+[2026-05-17T08:36:33.923Z] [LOG][RouterExplorer] Mapped {/api/admin/courses/:id/reject-publish, POST} route
+[2026-05-17T08:36:33.923Z] [LOG][RouterExplorer] Mapped {/api/admin/courses/:id/approve-delete, POST} route
+[2026-05-17T08:36:33.923Z] [LOG][RouterExplorer] Mapped {/api/admin/courses/:id/reject-delete, POST} route
+[2026-05-17T08:36:33.923Z] [LOG][RouterExplorer] Mapped {/api/admin/courses, GET} route
+[2026-05-17T08:36:33.923Z] [LOG][RouterExplorer] Mapped {/api/admin/courses/:id, GET} route
+[2026-05-17T08:36:33.923Z] [LOG][RoutesResolver] CourseDetailController {/api}:
+[2026-05-17T08:36:33.923Z] [LOG][RouterExplorer] Mapped {/api/courses/:courseId/detail, GET} route
+[2026-05-17T08:36:33.923Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/detail, GET} route
+[2026-05-17T08:36:33.924Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/detail, POST} route
+[2026-05-17T08:36:33.924Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/detail, PUT} route
+[2026-05-17T08:36:33.924Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/detail, DELETE} route
+[2026-05-17T08:36:33.924Z] [LOG][RoutesResolver] CourseContentController {/api}:
+[2026-05-17T08:36:33.924Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/contents, GET} route
+[2026-05-17T08:36:33.924Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/contents/:id, GET} route
+[2026-05-17T08:36:33.924Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/contents, POST} route
+[2026-05-17T08:36:33.924Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/contents/:id, PUT} route
+[2026-05-17T08:36:33.924Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/contents/:id, DELETE} route
+[2026-05-17T08:36:33.924Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/contents/reorder, PUT} route
+[2026-05-17T08:36:33.924Z] [LOG][RouterExplorer] Mapped {/api/webhook/video-done, POST} route
+[2026-05-17T08:36:33.924Z] [LOG][RoutesResolver] LessonsController {/api}:
+[2026-05-17T08:36:33.924Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/contents/:contentId/lessons, GET} route
+[2026-05-17T08:36:33.925Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/contents/:contentId/lessons/:id, GET} route
+[2026-05-17T08:36:33.925Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/contents/:contentId/lessons, POST} route
+[2026-05-17T08:36:33.925Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/contents/:contentId/lessons/:id, PUT} route
+[2026-05-17T08:36:33.925Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/contents/:contentId/lessons/:id, DELETE} route
+[2026-05-17T08:36:33.925Z] [LOG][RoutesResolver] EnrollmentsController {/api}:
+[2026-05-17T08:36:33.925Z] [LOG][RouterExplorer] Mapped {/api/courses/:courseId/enroll, POST} route
+[2026-05-17T08:36:33.925Z] [LOG][RouterExplorer] Mapped {/api/my-enrollments, GET} route
+[2026-05-17T08:36:33.925Z] [LOG][RouterExplorer] Mapped {/api/my-enrollments/stats, GET} route
+[2026-05-17T08:36:33.925Z] [LOG][RouterExplorer] Mapped {/api/my-enrollments/:courseId, GET} route
+[2026-05-17T08:36:33.925Z] [LOG][RouterExplorer] Mapped {/api/my-enrollments/:courseId/complete, PUT} route
+[2026-05-17T08:36:33.925Z] [LOG][RouterExplorer] Mapped {/api/my-enrollments/:courseId/contents, GET} route
+[2026-05-17T08:36:33.925Z] [LOG][RouterExplorer] Mapped {/api/my-enrollments/:courseId/lessons/:lessonId, GET} route
+[2026-05-17T08:36:33.925Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/enrollments, GET} route
+[2026-05-17T08:36:33.925Z] [LOG][RouterExplorer] Mapped {/api/instructor/students, GET} route
+[2026-05-17T08:36:33.925Z] [LOG][RouterExplorer] Mapped {/api/instructor/enrollments/:enrollmentId, DELETE} route
+[2026-05-17T08:36:33.925Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/enrollments, POST} route
+[2026-05-17T08:36:33.925Z] [LOG][RouterExplorer] Mapped {/api/admin/enrollments, GET} route
+[2026-05-17T08:36:33.926Z] [LOG][RouterExplorer] Mapped {/api/admin/courses/:courseId/enrollments, GET} route
+[2026-05-17T08:36:33.926Z] [LOG][RoutesResolver] ReviewsController {/api}:
+[2026-05-17T08:36:33.926Z] [LOG][RouterExplorer] Mapped {/api/courses/:courseId/reviews, POST} route
+[2026-05-17T08:36:33.926Z] [LOG][RouterExplorer] Mapped {/api/courses/:courseId/reviews, GET} route
+[2026-05-17T08:36:33.926Z] [LOG][RouterExplorer] Mapped {/api/my-reviews/:courseId, GET} route
+[2026-05-17T08:36:33.926Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/reviews, GET} route
+[2026-05-17T08:36:33.926Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/reviews/:reviewId, PUT} route
+[2026-05-17T08:36:33.926Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/reviews/:reviewId, DELETE} route
+[2026-05-17T08:36:33.926Z] [LOG][RouterExplorer] Mapped {/api/admin/reviews, GET} route
+[2026-05-17T08:36:33.926Z] [LOG][RouterExplorer] Mapped {/api/admin/courses/:courseId/reviews, GET} route
+[2026-05-17T08:36:33.926Z] [LOG][RouterExplorer] Mapped {/api/admin/courses/:courseId/reviews/:reviewId, PUT} route
+[2026-05-17T08:36:33.926Z] [LOG][RouterExplorer] Mapped {/api/admin/courses/:courseId/reviews/:reviewId, DELETE} route
+[2026-05-17T08:36:33.926Z] [LOG][RoutesResolver] WishlistController {/api}:
+[2026-05-17T08:36:33.926Z] [LOG][RouterExplorer] Mapped {/api/courses/:courseId/wishlist, POST} route
+[2026-05-17T08:36:33.926Z] [LOG][RouterExplorer] Mapped {/api/courses/:courseId/wishlist, DELETE} route
+[2026-05-17T08:36:33.926Z] [LOG][RouterExplorer] Mapped {/api/my-wishlist, GET} route
+[2026-05-17T08:36:33.926Z] [LOG][RouterExplorer] Mapped {/api/courses/:courseId/wishlist, GET} route
+[2026-05-17T08:36:33.926Z] [LOG][RoutesResolver] UploadController {/api/upload}:
+[2026-05-17T08:36:33.927Z] [LOG][RouterExplorer] Mapped {/api/upload/image, POST} route
+[2026-05-17T08:36:33.927Z] [LOG][RouterExplorer] Mapped {/api/upload/r2-presigned-url, GET} route
+[2026-05-17T08:36:33.927Z] [LOG][RouterExplorer] Mapped {/api/upload/r2-process-video, POST} route
+[2026-05-17T08:36:33.927Z] [LOG][RouterExplorer] Mapped {/api/upload/file, POST} route
+[2026-05-17T08:36:33.927Z] [LOG][RoutesResolver] CartController {/api/cart}:
+[2026-05-17T08:36:33.927Z] [LOG][RouterExplorer] Mapped {/api/cart, GET} route
+[2026-05-17T08:36:33.927Z] [LOG][RouterExplorer] Mapped {/api/cart/items, POST} route
+[2026-05-17T08:36:33.927Z] [LOG][RouterExplorer] Mapped {/api/cart/items/:courseId, DELETE} route
+[2026-05-17T08:36:33.927Z] [LOG][RouterExplorer] Mapped {/api/cart, DELETE} route
+[2026-05-17T08:36:33.927Z] [LOG][RoutesResolver] OrdersController {/api}:
+[2026-05-17T08:36:33.927Z] [LOG][RouterExplorer] Mapped {/api/orders, POST} route
+[2026-05-17T08:36:33.927Z] [LOG][RouterExplorer] Mapped {/api/my-orders, GET} route
+[2026-05-17T08:36:33.927Z] [LOG][RouterExplorer] Mapped {/api/my-orders/:orderId, GET} route
+[2026-05-17T08:36:33.927Z] [LOG][RouterExplorer] Mapped {/api/orders/:orderId/qr-code, GET} route
+[2026-05-17T08:36:33.927Z] [LOG][RouterExplorer] Mapped {/api/orders/:orderId/check-payment, POST} route
+[2026-05-17T08:36:33.927Z] [LOG][RouterExplorer] Mapped {/api/admin/orders, GET} route
+[2026-05-17T08:36:33.927Z] [LOG][RouterExplorer] Mapped {/api/admin/orders/:orderId, GET} route
+[2026-05-17T08:36:33.928Z] [LOG][RouterExplorer] Mapped {/api/admin/orders/:orderId/status, PUT} route
+[2026-05-17T08:36:33.928Z] [LOG][RoutesResolver] CommentsController {/api}:
+[2026-05-17T08:36:33.928Z] [LOG][RouterExplorer] Mapped {/api/lessons/:lessonId/comments, POST} route
+[2026-05-17T08:36:33.928Z] [LOG][RouterExplorer] Mapped {/api/lessons/:lessonId/comments, GET} route
+[2026-05-17T08:36:33.928Z] [LOG][RouterExplorer] Mapped {/api/lessons/:lessonId/comments/:commentId, GET} route
+[2026-05-17T08:36:33.928Z] [LOG][RouterExplorer] Mapped {/api/lessons/:lessonId/comments/:commentId, PUT} route
+[2026-05-17T08:36:33.928Z] [LOG][RouterExplorer] Mapped {/api/lessons/:lessonId/comments/:commentId, DELETE} route
+[2026-05-17T08:36:33.928Z] [LOG][RouterExplorer] Mapped {/api/admin/comments, GET} route
+[2026-05-17T08:36:33.928Z] [LOG][RouterExplorer] Mapped {/api/admin/lessons/:lessonId/comments/:commentId, PUT} route
+[2026-05-17T08:36:33.928Z] [LOG][RouterExplorer] Mapped {/api/admin/lessons/:lessonId/comments/:commentId, DELETE} route
+[2026-05-17T08:36:33.928Z] [LOG][RoutesResolver] DocumentCategoriesController {/api}:
+[2026-05-17T08:36:33.928Z] [LOG][RouterExplorer] Mapped {/api/document-categories, GET} route
+[2026-05-17T08:36:33.928Z] [LOG][RouterExplorer] Mapped {/api/document-categories/:id, GET} route
+[2026-05-17T08:36:33.928Z] [LOG][RouterExplorer] Mapped {/api/admin/document-categories, POST} route
+[2026-05-17T08:36:33.928Z] [LOG][RouterExplorer] Mapped {/api/admin/document-categories/:id, PUT} route
+[2026-05-17T08:36:33.928Z] [LOG][RouterExplorer] Mapped {/api/admin/document-categories/:id, DELETE} route
+[2026-05-17T08:36:33.928Z] [LOG][RoutesResolver] DocumentTagsController {/api/document-tags}:
+[2026-05-17T08:36:33.929Z] [LOG][RouterExplorer] Mapped {/api/document-tags, GET} route
+[2026-05-17T08:36:33.929Z] [LOG][RouterExplorer] Mapped {/api/document-tags/trending, GET} route
+[2026-05-17T08:36:33.929Z] [LOG][RouterExplorer] Mapped {/api/document-tags/:id, GET} route
+[2026-05-17T08:36:33.929Z] [LOG][RouterExplorer] Mapped {/api/document-tags, POST} route
+[2026-05-17T08:36:33.929Z] [LOG][RouterExplorer] Mapped {/api/document-tags/:id, PUT} route
+[2026-05-17T08:36:33.929Z] [LOG][RouterExplorer] Mapped {/api/document-tags/:id, DELETE} route
+[2026-05-17T08:36:33.929Z] [LOG][RoutesResolver] DocumentsController {/api}:
+[2026-05-17T08:36:33.929Z] [LOG][RouterExplorer] Mapped {/api/documents, GET} route
+[2026-05-17T08:36:33.929Z] [LOG][RouterExplorer] Mapped {/api/documents/trending, GET} route
+[2026-05-17T08:36:33.929Z] [LOG][RouterExplorer] Mapped {/api/documents/top-contributors, GET} route
+[2026-05-17T08:36:33.929Z] [LOG][RouterExplorer] Mapped {/api/documents/:id, GET} route
+[2026-05-17T08:36:33.929Z] [LOG][RouterExplorer] Mapped {/api/documents, POST} route
+[2026-05-17T08:36:33.929Z] [LOG][RouterExplorer] Mapped {/api/documents/:id, PUT} route
+[2026-05-17T08:36:33.929Z] [LOG][RouterExplorer] Mapped {/api/documents/:id, DELETE} route
+[2026-05-17T08:36:33.929Z] [LOG][RouterExplorer] Mapped {/api/documents/:id/like, POST} route
+[2026-05-17T08:36:33.930Z] [LOG][RouterExplorer] Mapped {/api/documents/:id/like, DELETE} route
+[2026-05-17T08:36:33.930Z] [LOG][RouterExplorer] Mapped {/api/documents/:id/download, POST} route
+[2026-05-17T08:36:33.930Z] [LOG][RouterExplorer] Mapped {/api/my-documents, GET} route
+[2026-05-17T08:36:33.930Z] [LOG][RouterExplorer] Mapped {/api/my-liked-documents, GET} route
+[2026-05-17T08:36:33.930Z] [LOG][RouterExplorer] Mapped {/api/admin/documents, GET} route
+[2026-05-17T08:36:33.930Z] [LOG][RouterExplorer] Mapped {/api/admin/documents/:id/verify, PUT} route
+[2026-05-17T08:36:33.930Z] [LOG][RouterExplorer] Mapped {/api/admin/documents/:id, DELETE} route
+[2026-05-17T08:36:33.930Z] [LOG][RoutesResolver] DashboardController {/api/admin/dashboard}:
+[2026-05-17T08:36:33.930Z] [LOG][RouterExplorer] Mapped {/api/admin/dashboard/overview, GET} route
+[2026-05-17T08:36:33.930Z] [LOG][RouterExplorer] Mapped {/api/admin/dashboard/revenue, GET} route
+[2026-05-17T08:36:33.930Z] [LOG][RouterExplorer] Mapped {/api/admin/dashboard/users, GET} route
+[2026-05-17T08:36:33.930Z] [LOG][RouterExplorer] Mapped {/api/admin/dashboard/courses, GET} route
+[2026-05-17T08:36:33.930Z] [LOG][RouterExplorer] Mapped {/api/admin/dashboard/documents, GET} route
+[2026-05-17T08:36:33.930Z] [LOG][RouterExplorer] Mapped {/api/admin/dashboard/charts/revenue, GET} route
+[2026-05-17T08:36:33.930Z] [LOG][RouterExplorer] Mapped {/api/admin/dashboard/charts/users, GET} route
+[2026-05-17T08:36:33.930Z] [LOG][RoutesResolver] InstructorController {/api/instructor}:
+[2026-05-17T08:36:33.930Z] [LOG][RouterExplorer] Mapped {/api/instructor/dashboard/stats, GET} route
+[2026-05-17T08:36:33.930Z] [LOG][RouterExplorer] Mapped {/api/instructor/analytics/courses, GET} route
+[2026-05-17T08:36:33.930Z] [LOG][RouterExplorer] Mapped {/api/instructor/revenue/chart, GET} route
+[2026-05-17T08:36:33.930Z] [LOG][RouterExplorer] Mapped {/api/instructor/students, GET} route
+[2026-05-17T08:36:39.788Z] [LOG][NestApplication] Nest application successfully started
+[2026-05-17T08:39:29.736Z] [LOG][WebSocketsController] RealtimeGateway subscribed to the "event" message
+[2026-05-17T08:39:29.737Z] [LOG][RoutesResolver] AppController {/}:
+[2026-05-17T08:39:29.738Z] [LOG][RouterExplorer] Mapped {/, GET} route
+[2026-05-17T08:39:29.738Z] [LOG][RoutesResolver] AuthController {/api/auth}:
+[2026-05-17T08:39:29.738Z] [LOG][RouterExplorer] Mapped {/api/auth/register, POST} route
+[2026-05-17T08:39:29.739Z] [LOG][RouterExplorer] Mapped {/api/auth/send-otp, POST} route
+[2026-05-17T08:39:29.739Z] [LOG][RouterExplorer] Mapped {/api/auth/login, POST} route
+[2026-05-17T08:39:29.739Z] [LOG][RouterExplorer] Mapped {/api/auth/refresh-token, POST} route
+[2026-05-17T08:39:29.739Z] [LOG][RouterExplorer] Mapped {/api/auth/forgot-password, POST} route
+[2026-05-17T08:39:29.739Z] [LOG][RouterExplorer] Mapped {/api/auth/logout, POST} route
+[2026-05-17T08:39:29.739Z] [LOG][RouterExplorer] Mapped {/api/auth/google-link, GET} route
+[2026-05-17T08:39:29.739Z] [LOG][RouterExplorer] Mapped {/api/auth/google/callback, GET} route
+[2026-05-17T08:39:29.739Z] [LOG][RouterExplorer] Mapped {/api/auth/me, GET} route
+[2026-05-17T08:39:29.739Z] [LOG][RoutesResolver] PermissionController {/api/permissions}:
+[2026-05-17T08:39:29.740Z] [LOG][RouterExplorer] Mapped {/api/permissions, GET} route
+[2026-05-17T08:39:29.740Z] [LOG][RouterExplorer] Mapped {/api/permissions/:id, GET} route
+[2026-05-17T08:39:29.740Z] [LOG][RouterExplorer] Mapped {/api/permissions, POST} route
+[2026-05-17T08:39:29.740Z] [LOG][RouterExplorer] Mapped {/api/permissions/:id, PUT} route
+[2026-05-17T08:39:29.740Z] [LOG][RouterExplorer] Mapped {/api/permissions/:id, DELETE} route
+[2026-05-17T08:39:29.740Z] [LOG][RoutesResolver] CategoriesController {/api}:
+[2026-05-17T08:39:29.740Z] [LOG][RouterExplorer] Mapped {/api/categories, GET} route
+[2026-05-17T08:39:29.740Z] [LOG][RouterExplorer] Mapped {/api/admin/categories, GET} route
+[2026-05-17T08:39:29.740Z] [LOG][RouterExplorer] Mapped {/api/admin/categories/:id, GET} route
+[2026-05-17T08:39:29.740Z] [LOG][RouterExplorer] Mapped {/api/admin/categories, POST} route
+[2026-05-17T08:39:29.741Z] [LOG][RouterExplorer] Mapped {/api/admin/categories/:id, PUT} route
+[2026-05-17T08:39:29.741Z] [LOG][RoutesResolver] RolesController {/api/roles}:
+[2026-05-17T08:39:29.741Z] [LOG][RouterExplorer] Mapped {/api/roles, GET} route
+[2026-05-17T08:39:29.741Z] [LOG][RouterExplorer] Mapped {/api/roles/:id, GET} route
+[2026-05-17T08:39:29.741Z] [LOG][RouterExplorer] Mapped {/api/roles, POST} route
+[2026-05-17T08:39:29.741Z] [LOG][RouterExplorer] Mapped {/api/roles/:id, PATCH} route
+[2026-05-17T08:39:29.741Z] [LOG][RouterExplorer] Mapped {/api/roles/:id, DELETE} route
+[2026-05-17T08:39:29.741Z] [LOG][RouterExplorer] Mapped {/api/roles/:id/permissions/assign, POST} route
+[2026-05-17T08:39:29.741Z] [LOG][RouterExplorer] Mapped {/api/roles/:id/permissions/unassign, POST} route
+[2026-05-17T08:39:29.741Z] [LOG][RoutesResolver] UsersController {/api}:
+[2026-05-17T08:39:29.741Z] [LOG][RouterExplorer] Mapped {/api/admin/users, GET} route
+[2026-05-17T08:39:29.741Z] [LOG][RouterExplorer] Mapped {/api/admin/users/:id, GET} route
+[2026-05-17T08:39:29.741Z] [LOG][RouterExplorer] Mapped {/api/admin/users, POST} route
+[2026-05-17T08:39:29.742Z] [LOG][RouterExplorer] Mapped {/api/admin/users/:id, PUT} route
+[2026-05-17T08:39:29.742Z] [LOG][RouterExplorer] Mapped {/api/admin/users/:id, DELETE} route
+[2026-05-17T08:39:29.742Z] [LOG][RouterExplorer] Mapped {/api/admin/users/:id/status, PUT} route
+[2026-05-17T08:39:29.742Z] [LOG][RoutesResolver] CoursesController {/api}:
+[2026-05-17T08:39:29.742Z] [LOG][RouterExplorer] Mapped {/api/courses, GET} route
+[2026-05-17T08:39:29.742Z] [LOG][RouterExplorer] Mapped {/api/courses/:id, GET} route
+[2026-05-17T08:39:29.742Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses, GET} route
+[2026-05-17T08:39:29.742Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses, POST} route
+[2026-05-17T08:39:29.742Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:id, GET} route
+[2026-05-17T08:39:29.742Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:id, PUT} route
+[2026-05-17T08:39:29.742Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:id, DELETE} route
+[2026-05-17T08:39:29.742Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:id/request-approval, POST} route
+[2026-05-17T08:39:29.742Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:id/request-delete, POST} route
+[2026-05-17T08:39:29.742Z] [LOG][RouterExplorer] Mapped {/api/admin/courses/:id/approve-publish, POST} route
+[2026-05-17T08:39:29.742Z] [LOG][RouterExplorer] Mapped {/api/admin/courses/:id/reject-publish, POST} route
+[2026-05-17T08:39:29.742Z] [LOG][RouterExplorer] Mapped {/api/admin/courses/:id/approve-delete, POST} route
+[2026-05-17T08:39:29.743Z] [LOG][RouterExplorer] Mapped {/api/admin/courses/:id/reject-delete, POST} route
+[2026-05-17T08:39:29.743Z] [LOG][RouterExplorer] Mapped {/api/admin/courses, GET} route
+[2026-05-17T08:39:29.743Z] [LOG][RouterExplorer] Mapped {/api/admin/courses/:id, GET} route
+[2026-05-17T08:39:29.743Z] [LOG][RoutesResolver] CourseDetailController {/api}:
+[2026-05-17T08:39:29.743Z] [LOG][RouterExplorer] Mapped {/api/courses/:courseId/detail, GET} route
+[2026-05-17T08:39:29.743Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/detail, GET} route
+[2026-05-17T08:39:29.743Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/detail, POST} route
+[2026-05-17T08:39:29.743Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/detail, PUT} route
+[2026-05-17T08:39:29.743Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/detail, DELETE} route
+[2026-05-17T08:39:29.743Z] [LOG][RoutesResolver] CourseContentController {/api}:
+[2026-05-17T08:39:29.743Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/contents, GET} route
+[2026-05-17T08:39:29.743Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/contents/:id, GET} route
+[2026-05-17T08:39:29.743Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/contents, POST} route
+[2026-05-17T08:39:29.743Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/contents/:id, PUT} route
+[2026-05-17T08:39:29.743Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/contents/:id, DELETE} route
+[2026-05-17T08:39:29.743Z] [LOG][RouterExplorer] Mapped {/api/course-content/webhook, POST} route
+[2026-05-17T08:39:29.743Z] [LOG][RoutesResolver] LessonsController {/api}:
+[2026-05-17T08:39:29.744Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/contents/:contentId/lessons, GET} route
+[2026-05-17T08:39:29.744Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/contents/:contentId/lessons/:id, GET} route
+[2026-05-17T08:39:29.744Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/contents/:contentId/lessons, POST} route
+[2026-05-17T08:39:29.744Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/contents/:contentId/lessons/:id, PUT} route
+[2026-05-17T08:39:29.744Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/contents/:contentId/lessons/:id, DELETE} route
+[2026-05-17T08:39:29.744Z] [LOG][RoutesResolver] EnrollmentsController {/api}:
+[2026-05-17T08:39:29.744Z] [LOG][RouterExplorer] Mapped {/api/courses/:courseId/enroll, POST} route
+[2026-05-17T08:39:29.744Z] [LOG][RouterExplorer] Mapped {/api/my-enrollments, GET} route
+[2026-05-17T08:39:29.744Z] [LOG][RouterExplorer] Mapped {/api/my-enrollments/stats, GET} route
+[2026-05-17T08:39:29.744Z] [LOG][RouterExplorer] Mapped {/api/my-enrollments/:courseId, GET} route
+[2026-05-17T08:39:29.744Z] [LOG][RouterExplorer] Mapped {/api/my-enrollments/:courseId/complete, PUT} route
+[2026-05-17T08:39:29.744Z] [LOG][RouterExplorer] Mapped {/api/my-enrollments/:courseId/contents, GET} route
+[2026-05-17T08:39:29.744Z] [LOG][RouterExplorer] Mapped {/api/my-enrollments/:courseId/lessons/:lessonId, GET} route
+[2026-05-17T08:39:29.744Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/enrollments, GET} route
+[2026-05-17T08:39:29.744Z] [LOG][RouterExplorer] Mapped {/api/instructor/students, GET} route
+[2026-05-17T08:39:29.744Z] [LOG][RouterExplorer] Mapped {/api/instructor/enrollments/:enrollmentId, DELETE} route
+[2026-05-17T08:39:29.744Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/enrollments, POST} route
+[2026-05-17T08:39:29.745Z] [LOG][RouterExplorer] Mapped {/api/admin/enrollments, GET} route
+[2026-05-17T08:39:29.745Z] [LOG][RouterExplorer] Mapped {/api/admin/courses/:courseId/enrollments, GET} route
+[2026-05-17T08:39:29.745Z] [LOG][RoutesResolver] ReviewsController {/api}:
+[2026-05-17T08:39:29.745Z] [LOG][RouterExplorer] Mapped {/api/courses/:courseId/reviews, POST} route
+[2026-05-17T08:39:29.745Z] [LOG][RouterExplorer] Mapped {/api/courses/:courseId/reviews, GET} route
+[2026-05-17T08:39:29.745Z] [LOG][RouterExplorer] Mapped {/api/my-reviews/:courseId, GET} route
+[2026-05-17T08:39:29.745Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/reviews, GET} route
+[2026-05-17T08:39:29.745Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/reviews/:reviewId, PUT} route
+[2026-05-17T08:39:29.745Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/reviews/:reviewId, DELETE} route
+[2026-05-17T08:39:29.745Z] [LOG][RouterExplorer] Mapped {/api/admin/reviews, GET} route
+[2026-05-17T08:39:29.745Z] [LOG][RouterExplorer] Mapped {/api/admin/courses/:courseId/reviews, GET} route
+[2026-05-17T08:39:29.745Z] [LOG][RouterExplorer] Mapped {/api/admin/courses/:courseId/reviews/:reviewId, PUT} route
+[2026-05-17T08:39:29.745Z] [LOG][RouterExplorer] Mapped {/api/admin/courses/:courseId/reviews/:reviewId, DELETE} route
+[2026-05-17T08:39:29.745Z] [LOG][RoutesResolver] WishlistController {/api}:
+[2026-05-17T08:39:29.745Z] [LOG][RouterExplorer] Mapped {/api/courses/:courseId/wishlist, POST} route
+[2026-05-17T08:39:29.745Z] [LOG][RouterExplorer] Mapped {/api/courses/:courseId/wishlist, DELETE} route
+[2026-05-17T08:39:29.745Z] [LOG][RouterExplorer] Mapped {/api/my-wishlist, GET} route
+[2026-05-17T08:39:29.745Z] [LOG][RouterExplorer] Mapped {/api/courses/:courseId/wishlist, GET} route
+[2026-05-17T08:39:29.746Z] [LOG][RoutesResolver] UploadController {/api/upload}:
+[2026-05-17T08:39:29.746Z] [LOG][RouterExplorer] Mapped {/api/upload/image, POST} route
+[2026-05-17T08:39:29.746Z] [LOG][RouterExplorer] Mapped {/api/upload/r2-presigned-url, GET} route
+[2026-05-17T08:39:29.746Z] [LOG][RouterExplorer] Mapped {/api/upload/r2-process-video, POST} route
+[2026-05-17T08:39:29.746Z] [LOG][RouterExplorer] Mapped {/api/upload/file, POST} route
+[2026-05-17T08:39:29.746Z] [LOG][RoutesResolver] CartController {/api/cart}:
+[2026-05-17T08:39:29.746Z] [LOG][RouterExplorer] Mapped {/api/cart, GET} route
+[2026-05-17T08:39:29.746Z] [LOG][RouterExplorer] Mapped {/api/cart/items, POST} route
+[2026-05-17T08:39:29.746Z] [LOG][RouterExplorer] Mapped {/api/cart/items/:courseId, DELETE} route
+[2026-05-17T08:39:29.746Z] [LOG][RouterExplorer] Mapped {/api/cart, DELETE} route
+[2026-05-17T08:39:29.746Z] [LOG][RoutesResolver] OrdersController {/api}:
+[2026-05-17T08:39:29.746Z] [LOG][RouterExplorer] Mapped {/api/orders, POST} route
+[2026-05-17T08:39:29.746Z] [LOG][RouterExplorer] Mapped {/api/my-orders, GET} route
+[2026-05-17T08:39:29.746Z] [LOG][RouterExplorer] Mapped {/api/my-orders/:orderId, GET} route
+[2026-05-17T08:39:29.746Z] [LOG][RouterExplorer] Mapped {/api/orders/:orderId/qr-code, GET} route
+[2026-05-17T08:39:29.746Z] [LOG][RouterExplorer] Mapped {/api/orders/:orderId/check-payment, POST} route
+[2026-05-17T08:39:29.746Z] [LOG][RouterExplorer] Mapped {/api/admin/orders, GET} route
+[2026-05-17T08:39:29.746Z] [LOG][RouterExplorer] Mapped {/api/admin/orders/:orderId, GET} route
+[2026-05-17T08:39:29.747Z] [LOG][RouterExplorer] Mapped {/api/admin/orders/:orderId/status, PUT} route
+[2026-05-17T08:39:29.747Z] [LOG][RoutesResolver] CommentsController {/api}:
+[2026-05-17T08:39:29.747Z] [LOG][RouterExplorer] Mapped {/api/lessons/:lessonId/comments, POST} route
+[2026-05-17T08:39:29.747Z] [LOG][RouterExplorer] Mapped {/api/lessons/:lessonId/comments, GET} route
+[2026-05-17T08:39:29.747Z] [LOG][RouterExplorer] Mapped {/api/lessons/:lessonId/comments/:commentId, GET} route
+[2026-05-17T08:39:29.747Z] [LOG][RouterExplorer] Mapped {/api/lessons/:lessonId/comments/:commentId, PUT} route
+[2026-05-17T08:39:29.747Z] [LOG][RouterExplorer] Mapped {/api/lessons/:lessonId/comments/:commentId, DELETE} route
+[2026-05-17T08:39:29.747Z] [LOG][RouterExplorer] Mapped {/api/admin/comments, GET} route
+[2026-05-17T08:39:29.747Z] [LOG][RouterExplorer] Mapped {/api/admin/lessons/:lessonId/comments/:commentId, PUT} route
+[2026-05-17T08:39:29.747Z] [LOG][RouterExplorer] Mapped {/api/admin/lessons/:lessonId/comments/:commentId, DELETE} route
+[2026-05-17T08:39:29.747Z] [LOG][RoutesResolver] DocumentCategoriesController {/api}:
+[2026-05-17T08:39:29.747Z] [LOG][RouterExplorer] Mapped {/api/document-categories, GET} route
+[2026-05-17T08:39:29.748Z] [LOG][RouterExplorer] Mapped {/api/document-categories/:id, GET} route
+[2026-05-17T08:39:29.748Z] [LOG][RouterExplorer] Mapped {/api/admin/document-categories, POST} route
+[2026-05-17T08:39:29.748Z] [LOG][RouterExplorer] Mapped {/api/admin/document-categories/:id, PUT} route
+[2026-05-17T08:39:29.748Z] [LOG][RouterExplorer] Mapped {/api/admin/document-categories/:id, DELETE} route
+[2026-05-17T08:39:29.748Z] [LOG][RoutesResolver] DocumentTagsController {/api/document-tags}:
+[2026-05-17T08:39:29.748Z] [LOG][RouterExplorer] Mapped {/api/document-tags, GET} route
+[2026-05-17T08:39:29.748Z] [LOG][RouterExplorer] Mapped {/api/document-tags/trending, GET} route
+[2026-05-17T08:39:29.748Z] [LOG][RouterExplorer] Mapped {/api/document-tags/:id, GET} route
+[2026-05-17T08:39:29.748Z] [LOG][RouterExplorer] Mapped {/api/document-tags, POST} route
+[2026-05-17T08:39:29.748Z] [LOG][RouterExplorer] Mapped {/api/document-tags/:id, PUT} route
+[2026-05-17T08:39:29.748Z] [LOG][RouterExplorer] Mapped {/api/document-tags/:id, DELETE} route
+[2026-05-17T08:39:29.749Z] [LOG][RoutesResolver] DocumentsController {/api}:
+[2026-05-17T08:39:29.749Z] [LOG][RouterExplorer] Mapped {/api/documents, GET} route
+[2026-05-17T08:39:29.749Z] [LOG][RouterExplorer] Mapped {/api/documents/trending, GET} route
+[2026-05-17T08:39:29.749Z] [LOG][RouterExplorer] Mapped {/api/documents/top-contributors, GET} route
+[2026-05-17T08:39:29.749Z] [LOG][RouterExplorer] Mapped {/api/documents/:id, GET} route
+[2026-05-17T08:39:29.749Z] [LOG][RouterExplorer] Mapped {/api/documents, POST} route
+[2026-05-17T08:39:29.749Z] [LOG][RouterExplorer] Mapped {/api/documents/:id, PUT} route
+[2026-05-17T08:39:29.749Z] [LOG][RouterExplorer] Mapped {/api/documents/:id, DELETE} route
+[2026-05-17T08:39:29.749Z] [LOG][RouterExplorer] Mapped {/api/documents/:id/like, POST} route
+[2026-05-17T08:39:29.749Z] [LOG][RouterExplorer] Mapped {/api/documents/:id/like, DELETE} route
+[2026-05-17T08:39:29.749Z] [LOG][RouterExplorer] Mapped {/api/documents/:id/download, POST} route
+[2026-05-17T08:39:29.749Z] [LOG][RouterExplorer] Mapped {/api/my-documents, GET} route
+[2026-05-17T08:39:29.749Z] [LOG][RouterExplorer] Mapped {/api/my-liked-documents, GET} route
+[2026-05-17T08:39:29.749Z] [LOG][RouterExplorer] Mapped {/api/admin/documents, GET} route
+[2026-05-17T08:39:29.749Z] [LOG][RouterExplorer] Mapped {/api/admin/documents/:id/verify, PUT} route
+[2026-05-17T08:39:29.749Z] [LOG][RouterExplorer] Mapped {/api/admin/documents/:id, DELETE} route
+[2026-05-17T08:39:29.749Z] [LOG][RoutesResolver] DashboardController {/api/admin/dashboard}:
+[2026-05-17T08:39:29.749Z] [LOG][RouterExplorer] Mapped {/api/admin/dashboard/overview, GET} route
+[2026-05-17T08:39:29.750Z] [LOG][RouterExplorer] Mapped {/api/admin/dashboard/revenue, GET} route
+[2026-05-17T08:39:29.750Z] [LOG][RouterExplorer] Mapped {/api/admin/dashboard/users, GET} route
+[2026-05-17T08:39:29.750Z] [LOG][RouterExplorer] Mapped {/api/admin/dashboard/courses, GET} route
+[2026-05-17T08:39:29.750Z] [LOG][RouterExplorer] Mapped {/api/admin/dashboard/documents, GET} route
+[2026-05-17T08:39:29.750Z] [LOG][RouterExplorer] Mapped {/api/admin/dashboard/charts/revenue, GET} route
+[2026-05-17T08:39:29.750Z] [LOG][RouterExplorer] Mapped {/api/admin/dashboard/charts/users, GET} route
+[2026-05-17T08:39:29.750Z] [LOG][RoutesResolver] InstructorController {/api/instructor}:
+[2026-05-17T08:39:29.750Z] [LOG][RouterExplorer] Mapped {/api/instructor/dashboard/stats, GET} route
+[2026-05-17T08:39:29.750Z] [LOG][RouterExplorer] Mapped {/api/instructor/analytics/courses, GET} route
+[2026-05-17T08:39:29.750Z] [LOG][RouterExplorer] Mapped {/api/instructor/revenue/chart, GET} route
+[2026-05-17T08:39:29.750Z] [LOG][RouterExplorer] Mapped {/api/instructor/students, GET} route
+[2026-05-17T08:39:31.213Z] [LOG][WebSocketsController] RealtimeGateway subscribed to the "event" message
+[2026-05-17T08:39:31.214Z] [LOG][RoutesResolver] AppController {/}:
+[2026-05-17T08:39:31.215Z] [LOG][RouterExplorer] Mapped {/, GET} route
+[2026-05-17T08:39:31.215Z] [LOG][RoutesResolver] AuthController {/api/auth}:
+[2026-05-17T08:39:31.215Z] [LOG][RouterExplorer] Mapped {/api/auth/register, POST} route
+[2026-05-17T08:39:31.215Z] [LOG][RouterExplorer] Mapped {/api/auth/send-otp, POST} route
+[2026-05-17T08:39:31.216Z] [LOG][RouterExplorer] Mapped {/api/auth/login, POST} route
+[2026-05-17T08:39:31.216Z] [LOG][RouterExplorer] Mapped {/api/auth/refresh-token, POST} route
+[2026-05-17T08:39:31.216Z] [LOG][RouterExplorer] Mapped {/api/auth/forgot-password, POST} route
+[2026-05-17T08:39:31.216Z] [LOG][RouterExplorer] Mapped {/api/auth/logout, POST} route
+[2026-05-17T08:39:31.216Z] [LOG][RouterExplorer] Mapped {/api/auth/google-link, GET} route
+[2026-05-17T08:39:31.216Z] [LOG][RouterExplorer] Mapped {/api/auth/google/callback, GET} route
+[2026-05-17T08:39:31.217Z] [LOG][RouterExplorer] Mapped {/api/auth/me, GET} route
+[2026-05-17T08:39:31.217Z] [LOG][RoutesResolver] PermissionController {/api/permissions}:
+[2026-05-17T08:39:31.217Z] [LOG][RouterExplorer] Mapped {/api/permissions, GET} route
+[2026-05-17T08:39:31.217Z] [LOG][RouterExplorer] Mapped {/api/permissions/:id, GET} route
+[2026-05-17T08:39:31.217Z] [LOG][RouterExplorer] Mapped {/api/permissions, POST} route
+[2026-05-17T08:39:31.217Z] [LOG][RouterExplorer] Mapped {/api/permissions/:id, PUT} route
+[2026-05-17T08:39:31.217Z] [LOG][RouterExplorer] Mapped {/api/permissions/:id, DELETE} route
+[2026-05-17T08:39:31.217Z] [LOG][RoutesResolver] CategoriesController {/api}:
+[2026-05-17T08:39:31.218Z] [LOG][RouterExplorer] Mapped {/api/categories, GET} route
+[2026-05-17T08:39:31.218Z] [LOG][RouterExplorer] Mapped {/api/admin/categories, GET} route
+[2026-05-17T08:39:31.218Z] [LOG][RouterExplorer] Mapped {/api/admin/categories/:id, GET} route
+[2026-05-17T08:39:31.218Z] [LOG][RouterExplorer] Mapped {/api/admin/categories, POST} route
+[2026-05-17T08:39:31.218Z] [LOG][RouterExplorer] Mapped {/api/admin/categories/:id, PUT} route
+[2026-05-17T08:39:31.218Z] [LOG][RoutesResolver] RolesController {/api/roles}:
+[2026-05-17T08:39:31.218Z] [LOG][RouterExplorer] Mapped {/api/roles, GET} route
+[2026-05-17T08:39:31.218Z] [LOG][RouterExplorer] Mapped {/api/roles/:id, GET} route
+[2026-05-17T08:39:31.218Z] [LOG][RouterExplorer] Mapped {/api/roles, POST} route
+[2026-05-17T08:39:31.218Z] [LOG][RouterExplorer] Mapped {/api/roles/:id, PATCH} route
+[2026-05-17T08:39:31.218Z] [LOG][RouterExplorer] Mapped {/api/roles/:id, DELETE} route
+[2026-05-17T08:39:31.218Z] [LOG][RouterExplorer] Mapped {/api/roles/:id/permissions/assign, POST} route
+[2026-05-17T08:39:31.219Z] [LOG][RouterExplorer] Mapped {/api/roles/:id/permissions/unassign, POST} route
+[2026-05-17T08:39:31.219Z] [LOG][RoutesResolver] UsersController {/api}:
+[2026-05-17T08:39:31.219Z] [LOG][RouterExplorer] Mapped {/api/admin/users, GET} route
+[2026-05-17T08:39:31.219Z] [LOG][RouterExplorer] Mapped {/api/admin/users/:id, GET} route
+[2026-05-17T08:39:31.219Z] [LOG][RouterExplorer] Mapped {/api/admin/users, POST} route
+[2026-05-17T08:39:31.219Z] [LOG][RouterExplorer] Mapped {/api/admin/users/:id, PUT} route
+[2026-05-17T08:39:31.219Z] [LOG][RouterExplorer] Mapped {/api/admin/users/:id, DELETE} route
+[2026-05-17T08:39:31.219Z] [LOG][RouterExplorer] Mapped {/api/admin/users/:id/status, PUT} route
+[2026-05-17T08:39:31.219Z] [LOG][RoutesResolver] CoursesController {/api}:
+[2026-05-17T08:39:31.219Z] [LOG][RouterExplorer] Mapped {/api/courses, GET} route
+[2026-05-17T08:39:31.219Z] [LOG][RouterExplorer] Mapped {/api/courses/:id, GET} route
+[2026-05-17T08:39:31.219Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses, GET} route
+[2026-05-17T08:39:31.219Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses, POST} route
+[2026-05-17T08:39:31.219Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:id, GET} route
+[2026-05-17T08:39:31.219Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:id, PUT} route
+[2026-05-17T08:39:31.219Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:id, DELETE} route
+[2026-05-17T08:39:31.219Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:id/request-approval, POST} route
+[2026-05-17T08:39:31.219Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:id/request-delete, POST} route
+[2026-05-17T08:39:31.220Z] [LOG][RouterExplorer] Mapped {/api/admin/courses/:id/approve-publish, POST} route
+[2026-05-17T08:39:31.220Z] [LOG][RouterExplorer] Mapped {/api/admin/courses/:id/reject-publish, POST} route
+[2026-05-17T08:39:31.220Z] [LOG][RouterExplorer] Mapped {/api/admin/courses/:id/approve-delete, POST} route
+[2026-05-17T08:39:31.220Z] [LOG][RouterExplorer] Mapped {/api/admin/courses/:id/reject-delete, POST} route
+[2026-05-17T08:39:31.220Z] [LOG][RouterExplorer] Mapped {/api/admin/courses, GET} route
+[2026-05-17T08:39:31.220Z] [LOG][RouterExplorer] Mapped {/api/admin/courses/:id, GET} route
+[2026-05-17T08:39:31.220Z] [LOG][RoutesResolver] CourseDetailController {/api}:
+[2026-05-17T08:39:31.220Z] [LOG][RouterExplorer] Mapped {/api/courses/:courseId/detail, GET} route
+[2026-05-17T08:39:31.220Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/detail, GET} route
+[2026-05-17T08:39:31.220Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/detail, POST} route
+[2026-05-17T08:39:31.220Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/detail, PUT} route
+[2026-05-17T08:39:31.220Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/detail, DELETE} route
+[2026-05-17T08:39:31.220Z] [LOG][RoutesResolver] CourseContentController {/api}:
+[2026-05-17T08:39:31.220Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/contents, GET} route
+[2026-05-17T08:39:31.220Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/contents/:id, GET} route
+[2026-05-17T08:39:31.220Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/contents, POST} route
+[2026-05-17T08:39:31.220Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/contents/:id, PUT} route
+[2026-05-17T08:39:31.220Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/contents/:id, DELETE} route
+[2026-05-17T08:39:31.220Z] [LOG][RouterExplorer] Mapped {/api/course-content/webhook, POST} route
+[2026-05-17T08:39:31.221Z] [LOG][RoutesResolver] LessonsController {/api}:
+[2026-05-17T08:39:31.221Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/contents/:contentId/lessons, GET} route
+[2026-05-17T08:39:31.221Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/contents/:contentId/lessons/:id, GET} route
+[2026-05-17T08:39:31.221Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/contents/:contentId/lessons, POST} route
+[2026-05-17T08:39:31.221Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/contents/:contentId/lessons/:id, PUT} route
+[2026-05-17T08:39:31.221Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/contents/:contentId/lessons/:id, DELETE} route
+[2026-05-17T08:39:31.221Z] [LOG][RoutesResolver] EnrollmentsController {/api}:
+[2026-05-17T08:39:31.221Z] [LOG][RouterExplorer] Mapped {/api/courses/:courseId/enroll, POST} route
+[2026-05-17T08:39:31.221Z] [LOG][RouterExplorer] Mapped {/api/my-enrollments, GET} route
+[2026-05-17T08:39:31.221Z] [LOG][RouterExplorer] Mapped {/api/my-enrollments/stats, GET} route
+[2026-05-17T08:39:31.221Z] [LOG][RouterExplorer] Mapped {/api/my-enrollments/:courseId, GET} route
+[2026-05-17T08:39:31.221Z] [LOG][RouterExplorer] Mapped {/api/my-enrollments/:courseId/complete, PUT} route
+[2026-05-17T08:39:31.221Z] [LOG][RouterExplorer] Mapped {/api/my-enrollments/:courseId/contents, GET} route
+[2026-05-17T08:39:31.221Z] [LOG][RouterExplorer] Mapped {/api/my-enrollments/:courseId/lessons/:lessonId, GET} route
+[2026-05-17T08:39:31.221Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/enrollments, GET} route
+[2026-05-17T08:39:31.221Z] [LOG][RouterExplorer] Mapped {/api/instructor/students, GET} route
+[2026-05-17T08:39:31.221Z] [LOG][RouterExplorer] Mapped {/api/instructor/enrollments/:enrollmentId, DELETE} route
+[2026-05-17T08:39:31.221Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/enrollments, POST} route
+[2026-05-17T08:39:31.222Z] [LOG][RouterExplorer] Mapped {/api/admin/enrollments, GET} route
+[2026-05-17T08:39:31.222Z] [LOG][RouterExplorer] Mapped {/api/admin/courses/:courseId/enrollments, GET} route
+[2026-05-17T08:39:31.222Z] [LOG][RoutesResolver] ReviewsController {/api}:
+[2026-05-17T08:39:31.222Z] [LOG][RouterExplorer] Mapped {/api/courses/:courseId/reviews, POST} route
+[2026-05-17T08:39:31.222Z] [LOG][RouterExplorer] Mapped {/api/courses/:courseId/reviews, GET} route
+[2026-05-17T08:39:31.222Z] [LOG][RouterExplorer] Mapped {/api/my-reviews/:courseId, GET} route
+[2026-05-17T08:39:31.222Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/reviews, GET} route
+[2026-05-17T08:39:31.222Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/reviews/:reviewId, PUT} route
+[2026-05-17T08:39:31.222Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/reviews/:reviewId, DELETE} route
+[2026-05-17T08:39:31.222Z] [LOG][RouterExplorer] Mapped {/api/admin/reviews, GET} route
+[2026-05-17T08:39:31.222Z] [LOG][RouterExplorer] Mapped {/api/admin/courses/:courseId/reviews, GET} route
+[2026-05-17T08:39:31.222Z] [LOG][RouterExplorer] Mapped {/api/admin/courses/:courseId/reviews/:reviewId, PUT} route
+[2026-05-17T08:39:31.222Z] [LOG][RouterExplorer] Mapped {/api/admin/courses/:courseId/reviews/:reviewId, DELETE} route
+[2026-05-17T08:39:31.222Z] [LOG][RoutesResolver] WishlistController {/api}:
+[2026-05-17T08:39:31.222Z] [LOG][RouterExplorer] Mapped {/api/courses/:courseId/wishlist, POST} route
+[2026-05-17T08:39:31.222Z] [LOG][RouterExplorer] Mapped {/api/courses/:courseId/wishlist, DELETE} route
+[2026-05-17T08:39:31.223Z] [LOG][RouterExplorer] Mapped {/api/my-wishlist, GET} route
+[2026-05-17T08:39:31.223Z] [LOG][RouterExplorer] Mapped {/api/courses/:courseId/wishlist, GET} route
+[2026-05-17T08:39:31.223Z] [LOG][RoutesResolver] UploadController {/api/upload}:
+[2026-05-17T08:39:31.223Z] [LOG][RouterExplorer] Mapped {/api/upload/image, POST} route
+[2026-05-17T08:39:31.223Z] [LOG][RouterExplorer] Mapped {/api/upload/r2-presigned-url, GET} route
+[2026-05-17T08:39:31.223Z] [LOG][RouterExplorer] Mapped {/api/upload/r2-process-video, POST} route
+[2026-05-17T08:39:31.223Z] [LOG][RouterExplorer] Mapped {/api/upload/file, POST} route
+[2026-05-17T08:39:31.223Z] [LOG][RoutesResolver] CartController {/api/cart}:
+[2026-05-17T08:39:31.223Z] [LOG][RouterExplorer] Mapped {/api/cart, GET} route
+[2026-05-17T08:39:31.223Z] [LOG][RouterExplorer] Mapped {/api/cart/items, POST} route
+[2026-05-17T08:39:31.223Z] [LOG][RouterExplorer] Mapped {/api/cart/items/:courseId, DELETE} route
+[2026-05-17T08:39:31.223Z] [LOG][RouterExplorer] Mapped {/api/cart, DELETE} route
+[2026-05-17T08:39:31.223Z] [LOG][RoutesResolver] OrdersController {/api}:
+[2026-05-17T08:39:31.223Z] [LOG][RouterExplorer] Mapped {/api/orders, POST} route
+[2026-05-17T08:39:31.223Z] [LOG][RouterExplorer] Mapped {/api/my-orders, GET} route
+[2026-05-17T08:39:31.223Z] [LOG][RouterExplorer] Mapped {/api/my-orders/:orderId, GET} route
+[2026-05-17T08:39:31.223Z] [LOG][RouterExplorer] Mapped {/api/orders/:orderId/qr-code, GET} route
+[2026-05-17T08:39:31.223Z] [LOG][RouterExplorer] Mapped {/api/orders/:orderId/check-payment, POST} route
+[2026-05-17T08:39:31.224Z] [LOG][RouterExplorer] Mapped {/api/admin/orders, GET} route
+[2026-05-17T08:39:31.224Z] [LOG][RouterExplorer] Mapped {/api/admin/orders/:orderId, GET} route
+[2026-05-17T08:39:31.224Z] [LOG][RouterExplorer] Mapped {/api/admin/orders/:orderId/status, PUT} route
+[2026-05-17T08:39:31.224Z] [LOG][RoutesResolver] CommentsController {/api}:
+[2026-05-17T08:39:31.224Z] [LOG][RouterExplorer] Mapped {/api/lessons/:lessonId/comments, POST} route
+[2026-05-17T08:39:31.224Z] [LOG][RouterExplorer] Mapped {/api/lessons/:lessonId/comments, GET} route
+[2026-05-17T08:39:31.224Z] [LOG][RouterExplorer] Mapped {/api/lessons/:lessonId/comments/:commentId, GET} route
+[2026-05-17T08:39:31.224Z] [LOG][RouterExplorer] Mapped {/api/lessons/:lessonId/comments/:commentId, PUT} route
+[2026-05-17T08:39:31.224Z] [LOG][RouterExplorer] Mapped {/api/lessons/:lessonId/comments/:commentId, DELETE} route
+[2026-05-17T08:39:31.224Z] [LOG][RouterExplorer] Mapped {/api/admin/comments, GET} route
+[2026-05-17T08:39:31.224Z] [LOG][RouterExplorer] Mapped {/api/admin/lessons/:lessonId/comments/:commentId, PUT} route
+[2026-05-17T08:39:31.224Z] [LOG][RouterExplorer] Mapped {/api/admin/lessons/:lessonId/comments/:commentId, DELETE} route
+[2026-05-17T08:39:31.224Z] [LOG][RoutesResolver] DocumentCategoriesController {/api}:
+[2026-05-17T08:39:31.224Z] [LOG][RouterExplorer] Mapped {/api/document-categories, GET} route
+[2026-05-17T08:39:31.225Z] [LOG][RouterExplorer] Mapped {/api/document-categories/:id, GET} route
+[2026-05-17T08:39:31.225Z] [LOG][RouterExplorer] Mapped {/api/admin/document-categories, POST} route
+[2026-05-17T08:39:31.225Z] [LOG][RouterExplorer] Mapped {/api/admin/document-categories/:id, PUT} route
+[2026-05-17T08:39:31.225Z] [LOG][RouterExplorer] Mapped {/api/admin/document-categories/:id, DELETE} route
+[2026-05-17T08:39:31.225Z] [LOG][RoutesResolver] DocumentTagsController {/api/document-tags}:
+[2026-05-17T08:39:31.225Z] [LOG][RouterExplorer] Mapped {/api/document-tags, GET} route
+[2026-05-17T08:39:31.225Z] [LOG][RouterExplorer] Mapped {/api/document-tags/trending, GET} route
+[2026-05-17T08:39:31.225Z] [LOG][RouterExplorer] Mapped {/api/document-tags/:id, GET} route
+[2026-05-17T08:39:31.225Z] [LOG][RouterExplorer] Mapped {/api/document-tags, POST} route
+[2026-05-17T08:39:31.225Z] [LOG][RouterExplorer] Mapped {/api/document-tags/:id, PUT} route
+[2026-05-17T08:39:31.225Z] [LOG][RouterExplorer] Mapped {/api/document-tags/:id, DELETE} route
+[2026-05-17T08:39:31.225Z] [LOG][RoutesResolver] DocumentsController {/api}:
+[2026-05-17T08:39:31.225Z] [LOG][RouterExplorer] Mapped {/api/documents, GET} route
+[2026-05-17T08:39:31.225Z] [LOG][RouterExplorer] Mapped {/api/documents/trending, GET} route
+[2026-05-17T08:39:31.225Z] [LOG][RouterExplorer] Mapped {/api/documents/top-contributors, GET} route
+[2026-05-17T08:39:31.225Z] [LOG][RouterExplorer] Mapped {/api/documents/:id, GET} route
+[2026-05-17T08:39:31.225Z] [LOG][RouterExplorer] Mapped {/api/documents, POST} route
+[2026-05-17T08:39:31.226Z] [LOG][RouterExplorer] Mapped {/api/documents/:id, PUT} route
+[2026-05-17T08:39:31.226Z] [LOG][RouterExplorer] Mapped {/api/documents/:id, DELETE} route
+[2026-05-17T08:39:31.226Z] [LOG][RouterExplorer] Mapped {/api/documents/:id/like, POST} route
+[2026-05-17T08:39:31.226Z] [LOG][RouterExplorer] Mapped {/api/documents/:id/like, DELETE} route
+[2026-05-17T08:39:31.226Z] [LOG][RouterExplorer] Mapped {/api/documents/:id/download, POST} route
+[2026-05-17T08:39:31.226Z] [LOG][RouterExplorer] Mapped {/api/my-documents, GET} route
+[2026-05-17T08:39:31.226Z] [LOG][RouterExplorer] Mapped {/api/my-liked-documents, GET} route
+[2026-05-17T08:39:31.226Z] [LOG][RouterExplorer] Mapped {/api/admin/documents, GET} route
+[2026-05-17T08:39:31.226Z] [LOG][RouterExplorer] Mapped {/api/admin/documents/:id/verify, PUT} route
+[2026-05-17T08:39:31.226Z] [LOG][RouterExplorer] Mapped {/api/admin/documents/:id, DELETE} route
+[2026-05-17T08:39:31.226Z] [LOG][RoutesResolver] DashboardController {/api/admin/dashboard}:
+[2026-05-17T08:39:31.226Z] [LOG][RouterExplorer] Mapped {/api/admin/dashboard/overview, GET} route
+[2026-05-17T08:39:31.226Z] [LOG][RouterExplorer] Mapped {/api/admin/dashboard/revenue, GET} route
+[2026-05-17T08:39:31.226Z] [LOG][RouterExplorer] Mapped {/api/admin/dashboard/users, GET} route
+[2026-05-17T08:39:31.226Z] [LOG][RouterExplorer] Mapped {/api/admin/dashboard/courses, GET} route
+[2026-05-17T08:39:31.226Z] [LOG][RouterExplorer] Mapped {/api/admin/dashboard/documents, GET} route
+[2026-05-17T08:39:31.226Z] [LOG][RouterExplorer] Mapped {/api/admin/dashboard/charts/revenue, GET} route
+[2026-05-17T08:39:31.226Z] [LOG][RouterExplorer] Mapped {/api/admin/dashboard/charts/users, GET} route
+[2026-05-17T08:39:31.226Z] [LOG][RoutesResolver] InstructorController {/api/instructor}:
+[2026-05-17T08:39:31.227Z] [LOG][RouterExplorer] Mapped {/api/instructor/dashboard/stats, GET} route
+[2026-05-17T08:39:31.227Z] [LOG][RouterExplorer] Mapped {/api/instructor/analytics/courses, GET} route
+[2026-05-17T08:39:31.227Z] [LOG][RouterExplorer] Mapped {/api/instructor/revenue/chart, GET} route
+[2026-05-17T08:39:31.227Z] [LOG][RouterExplorer] Mapped {/api/instructor/students, GET} route
+[2026-05-17T08:39:34.262Z] [LOG][WebSocketsController] RealtimeGateway subscribed to the "event" message
+[2026-05-17T08:39:34.272Z] [LOG][RoutesResolver] AppController {/}:
+[2026-05-17T08:39:34.273Z] [LOG][RouterExplorer] Mapped {/, GET} route
+[2026-05-17T08:39:34.273Z] [LOG][RoutesResolver] AuthController {/api/auth}:
+[2026-05-17T08:39:34.274Z] [LOG][RouterExplorer] Mapped {/api/auth/register, POST} route
+[2026-05-17T08:39:34.274Z] [LOG][RouterExplorer] Mapped {/api/auth/send-otp, POST} route
+[2026-05-17T08:39:34.274Z] [LOG][RouterExplorer] Mapped {/api/auth/login, POST} route
+[2026-05-17T08:39:34.274Z] [LOG][RouterExplorer] Mapped {/api/auth/refresh-token, POST} route
+[2026-05-17T08:39:34.274Z] [LOG][RouterExplorer] Mapped {/api/auth/forgot-password, POST} route
+[2026-05-17T08:39:34.275Z] [LOG][RouterExplorer] Mapped {/api/auth/logout, POST} route
+[2026-05-17T08:39:34.275Z] [LOG][RouterExplorer] Mapped {/api/auth/google-link, GET} route
+[2026-05-17T08:39:34.275Z] [LOG][RouterExplorer] Mapped {/api/auth/google/callback, GET} route
+[2026-05-17T08:39:34.275Z] [LOG][RouterExplorer] Mapped {/api/auth/me, GET} route
+[2026-05-17T08:39:34.275Z] [LOG][RoutesResolver] PermissionController {/api/permissions}:
+[2026-05-17T08:39:34.275Z] [LOG][RouterExplorer] Mapped {/api/permissions, GET} route
+[2026-05-17T08:39:34.276Z] [LOG][RouterExplorer] Mapped {/api/permissions/:id, GET} route
+[2026-05-17T08:39:34.276Z] [LOG][RouterExplorer] Mapped {/api/permissions, POST} route
+[2026-05-17T08:39:34.276Z] [LOG][RouterExplorer] Mapped {/api/permissions/:id, PUT} route
+[2026-05-17T08:39:34.276Z] [LOG][RouterExplorer] Mapped {/api/permissions/:id, DELETE} route
+[2026-05-17T08:39:34.276Z] [LOG][RoutesResolver] CategoriesController {/api}:
+[2026-05-17T08:39:34.276Z] [LOG][RouterExplorer] Mapped {/api/categories, GET} route
+[2026-05-17T08:39:34.276Z] [LOG][RouterExplorer] Mapped {/api/admin/categories, GET} route
+[2026-05-17T08:39:34.276Z] [LOG][RouterExplorer] Mapped {/api/admin/categories/:id, GET} route
+[2026-05-17T08:39:34.276Z] [LOG][RouterExplorer] Mapped {/api/admin/categories, POST} route
+[2026-05-17T08:39:34.276Z] [LOG][RouterExplorer] Mapped {/api/admin/categories/:id, PUT} route
+[2026-05-17T08:39:34.276Z] [LOG][RoutesResolver] RolesController {/api/roles}:
+[2026-05-17T08:39:34.276Z] [LOG][RouterExplorer] Mapped {/api/roles, GET} route
+[2026-05-17T08:39:34.277Z] [LOG][RouterExplorer] Mapped {/api/roles/:id, GET} route
+[2026-05-17T08:39:34.277Z] [LOG][RouterExplorer] Mapped {/api/roles, POST} route
+[2026-05-17T08:39:34.277Z] [LOG][RouterExplorer] Mapped {/api/roles/:id, PATCH} route
+[2026-05-17T08:39:34.277Z] [LOG][RouterExplorer] Mapped {/api/roles/:id, DELETE} route
+[2026-05-17T08:39:34.277Z] [LOG][RouterExplorer] Mapped {/api/roles/:id/permissions/assign, POST} route
+[2026-05-17T08:39:34.277Z] [LOG][RouterExplorer] Mapped {/api/roles/:id/permissions/unassign, POST} route
+[2026-05-17T08:39:34.277Z] [LOG][RoutesResolver] UsersController {/api}:
+[2026-05-17T08:39:34.277Z] [LOG][RouterExplorer] Mapped {/api/admin/users, GET} route
+[2026-05-17T08:39:34.278Z] [LOG][RouterExplorer] Mapped {/api/admin/users/:id, GET} route
+[2026-05-17T08:39:34.278Z] [LOG][RouterExplorer] Mapped {/api/admin/users, POST} route
+[2026-05-17T08:39:34.278Z] [LOG][RouterExplorer] Mapped {/api/admin/users/:id, PUT} route
+[2026-05-17T08:39:34.278Z] [LOG][RouterExplorer] Mapped {/api/admin/users/:id, DELETE} route
+[2026-05-17T08:39:34.278Z] [LOG][RouterExplorer] Mapped {/api/admin/users/:id/status, PUT} route
+[2026-05-17T08:39:34.278Z] [LOG][RoutesResolver] CoursesController {/api}:
+[2026-05-17T08:39:34.278Z] [LOG][RouterExplorer] Mapped {/api/courses, GET} route
+[2026-05-17T08:39:34.278Z] [LOG][RouterExplorer] Mapped {/api/courses/:id, GET} route
+[2026-05-17T08:39:34.278Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses, GET} route
+[2026-05-17T08:39:34.278Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses, POST} route
+[2026-05-17T08:39:34.278Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:id, GET} route
+[2026-05-17T08:39:34.278Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:id, PUT} route
+[2026-05-17T08:39:34.278Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:id, DELETE} route
+[2026-05-17T08:39:34.278Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:id/request-approval, POST} route
+[2026-05-17T08:39:34.278Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:id/request-delete, POST} route
+[2026-05-17T08:39:34.279Z] [LOG][RouterExplorer] Mapped {/api/admin/courses/:id/approve-publish, POST} route
+[2026-05-17T08:39:34.279Z] [LOG][RouterExplorer] Mapped {/api/admin/courses/:id/reject-publish, POST} route
+[2026-05-17T08:39:34.279Z] [LOG][RouterExplorer] Mapped {/api/admin/courses/:id/approve-delete, POST} route
+[2026-05-17T08:39:34.279Z] [LOG][RouterExplorer] Mapped {/api/admin/courses/:id/reject-delete, POST} route
+[2026-05-17T08:39:34.279Z] [LOG][RouterExplorer] Mapped {/api/admin/courses, GET} route
+[2026-05-17T08:39:34.279Z] [LOG][RouterExplorer] Mapped {/api/admin/courses/:id, GET} route
+[2026-05-17T08:39:34.279Z] [LOG][RoutesResolver] CourseDetailController {/api}:
+[2026-05-17T08:39:34.279Z] [LOG][RouterExplorer] Mapped {/api/courses/:courseId/detail, GET} route
+[2026-05-17T08:39:34.279Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/detail, GET} route
+[2026-05-17T08:39:34.279Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/detail, POST} route
+[2026-05-17T08:39:34.279Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/detail, PUT} route
+[2026-05-17T08:39:34.279Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/detail, DELETE} route
+[2026-05-17T08:39:34.279Z] [LOG][RoutesResolver] CourseContentController {/api}:
+[2026-05-17T08:39:34.279Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/contents, GET} route
+[2026-05-17T08:39:34.279Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/contents/:id, GET} route
+[2026-05-17T08:39:34.279Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/contents, POST} route
+[2026-05-17T08:39:34.279Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/contents/:id, PUT} route
+[2026-05-17T08:39:34.279Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/contents/:id, DELETE} route
+[2026-05-17T08:39:34.280Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/contents/reorder, PUT} route
+[2026-05-17T08:39:34.280Z] [LOG][RouterExplorer] Mapped {/api/course-content/webhook, POST} route
+[2026-05-17T08:39:34.280Z] [LOG][RoutesResolver] LessonsController {/api}:
+[2026-05-17T08:39:34.280Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/contents/:contentId/lessons, GET} route
+[2026-05-17T08:39:34.280Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/contents/:contentId/lessons/:id, GET} route
+[2026-05-17T08:39:34.280Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/contents/:contentId/lessons, POST} route
+[2026-05-17T08:39:34.280Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/contents/:contentId/lessons/:id, PUT} route
+[2026-05-17T08:39:34.280Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/contents/:contentId/lessons/:id, DELETE} route
+[2026-05-17T08:39:34.280Z] [LOG][RoutesResolver] EnrollmentsController {/api}:
+[2026-05-17T08:39:34.281Z] [LOG][RouterExplorer] Mapped {/api/courses/:courseId/enroll, POST} route
+[2026-05-17T08:39:34.281Z] [LOG][RouterExplorer] Mapped {/api/my-enrollments, GET} route
+[2026-05-17T08:39:34.281Z] [LOG][RouterExplorer] Mapped {/api/my-enrollments/stats, GET} route
+[2026-05-17T08:39:34.281Z] [LOG][RouterExplorer] Mapped {/api/my-enrollments/:courseId, GET} route
+[2026-05-17T08:39:34.281Z] [LOG][RouterExplorer] Mapped {/api/my-enrollments/:courseId/complete, PUT} route
+[2026-05-17T08:39:34.281Z] [LOG][RouterExplorer] Mapped {/api/my-enrollments/:courseId/contents, GET} route
+[2026-05-17T08:39:34.281Z] [LOG][RouterExplorer] Mapped {/api/my-enrollments/:courseId/lessons/:lessonId, GET} route
+[2026-05-17T08:39:34.281Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/enrollments, GET} route
+[2026-05-17T08:39:34.281Z] [LOG][RouterExplorer] Mapped {/api/instructor/students, GET} route
+[2026-05-17T08:39:34.281Z] [LOG][RouterExplorer] Mapped {/api/instructor/enrollments/:enrollmentId, DELETE} route
+[2026-05-17T08:39:34.282Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/enrollments, POST} route
+[2026-05-17T08:39:34.282Z] [LOG][RouterExplorer] Mapped {/api/admin/enrollments, GET} route
+[2026-05-17T08:39:34.282Z] [LOG][RouterExplorer] Mapped {/api/admin/courses/:courseId/enrollments, GET} route
+[2026-05-17T08:39:34.282Z] [LOG][RoutesResolver] ReviewsController {/api}:
+[2026-05-17T08:39:34.282Z] [LOG][RouterExplorer] Mapped {/api/courses/:courseId/reviews, POST} route
+[2026-05-17T08:39:34.282Z] [LOG][RouterExplorer] Mapped {/api/courses/:courseId/reviews, GET} route
+[2026-05-17T08:39:34.282Z] [LOG][RouterExplorer] Mapped {/api/my-reviews/:courseId, GET} route
+[2026-05-17T08:39:34.282Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/reviews, GET} route
+[2026-05-17T08:39:34.282Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/reviews/:reviewId, PUT} route
+[2026-05-17T08:39:34.282Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/reviews/:reviewId, DELETE} route
+[2026-05-17T08:39:34.282Z] [LOG][RouterExplorer] Mapped {/api/admin/reviews, GET} route
+[2026-05-17T08:39:34.282Z] [LOG][RouterExplorer] Mapped {/api/admin/courses/:courseId/reviews, GET} route
+[2026-05-17T08:39:34.282Z] [LOG][RouterExplorer] Mapped {/api/admin/courses/:courseId/reviews/:reviewId, PUT} route
+[2026-05-17T08:39:34.282Z] [LOG][RouterExplorer] Mapped {/api/admin/courses/:courseId/reviews/:reviewId, DELETE} route
+[2026-05-17T08:39:34.282Z] [LOG][RoutesResolver] WishlistController {/api}:
+[2026-05-17T08:39:34.282Z] [LOG][RouterExplorer] Mapped {/api/courses/:courseId/wishlist, POST} route
+[2026-05-17T08:39:34.282Z] [LOG][RouterExplorer] Mapped {/api/courses/:courseId/wishlist, DELETE} route
+[2026-05-17T08:39:34.282Z] [LOG][RouterExplorer] Mapped {/api/my-wishlist, GET} route
+[2026-05-17T08:39:34.283Z] [LOG][RouterExplorer] Mapped {/api/courses/:courseId/wishlist, GET} route
+[2026-05-17T08:39:34.283Z] [LOG][RoutesResolver] UploadController {/api/upload}:
+[2026-05-17T08:39:34.283Z] [LOG][RouterExplorer] Mapped {/api/upload/image, POST} route
+[2026-05-17T08:39:34.283Z] [LOG][RouterExplorer] Mapped {/api/upload/r2-presigned-url, GET} route
+[2026-05-17T08:39:34.283Z] [LOG][RouterExplorer] Mapped {/api/upload/r2-process-video, POST} route
+[2026-05-17T08:39:34.283Z] [LOG][RouterExplorer] Mapped {/api/upload/file, POST} route
+[2026-05-17T08:39:34.283Z] [LOG][RoutesResolver] CartController {/api/cart}:
+[2026-05-17T08:39:34.283Z] [LOG][RouterExplorer] Mapped {/api/cart, GET} route
+[2026-05-17T08:39:34.283Z] [LOG][RouterExplorer] Mapped {/api/cart/items, POST} route
+[2026-05-17T08:39:34.283Z] [LOG][RouterExplorer] Mapped {/api/cart/items/:courseId, DELETE} route
+[2026-05-17T08:39:34.283Z] [LOG][RouterExplorer] Mapped {/api/cart, DELETE} route
+[2026-05-17T08:39:34.283Z] [LOG][RoutesResolver] OrdersController {/api}:
+[2026-05-17T08:39:34.283Z] [LOG][RouterExplorer] Mapped {/api/orders, POST} route
+[2026-05-17T08:39:34.283Z] [LOG][RouterExplorer] Mapped {/api/my-orders, GET} route
+[2026-05-17T08:39:34.283Z] [LOG][RouterExplorer] Mapped {/api/my-orders/:orderId, GET} route
+[2026-05-17T08:39:34.283Z] [LOG][RouterExplorer] Mapped {/api/orders/:orderId/qr-code, GET} route
+[2026-05-17T08:39:34.283Z] [LOG][RouterExplorer] Mapped {/api/orders/:orderId/check-payment, POST} route
+[2026-05-17T08:39:34.283Z] [LOG][RouterExplorer] Mapped {/api/admin/orders, GET} route
+[2026-05-17T08:39:34.283Z] [LOG][RouterExplorer] Mapped {/api/admin/orders/:orderId, GET} route
+[2026-05-17T08:39:34.284Z] [LOG][RouterExplorer] Mapped {/api/admin/orders/:orderId/status, PUT} route
+[2026-05-17T08:39:34.284Z] [LOG][RoutesResolver] CommentsController {/api}:
+[2026-05-17T08:39:34.284Z] [LOG][RouterExplorer] Mapped {/api/lessons/:lessonId/comments, POST} route
+[2026-05-17T08:39:34.284Z] [LOG][RouterExplorer] Mapped {/api/lessons/:lessonId/comments, GET} route
+[2026-05-17T08:39:34.284Z] [LOG][RouterExplorer] Mapped {/api/lessons/:lessonId/comments/:commentId, GET} route
+[2026-05-17T08:39:34.284Z] [LOG][RouterExplorer] Mapped {/api/lessons/:lessonId/comments/:commentId, PUT} route
+[2026-05-17T08:39:34.284Z] [LOG][RouterExplorer] Mapped {/api/lessons/:lessonId/comments/:commentId, DELETE} route
+[2026-05-17T08:39:34.284Z] [LOG][RouterExplorer] Mapped {/api/admin/comments, GET} route
+[2026-05-17T08:39:34.284Z] [LOG][RouterExplorer] Mapped {/api/admin/lessons/:lessonId/comments/:commentId, PUT} route
+[2026-05-17T08:39:34.284Z] [LOG][RouterExplorer] Mapped {/api/admin/lessons/:lessonId/comments/:commentId, DELETE} route
+[2026-05-17T08:39:34.284Z] [LOG][RoutesResolver] DocumentCategoriesController {/api}:
+[2026-05-17T08:39:34.284Z] [LOG][RouterExplorer] Mapped {/api/document-categories, GET} route
+[2026-05-17T08:39:34.284Z] [LOG][RouterExplorer] Mapped {/api/document-categories/:id, GET} route
+[2026-05-17T08:39:34.284Z] [LOG][RouterExplorer] Mapped {/api/admin/document-categories, POST} route
+[2026-05-17T08:39:34.284Z] [LOG][RouterExplorer] Mapped {/api/admin/document-categories/:id, PUT} route
+[2026-05-17T08:39:34.284Z] [LOG][RouterExplorer] Mapped {/api/admin/document-categories/:id, DELETE} route
+[2026-05-17T08:39:34.284Z] [LOG][RoutesResolver] DocumentTagsController {/api/document-tags}:
+[2026-05-17T08:39:34.284Z] [LOG][RouterExplorer] Mapped {/api/document-tags, GET} route
+[2026-05-17T08:39:34.284Z] [LOG][RouterExplorer] Mapped {/api/document-tags/trending, GET} route
+[2026-05-17T08:39:34.284Z] [LOG][RouterExplorer] Mapped {/api/document-tags/:id, GET} route
+[2026-05-17T08:39:34.285Z] [LOG][RouterExplorer] Mapped {/api/document-tags, POST} route
+[2026-05-17T08:39:34.285Z] [LOG][RouterExplorer] Mapped {/api/document-tags/:id, PUT} route
+[2026-05-17T08:39:34.285Z] [LOG][RouterExplorer] Mapped {/api/document-tags/:id, DELETE} route
+[2026-05-17T08:39:34.285Z] [LOG][RoutesResolver] DocumentsController {/api}:
+[2026-05-17T08:39:34.285Z] [LOG][RouterExplorer] Mapped {/api/documents, GET} route
+[2026-05-17T08:39:34.285Z] [LOG][RouterExplorer] Mapped {/api/documents/trending, GET} route
+[2026-05-17T08:39:34.285Z] [LOG][RouterExplorer] Mapped {/api/documents/top-contributors, GET} route
+[2026-05-17T08:39:34.285Z] [LOG][RouterExplorer] Mapped {/api/documents/:id, GET} route
+[2026-05-17T08:39:34.285Z] [LOG][RouterExplorer] Mapped {/api/documents, POST} route
+[2026-05-17T08:39:34.285Z] [LOG][RouterExplorer] Mapped {/api/documents/:id, PUT} route
+[2026-05-17T08:39:34.285Z] [LOG][RouterExplorer] Mapped {/api/documents/:id, DELETE} route
+[2026-05-17T08:39:34.285Z] [LOG][RouterExplorer] Mapped {/api/documents/:id/like, POST} route
+[2026-05-17T08:39:34.285Z] [LOG][RouterExplorer] Mapped {/api/documents/:id/like, DELETE} route
+[2026-05-17T08:39:34.285Z] [LOG][RouterExplorer] Mapped {/api/documents/:id/download, POST} route
+[2026-05-17T08:39:34.285Z] [LOG][RouterExplorer] Mapped {/api/my-documents, GET} route
+[2026-05-17T08:39:34.285Z] [LOG][RouterExplorer] Mapped {/api/my-liked-documents, GET} route
+[2026-05-17T08:39:34.285Z] [LOG][RouterExplorer] Mapped {/api/admin/documents, GET} route
+[2026-05-17T08:39:34.285Z] [LOG][RouterExplorer] Mapped {/api/admin/documents/:id/verify, PUT} route
+[2026-05-17T08:39:34.286Z] [LOG][RouterExplorer] Mapped {/api/admin/documents/:id, DELETE} route
+[2026-05-17T08:39:34.286Z] [LOG][RoutesResolver] DashboardController {/api/admin/dashboard}:
+[2026-05-17T08:39:34.286Z] [LOG][RouterExplorer] Mapped {/api/admin/dashboard/overview, GET} route
+[2026-05-17T08:39:34.286Z] [LOG][RouterExplorer] Mapped {/api/admin/dashboard/revenue, GET} route
+[2026-05-17T08:39:34.286Z] [LOG][RouterExplorer] Mapped {/api/admin/dashboard/users, GET} route
+[2026-05-17T08:39:34.286Z] [LOG][RouterExplorer] Mapped {/api/admin/dashboard/courses, GET} route
+[2026-05-17T08:39:34.286Z] [LOG][RouterExplorer] Mapped {/api/admin/dashboard/documents, GET} route
+[2026-05-17T08:39:34.286Z] [LOG][RouterExplorer] Mapped {/api/admin/dashboard/charts/revenue, GET} route
+[2026-05-17T08:39:34.286Z] [LOG][RouterExplorer] Mapped {/api/admin/dashboard/charts/users, GET} route
+[2026-05-17T08:39:34.286Z] [LOG][RoutesResolver] InstructorController {/api/instructor}:
+[2026-05-17T08:39:34.286Z] [LOG][RouterExplorer] Mapped {/api/instructor/dashboard/stats, GET} route
+[2026-05-17T08:39:34.286Z] [LOG][RouterExplorer] Mapped {/api/instructor/analytics/courses, GET} route
+[2026-05-17T08:39:34.286Z] [LOG][RouterExplorer] Mapped {/api/instructor/revenue/chart, GET} route
+[2026-05-17T08:39:34.286Z] [LOG][RouterExplorer] Mapped {/api/instructor/students, GET} route
+[2026-05-17T08:39:40.470Z] [LOG][NestApplication] Nest application successfully started
+[2026-05-17T08:39:50.495Z] [LOG][WebSocketsController] RealtimeGateway subscribed to the "event" message
+[2026-05-17T08:39:50.496Z] [LOG][RoutesResolver] AppController {/}:
+[2026-05-17T08:39:50.497Z] [LOG][RouterExplorer] Mapped {/, GET} route
+[2026-05-17T08:39:50.497Z] [LOG][RoutesResolver] AuthController {/api/auth}:
+[2026-05-17T08:39:50.498Z] [LOG][RouterExplorer] Mapped {/api/auth/register, POST} route
+[2026-05-17T08:39:50.498Z] [LOG][RouterExplorer] Mapped {/api/auth/send-otp, POST} route
+[2026-05-17T08:39:50.498Z] [LOG][RouterExplorer] Mapped {/api/auth/login, POST} route
+[2026-05-17T08:39:50.498Z] [LOG][RouterExplorer] Mapped {/api/auth/refresh-token, POST} route
+[2026-05-17T08:39:50.498Z] [LOG][RouterExplorer] Mapped {/api/auth/forgot-password, POST} route
+[2026-05-17T08:39:50.499Z] [LOG][RouterExplorer] Mapped {/api/auth/logout, POST} route
+[2026-05-17T08:39:50.499Z] [LOG][RouterExplorer] Mapped {/api/auth/google-link, GET} route
+[2026-05-17T08:39:50.499Z] [LOG][RouterExplorer] Mapped {/api/auth/google/callback, GET} route
+[2026-05-17T08:39:50.499Z] [LOG][RouterExplorer] Mapped {/api/auth/me, GET} route
+[2026-05-17T08:39:50.499Z] [LOG][RoutesResolver] PermissionController {/api/permissions}:
+[2026-05-17T08:39:50.499Z] [LOG][RouterExplorer] Mapped {/api/permissions, GET} route
+[2026-05-17T08:39:50.499Z] [LOG][RouterExplorer] Mapped {/api/permissions/:id, GET} route
+[2026-05-17T08:39:50.499Z] [LOG][RouterExplorer] Mapped {/api/permissions, POST} route
+[2026-05-17T08:39:50.499Z] [LOG][RouterExplorer] Mapped {/api/permissions/:id, PUT} route
+[2026-05-17T08:39:50.500Z] [LOG][RouterExplorer] Mapped {/api/permissions/:id, DELETE} route
+[2026-05-17T08:39:50.500Z] [LOG][RoutesResolver] CategoriesController {/api}:
+[2026-05-17T08:39:50.500Z] [LOG][RouterExplorer] Mapped {/api/categories, GET} route
+[2026-05-17T08:39:50.500Z] [LOG][RouterExplorer] Mapped {/api/admin/categories, GET} route
+[2026-05-17T08:39:50.500Z] [LOG][RouterExplorer] Mapped {/api/admin/categories/:id, GET} route
+[2026-05-17T08:39:50.500Z] [LOG][RouterExplorer] Mapped {/api/admin/categories, POST} route
+[2026-05-17T08:39:50.500Z] [LOG][RouterExplorer] Mapped {/api/admin/categories/:id, PUT} route
+[2026-05-17T08:39:50.500Z] [LOG][RoutesResolver] RolesController {/api/roles}:
+[2026-05-17T08:39:50.500Z] [LOG][RouterExplorer] Mapped {/api/roles, GET} route
+[2026-05-17T08:39:50.500Z] [LOG][RouterExplorer] Mapped {/api/roles/:id, GET} route
+[2026-05-17T08:39:50.500Z] [LOG][RouterExplorer] Mapped {/api/roles, POST} route
+[2026-05-17T08:39:50.500Z] [LOG][RouterExplorer] Mapped {/api/roles/:id, PATCH} route
+[2026-05-17T08:39:50.500Z] [LOG][RouterExplorer] Mapped {/api/roles/:id, DELETE} route
+[2026-05-17T08:39:50.501Z] [LOG][RouterExplorer] Mapped {/api/roles/:id/permissions/assign, POST} route
+[2026-05-17T08:39:50.501Z] [LOG][RouterExplorer] Mapped {/api/roles/:id/permissions/unassign, POST} route
+[2026-05-17T08:39:50.501Z] [LOG][RoutesResolver] UsersController {/api}:
+[2026-05-17T08:39:50.501Z] [LOG][RouterExplorer] Mapped {/api/admin/users, GET} route
+[2026-05-17T08:39:50.501Z] [LOG][RouterExplorer] Mapped {/api/admin/users/:id, GET} route
+[2026-05-17T08:39:50.501Z] [LOG][RouterExplorer] Mapped {/api/admin/users, POST} route
+[2026-05-17T08:39:50.501Z] [LOG][RouterExplorer] Mapped {/api/admin/users/:id, PUT} route
+[2026-05-17T08:39:50.501Z] [LOG][RouterExplorer] Mapped {/api/admin/users/:id, DELETE} route
+[2026-05-17T08:39:50.501Z] [LOG][RouterExplorer] Mapped {/api/admin/users/:id/status, PUT} route
+[2026-05-17T08:39:50.501Z] [LOG][RoutesResolver] CoursesController {/api}:
+[2026-05-17T08:39:50.501Z] [LOG][RouterExplorer] Mapped {/api/courses, GET} route
+[2026-05-17T08:39:50.501Z] [LOG][RouterExplorer] Mapped {/api/courses/:id, GET} route
+[2026-05-17T08:39:50.501Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses, GET} route
+[2026-05-17T08:39:50.501Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses, POST} route
+[2026-05-17T08:39:50.501Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:id, GET} route
+[2026-05-17T08:39:50.501Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:id, PUT} route
+[2026-05-17T08:39:50.501Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:id, DELETE} route
+[2026-05-17T08:39:50.502Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:id/request-approval, POST} route
+[2026-05-17T08:39:50.502Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:id/request-delete, POST} route
+[2026-05-17T08:39:50.502Z] [LOG][RouterExplorer] Mapped {/api/admin/courses/:id/approve-publish, POST} route
+[2026-05-17T08:39:50.502Z] [LOG][RouterExplorer] Mapped {/api/admin/courses/:id/reject-publish, POST} route
+[2026-05-17T08:39:50.502Z] [LOG][RouterExplorer] Mapped {/api/admin/courses/:id/approve-delete, POST} route
+[2026-05-17T08:39:50.502Z] [LOG][RouterExplorer] Mapped {/api/admin/courses/:id/reject-delete, POST} route
+[2026-05-17T08:39:50.502Z] [LOG][RouterExplorer] Mapped {/api/admin/courses, GET} route
+[2026-05-17T08:39:50.502Z] [LOG][RouterExplorer] Mapped {/api/admin/courses/:id, GET} route
+[2026-05-17T08:39:50.502Z] [LOG][RoutesResolver] CourseDetailController {/api}:
+[2026-05-17T08:39:50.502Z] [LOG][RouterExplorer] Mapped {/api/courses/:courseId/detail, GET} route
+[2026-05-17T08:39:50.502Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/detail, GET} route
+[2026-05-17T08:39:50.502Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/detail, POST} route
+[2026-05-17T08:39:50.502Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/detail, PUT} route
+[2026-05-17T08:39:50.502Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/detail, DELETE} route
+[2026-05-17T08:39:50.502Z] [LOG][RoutesResolver] CourseContentController {/api}:
+[2026-05-17T08:39:50.502Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/contents, GET} route
+[2026-05-17T08:39:50.502Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/contents/:id, GET} route
+[2026-05-17T08:39:50.502Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/contents, POST} route
+[2026-05-17T08:39:50.502Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/contents/:id, PUT} route
+[2026-05-17T08:39:50.502Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/contents/:id, DELETE} route
+[2026-05-17T08:39:50.503Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/contents/reorder, PUT} route
+[2026-05-17T08:39:50.503Z] [LOG][RouterExplorer] Mapped {/api/course-content/webhook, POST} route
+[2026-05-17T08:39:50.503Z] [LOG][RoutesResolver] LessonsController {/api}:
+[2026-05-17T08:39:50.503Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/contents/:contentId/lessons, GET} route
+[2026-05-17T08:39:50.503Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/contents/:contentId/lessons/:id, GET} route
+[2026-05-17T08:39:50.503Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/contents/:contentId/lessons, POST} route
+[2026-05-17T08:39:50.503Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/contents/:contentId/lessons/:id, PUT} route
+[2026-05-17T08:39:50.503Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/contents/:contentId/lessons/:id, DELETE} route
+[2026-05-17T08:39:50.503Z] [LOG][RoutesResolver] EnrollmentsController {/api}:
+[2026-05-17T08:39:50.503Z] [LOG][RouterExplorer] Mapped {/api/courses/:courseId/enroll, POST} route
+[2026-05-17T08:39:50.503Z] [LOG][RouterExplorer] Mapped {/api/my-enrollments, GET} route
+[2026-05-17T08:39:50.503Z] [LOG][RouterExplorer] Mapped {/api/my-enrollments/stats, GET} route
+[2026-05-17T08:39:50.503Z] [LOG][RouterExplorer] Mapped {/api/my-enrollments/:courseId, GET} route
+[2026-05-17T08:39:50.503Z] [LOG][RouterExplorer] Mapped {/api/my-enrollments/:courseId/complete, PUT} route
+[2026-05-17T08:39:50.503Z] [LOG][RouterExplorer] Mapped {/api/my-enrollments/:courseId/contents, GET} route
+[2026-05-17T08:39:50.504Z] [LOG][RouterExplorer] Mapped {/api/my-enrollments/:courseId/lessons/:lessonId, GET} route
+[2026-05-17T08:39:50.504Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/enrollments, GET} route
+[2026-05-17T08:39:50.504Z] [LOG][RouterExplorer] Mapped {/api/instructor/students, GET} route
+[2026-05-17T08:39:50.504Z] [LOG][RouterExplorer] Mapped {/api/instructor/enrollments/:enrollmentId, DELETE} route
+[2026-05-17T08:39:50.504Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/enrollments, POST} route
+[2026-05-17T08:39:50.504Z] [LOG][RouterExplorer] Mapped {/api/admin/enrollments, GET} route
+[2026-05-17T08:39:50.504Z] [LOG][RouterExplorer] Mapped {/api/admin/courses/:courseId/enrollments, GET} route
+[2026-05-17T08:39:50.504Z] [LOG][RoutesResolver] ReviewsController {/api}:
+[2026-05-17T08:39:50.504Z] [LOG][RouterExplorer] Mapped {/api/courses/:courseId/reviews, POST} route
+[2026-05-17T08:39:50.504Z] [LOG][RouterExplorer] Mapped {/api/courses/:courseId/reviews, GET} route
+[2026-05-17T08:39:50.504Z] [LOG][RouterExplorer] Mapped {/api/my-reviews/:courseId, GET} route
+[2026-05-17T08:39:50.504Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/reviews, GET} route
+[2026-05-17T08:39:50.504Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/reviews/:reviewId, PUT} route
+[2026-05-17T08:39:50.504Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/reviews/:reviewId, DELETE} route
+[2026-05-17T08:39:50.504Z] [LOG][RouterExplorer] Mapped {/api/admin/reviews, GET} route
+[2026-05-17T08:39:50.504Z] [LOG][RouterExplorer] Mapped {/api/admin/courses/:courseId/reviews, GET} route
+[2026-05-17T08:39:50.504Z] [LOG][RouterExplorer] Mapped {/api/admin/courses/:courseId/reviews/:reviewId, PUT} route
+[2026-05-17T08:39:50.504Z] [LOG][RouterExplorer] Mapped {/api/admin/courses/:courseId/reviews/:reviewId, DELETE} route
+[2026-05-17T08:39:50.504Z] [LOG][RoutesResolver] WishlistController {/api}:
+[2026-05-17T08:39:50.504Z] [LOG][RouterExplorer] Mapped {/api/courses/:courseId/wishlist, POST} route
+[2026-05-17T08:39:50.505Z] [LOG][RouterExplorer] Mapped {/api/courses/:courseId/wishlist, DELETE} route
+[2026-05-17T08:39:50.505Z] [LOG][RouterExplorer] Mapped {/api/my-wishlist, GET} route
+[2026-05-17T08:39:50.505Z] [LOG][RouterExplorer] Mapped {/api/courses/:courseId/wishlist, GET} route
+[2026-05-17T08:39:50.505Z] [LOG][RoutesResolver] UploadController {/api/upload}:
+[2026-05-17T08:39:50.505Z] [LOG][RouterExplorer] Mapped {/api/upload/image, POST} route
+[2026-05-17T08:39:50.505Z] [LOG][RouterExplorer] Mapped {/api/upload/r2-presigned-url, GET} route
+[2026-05-17T08:39:50.505Z] [LOG][RouterExplorer] Mapped {/api/upload/r2-process-video, POST} route
+[2026-05-17T08:39:50.505Z] [LOG][RouterExplorer] Mapped {/api/upload/file, POST} route
+[2026-05-17T08:39:50.505Z] [LOG][RoutesResolver] CartController {/api/cart}:
+[2026-05-17T08:39:50.505Z] [LOG][RouterExplorer] Mapped {/api/cart, GET} route
+[2026-05-17T08:39:50.505Z] [LOG][RouterExplorer] Mapped {/api/cart/items, POST} route
+[2026-05-17T08:39:50.505Z] [LOG][RouterExplorer] Mapped {/api/cart/items/:courseId, DELETE} route
+[2026-05-17T08:39:50.505Z] [LOG][RouterExplorer] Mapped {/api/cart, DELETE} route
+[2026-05-17T08:39:50.505Z] [LOG][RoutesResolver] OrdersController {/api}:
+[2026-05-17T08:39:50.505Z] [LOG][RouterExplorer] Mapped {/api/orders, POST} route
+[2026-05-17T08:39:50.505Z] [LOG][RouterExplorer] Mapped {/api/my-orders, GET} route
+[2026-05-17T08:39:50.506Z] [LOG][RouterExplorer] Mapped {/api/my-orders/:orderId, GET} route
+[2026-05-17T08:39:50.506Z] [LOG][RouterExplorer] Mapped {/api/orders/:orderId/qr-code, GET} route
+[2026-05-17T08:39:50.506Z] [LOG][RouterExplorer] Mapped {/api/orders/:orderId/check-payment, POST} route
+[2026-05-17T08:39:50.506Z] [LOG][RouterExplorer] Mapped {/api/admin/orders, GET} route
+[2026-05-17T08:39:50.506Z] [LOG][RouterExplorer] Mapped {/api/admin/orders/:orderId, GET} route
+[2026-05-17T08:39:50.506Z] [LOG][RouterExplorer] Mapped {/api/admin/orders/:orderId/status, PUT} route
+[2026-05-17T08:39:50.506Z] [LOG][RoutesResolver] CommentsController {/api}:
+[2026-05-17T08:39:50.506Z] [LOG][RouterExplorer] Mapped {/api/lessons/:lessonId/comments, POST} route
+[2026-05-17T08:39:50.506Z] [LOG][RouterExplorer] Mapped {/api/lessons/:lessonId/comments, GET} route
+[2026-05-17T08:39:50.506Z] [LOG][RouterExplorer] Mapped {/api/lessons/:lessonId/comments/:commentId, GET} route
+[2026-05-17T08:39:50.506Z] [LOG][RouterExplorer] Mapped {/api/lessons/:lessonId/comments/:commentId, PUT} route
+[2026-05-17T08:39:50.506Z] [LOG][RouterExplorer] Mapped {/api/lessons/:lessonId/comments/:commentId, DELETE} route
+[2026-05-17T08:39:50.506Z] [LOG][RouterExplorer] Mapped {/api/admin/comments, GET} route
+[2026-05-17T08:39:50.506Z] [LOG][RouterExplorer] Mapped {/api/admin/lessons/:lessonId/comments/:commentId, PUT} route
+[2026-05-17T08:39:50.506Z] [LOG][RouterExplorer] Mapped {/api/admin/lessons/:lessonId/comments/:commentId, DELETE} route
+[2026-05-17T08:39:50.506Z] [LOG][RoutesResolver] DocumentCategoriesController {/api}:
+[2026-05-17T08:39:50.506Z] [LOG][RouterExplorer] Mapped {/api/document-categories, GET} route
+[2026-05-17T08:39:50.506Z] [LOG][RouterExplorer] Mapped {/api/document-categories/:id, GET} route
+[2026-05-17T08:39:50.506Z] [LOG][RouterExplorer] Mapped {/api/admin/document-categories, POST} route
+[2026-05-17T08:39:50.507Z] [LOG][RouterExplorer] Mapped {/api/admin/document-categories/:id, PUT} route
+[2026-05-17T08:39:50.507Z] [LOG][RouterExplorer] Mapped {/api/admin/document-categories/:id, DELETE} route
+[2026-05-17T08:39:50.507Z] [LOG][RoutesResolver] DocumentTagsController {/api/document-tags}:
+[2026-05-17T08:39:50.507Z] [LOG][RouterExplorer] Mapped {/api/document-tags, GET} route
+[2026-05-17T08:39:50.507Z] [LOG][RouterExplorer] Mapped {/api/document-tags/trending, GET} route
+[2026-05-17T08:39:50.507Z] [LOG][RouterExplorer] Mapped {/api/document-tags/:id, GET} route
+[2026-05-17T08:39:50.507Z] [LOG][RouterExplorer] Mapped {/api/document-tags, POST} route
+[2026-05-17T08:39:50.507Z] [LOG][RouterExplorer] Mapped {/api/document-tags/:id, PUT} route
+[2026-05-17T08:39:50.507Z] [LOG][RouterExplorer] Mapped {/api/document-tags/:id, DELETE} route
+[2026-05-17T08:39:50.507Z] [LOG][RoutesResolver] DocumentsController {/api}:
+[2026-05-17T08:39:50.507Z] [LOG][RouterExplorer] Mapped {/api/documents, GET} route
+[2026-05-17T08:39:50.507Z] [LOG][RouterExplorer] Mapped {/api/documents/trending, GET} route
+[2026-05-17T08:39:50.507Z] [LOG][RouterExplorer] Mapped {/api/documents/top-contributors, GET} route
+[2026-05-17T08:39:50.507Z] [LOG][RouterExplorer] Mapped {/api/documents/:id, GET} route
+[2026-05-17T08:39:50.509Z] [LOG][RouterExplorer] Mapped {/api/documents, POST} route
+[2026-05-17T08:39:50.509Z] [LOG][RouterExplorer] Mapped {/api/documents/:id, PUT} route
+[2026-05-17T08:39:50.509Z] [LOG][RouterExplorer] Mapped {/api/documents/:id, DELETE} route
+[2026-05-17T08:39:50.509Z] [LOG][RouterExplorer] Mapped {/api/documents/:id/like, POST} route
+[2026-05-17T08:39:50.509Z] [LOG][RouterExplorer] Mapped {/api/documents/:id/like, DELETE} route
+[2026-05-17T08:39:50.509Z] [LOG][RouterExplorer] Mapped {/api/documents/:id/download, POST} route
+[2026-05-17T08:39:50.509Z] [LOG][RouterExplorer] Mapped {/api/my-documents, GET} route
+[2026-05-17T08:39:50.509Z] [LOG][RouterExplorer] Mapped {/api/my-liked-documents, GET} route
+[2026-05-17T08:39:50.509Z] [LOG][RouterExplorer] Mapped {/api/admin/documents, GET} route
+[2026-05-17T08:39:50.509Z] [LOG][RouterExplorer] Mapped {/api/admin/documents/:id/verify, PUT} route
+[2026-05-17T08:39:50.509Z] [LOG][RouterExplorer] Mapped {/api/admin/documents/:id, DELETE} route
+[2026-05-17T08:39:50.510Z] [LOG][RoutesResolver] DashboardController {/api/admin/dashboard}:
+[2026-05-17T08:39:50.510Z] [LOG][RouterExplorer] Mapped {/api/admin/dashboard/overview, GET} route
+[2026-05-17T08:39:50.510Z] [LOG][RouterExplorer] Mapped {/api/admin/dashboard/revenue, GET} route
+[2026-05-17T08:39:50.510Z] [LOG][RouterExplorer] Mapped {/api/admin/dashboard/users, GET} route
+[2026-05-17T08:39:50.510Z] [LOG][RouterExplorer] Mapped {/api/admin/dashboard/courses, GET} route
+[2026-05-17T08:39:50.510Z] [LOG][RouterExplorer] Mapped {/api/admin/dashboard/documents, GET} route
+[2026-05-17T08:39:50.510Z] [LOG][RouterExplorer] Mapped {/api/admin/dashboard/charts/revenue, GET} route
+[2026-05-17T08:39:50.510Z] [LOG][RouterExplorer] Mapped {/api/admin/dashboard/charts/users, GET} route
+[2026-05-17T08:39:50.510Z] [LOG][RoutesResolver] InstructorController {/api/instructor}:
+[2026-05-17T08:39:50.510Z] [LOG][RouterExplorer] Mapped {/api/instructor/dashboard/stats, GET} route
+[2026-05-17T08:39:50.510Z] [LOG][RouterExplorer] Mapped {/api/instructor/analytics/courses, GET} route
+[2026-05-17T08:39:50.510Z] [LOG][RouterExplorer] Mapped {/api/instructor/revenue/chart, GET} route
+[2026-05-17T08:39:50.510Z] [LOG][RouterExplorer] Mapped {/api/instructor/students, GET} route
+[2026-05-17T08:39:52.980Z] [LOG][WebSocketsController] RealtimeGateway subscribed to the "event" message
+[2026-05-17T08:39:52.981Z] [LOG][RoutesResolver] AppController {/}:
+[2026-05-17T08:39:52.982Z] [LOG][RouterExplorer] Mapped {/, GET} route
+[2026-05-17T08:39:52.982Z] [LOG][RoutesResolver] AuthController {/api/auth}:
+[2026-05-17T08:39:52.982Z] [LOG][RouterExplorer] Mapped {/api/auth/register, POST} route
+[2026-05-17T08:39:52.983Z] [LOG][RouterExplorer] Mapped {/api/auth/send-otp, POST} route
+[2026-05-17T08:39:52.983Z] [LOG][RouterExplorer] Mapped {/api/auth/login, POST} route
+[2026-05-17T08:39:52.983Z] [LOG][RouterExplorer] Mapped {/api/auth/refresh-token, POST} route
+[2026-05-17T08:39:52.983Z] [LOG][RouterExplorer] Mapped {/api/auth/forgot-password, POST} route
+[2026-05-17T08:39:52.983Z] [LOG][RouterExplorer] Mapped {/api/auth/logout, POST} route
+[2026-05-17T08:39:52.983Z] [LOG][RouterExplorer] Mapped {/api/auth/google-link, GET} route
+[2026-05-17T08:39:52.983Z] [LOG][RouterExplorer] Mapped {/api/auth/google/callback, GET} route
+[2026-05-17T08:39:52.983Z] [LOG][RouterExplorer] Mapped {/api/auth/me, GET} route
+[2026-05-17T08:39:52.983Z] [LOG][RoutesResolver] PermissionController {/api/permissions}:
+[2026-05-17T08:39:52.984Z] [LOG][RouterExplorer] Mapped {/api/permissions, GET} route
+[2026-05-17T08:39:52.984Z] [LOG][RouterExplorer] Mapped {/api/permissions/:id, GET} route
+[2026-05-17T08:39:52.984Z] [LOG][RouterExplorer] Mapped {/api/permissions, POST} route
+[2026-05-17T08:39:52.984Z] [LOG][RouterExplorer] Mapped {/api/permissions/:id, PUT} route
+[2026-05-17T08:39:52.984Z] [LOG][RouterExplorer] Mapped {/api/permissions/:id, DELETE} route
+[2026-05-17T08:39:52.984Z] [LOG][RoutesResolver] CategoriesController {/api}:
+[2026-05-17T08:39:52.984Z] [LOG][RouterExplorer] Mapped {/api/categories, GET} route
+[2026-05-17T08:39:52.984Z] [LOG][RouterExplorer] Mapped {/api/admin/categories, GET} route
+[2026-05-17T08:39:52.984Z] [LOG][RouterExplorer] Mapped {/api/admin/categories/:id, GET} route
+[2026-05-17T08:39:52.984Z] [LOG][RouterExplorer] Mapped {/api/admin/categories, POST} route
+[2026-05-17T08:39:52.984Z] [LOG][RouterExplorer] Mapped {/api/admin/categories/:id, PUT} route
+[2026-05-17T08:39:52.984Z] [LOG][RoutesResolver] RolesController {/api/roles}:
+[2026-05-17T08:39:52.984Z] [LOG][RouterExplorer] Mapped {/api/roles, GET} route
+[2026-05-17T08:39:52.985Z] [LOG][RouterExplorer] Mapped {/api/roles/:id, GET} route
+[2026-05-17T08:39:52.985Z] [LOG][RouterExplorer] Mapped {/api/roles, POST} route
+[2026-05-17T08:39:52.985Z] [LOG][RouterExplorer] Mapped {/api/roles/:id, PATCH} route
+[2026-05-17T08:39:52.985Z] [LOG][RouterExplorer] Mapped {/api/roles/:id, DELETE} route
+[2026-05-17T08:39:52.985Z] [LOG][RouterExplorer] Mapped {/api/roles/:id/permissions/assign, POST} route
+[2026-05-17T08:39:52.985Z] [LOG][RouterExplorer] Mapped {/api/roles/:id/permissions/unassign, POST} route
+[2026-05-17T08:39:52.985Z] [LOG][RoutesResolver] UsersController {/api}:
+[2026-05-17T08:39:52.985Z] [LOG][RouterExplorer] Mapped {/api/admin/users, GET} route
+[2026-05-17T08:39:52.985Z] [LOG][RouterExplorer] Mapped {/api/admin/users/:id, GET} route
+[2026-05-17T08:39:52.985Z] [LOG][RouterExplorer] Mapped {/api/admin/users, POST} route
+[2026-05-17T08:39:52.985Z] [LOG][RouterExplorer] Mapped {/api/admin/users/:id, PUT} route
+[2026-05-17T08:39:52.986Z] [LOG][RouterExplorer] Mapped {/api/admin/users/:id, DELETE} route
+[2026-05-17T08:39:52.986Z] [LOG][RouterExplorer] Mapped {/api/admin/users/:id/status, PUT} route
+[2026-05-17T08:39:52.986Z] [LOG][RoutesResolver] CoursesController {/api}:
+[2026-05-17T08:39:52.986Z] [LOG][RouterExplorer] Mapped {/api/courses, GET} route
+[2026-05-17T08:39:52.986Z] [LOG][RouterExplorer] Mapped {/api/courses/:id, GET} route
+[2026-05-17T08:39:52.986Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses, GET} route
+[2026-05-17T08:39:52.986Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses, POST} route
+[2026-05-17T08:39:52.986Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:id, GET} route
+[2026-05-17T08:39:52.986Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:id, PUT} route
+[2026-05-17T08:39:52.986Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:id, DELETE} route
+[2026-05-17T08:39:52.986Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:id/request-approval, POST} route
+[2026-05-17T08:39:52.986Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:id/request-delete, POST} route
+[2026-05-17T08:39:52.986Z] [LOG][RouterExplorer] Mapped {/api/admin/courses/:id/approve-publish, POST} route
+[2026-05-17T08:39:52.986Z] [LOG][RouterExplorer] Mapped {/api/admin/courses/:id/reject-publish, POST} route
+[2026-05-17T08:39:52.986Z] [LOG][RouterExplorer] Mapped {/api/admin/courses/:id/approve-delete, POST} route
+[2026-05-17T08:39:52.986Z] [LOG][RouterExplorer] Mapped {/api/admin/courses/:id/reject-delete, POST} route
+[2026-05-17T08:39:52.986Z] [LOG][RouterExplorer] Mapped {/api/admin/courses, GET} route
+[2026-05-17T08:39:52.986Z] [LOG][RouterExplorer] Mapped {/api/admin/courses/:id, GET} route
+[2026-05-17T08:39:52.987Z] [LOG][RoutesResolver] CourseDetailController {/api}:
+[2026-05-17T08:39:52.987Z] [LOG][RouterExplorer] Mapped {/api/courses/:courseId/detail, GET} route
+[2026-05-17T08:39:52.987Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/detail, GET} route
+[2026-05-17T08:39:52.987Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/detail, POST} route
+[2026-05-17T08:39:52.987Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/detail, PUT} route
+[2026-05-17T08:39:52.987Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/detail, DELETE} route
+[2026-05-17T08:39:52.987Z] [LOG][RoutesResolver] CourseContentController {/api}:
+[2026-05-17T08:39:52.987Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/contents, GET} route
+[2026-05-17T08:39:52.987Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/contents/:id, GET} route
+[2026-05-17T08:39:52.987Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/contents, POST} route
+[2026-05-17T08:39:52.987Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/contents/:id, PUT} route
+[2026-05-17T08:39:52.987Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/contents/:id, DELETE} route
+[2026-05-17T08:39:52.987Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/contents/reorder, PUT} route
+[2026-05-17T08:39:52.987Z] [LOG][RouterExplorer] Mapped {/api/webhook/video-done, POST} route
+[2026-05-17T08:39:52.987Z] [LOG][RoutesResolver] LessonsController {/api}:
+[2026-05-17T08:39:52.987Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/contents/:contentId/lessons, GET} route
+[2026-05-17T08:39:52.987Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/contents/:contentId/lessons/:id, GET} route
+[2026-05-17T08:39:52.988Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/contents/:contentId/lessons, POST} route
+[2026-05-17T08:39:52.988Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/contents/:contentId/lessons/:id, PUT} route
+[2026-05-17T08:39:52.988Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/contents/:contentId/lessons/:id, DELETE} route
+[2026-05-17T08:39:52.988Z] [LOG][RoutesResolver] EnrollmentsController {/api}:
+[2026-05-17T08:39:52.988Z] [LOG][RouterExplorer] Mapped {/api/courses/:courseId/enroll, POST} route
+[2026-05-17T08:39:52.988Z] [LOG][RouterExplorer] Mapped {/api/my-enrollments, GET} route
+[2026-05-17T08:39:52.988Z] [LOG][RouterExplorer] Mapped {/api/my-enrollments/stats, GET} route
+[2026-05-17T08:39:52.988Z] [LOG][RouterExplorer] Mapped {/api/my-enrollments/:courseId, GET} route
+[2026-05-17T08:39:52.988Z] [LOG][RouterExplorer] Mapped {/api/my-enrollments/:courseId/complete, PUT} route
+[2026-05-17T08:39:52.988Z] [LOG][RouterExplorer] Mapped {/api/my-enrollments/:courseId/contents, GET} route
+[2026-05-17T08:39:52.988Z] [LOG][RouterExplorer] Mapped {/api/my-enrollments/:courseId/lessons/:lessonId, GET} route
+[2026-05-17T08:39:52.988Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/enrollments, GET} route
+[2026-05-17T08:39:52.988Z] [LOG][RouterExplorer] Mapped {/api/instructor/students, GET} route
+[2026-05-17T08:39:52.988Z] [LOG][RouterExplorer] Mapped {/api/instructor/enrollments/:enrollmentId, DELETE} route
+[2026-05-17T08:39:52.988Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/enrollments, POST} route
+[2026-05-17T08:39:52.988Z] [LOG][RouterExplorer] Mapped {/api/admin/enrollments, GET} route
+[2026-05-17T08:39:52.988Z] [LOG][RouterExplorer] Mapped {/api/admin/courses/:courseId/enrollments, GET} route
+[2026-05-17T08:39:52.988Z] [LOG][RoutesResolver] ReviewsController {/api}:
+[2026-05-17T08:39:52.989Z] [LOG][RouterExplorer] Mapped {/api/courses/:courseId/reviews, POST} route
+[2026-05-17T08:39:52.989Z] [LOG][RouterExplorer] Mapped {/api/courses/:courseId/reviews, GET} route
+[2026-05-17T08:39:52.989Z] [LOG][RouterExplorer] Mapped {/api/my-reviews/:courseId, GET} route
+[2026-05-17T08:39:52.989Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/reviews, GET} route
+[2026-05-17T08:39:52.989Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/reviews/:reviewId, PUT} route
+[2026-05-17T08:39:52.989Z] [LOG][RouterExplorer] Mapped {/api/instructor/courses/:courseId/reviews/:reviewId, DELETE} route
+[2026-05-17T08:39:52.989Z] [LOG][RouterExplorer] Mapped {/api/admin/reviews, GET} route
+[2026-05-17T08:39:52.989Z] [LOG][RouterExplorer] Mapped {/api/admin/courses/:courseId/reviews, GET} route
+[2026-05-17T08:39:52.989Z] [LOG][RouterExplorer] Mapped {/api/admin/courses/:courseId/reviews/:reviewId, PUT} route
+[2026-05-17T08:39:52.989Z] [LOG][RouterExplorer] Mapped {/api/admin/courses/:courseId/reviews/:reviewId, DELETE} route
+[2026-05-17T08:39:52.989Z] [LOG][RoutesResolver] WishlistController {/api}:
+[2026-05-17T08:39:52.989Z] [LOG][RouterExplorer] Mapped {/api/courses/:courseId/wishlist, POST} route
+[2026-05-17T08:39:52.989Z] [LOG][RouterExplorer] Mapped {/api/courses/:courseId/wishlist, DELETE} route
+[2026-05-17T08:39:52.989Z] [LOG][RouterExplorer] Mapped {/api/my-wishlist, GET} route
+[2026-05-17T08:39:52.989Z] [LOG][RouterExplorer] Mapped {/api/courses/:courseId/wishlist, GET} route
+[2026-05-17T08:39:52.989Z] [LOG][RoutesResolver] UploadController {/api/upload}:
+[2026-05-17T08:39:52.989Z] [LOG][RouterExplorer] Mapped {/api/upload/image, POST} route
+[2026-05-17T08:39:52.989Z] [LOG][RouterExplorer] Mapped {/api/upload/r2-presigned-url, GET} route
+[2026-05-17T08:39:52.990Z] [LOG][RouterExplorer] Mapped {/api/upload/r2-process-video, POST} route
+[2026-05-17T08:39:52.990Z] [LOG][RouterExplorer] Mapped {/api/upload/file, POST} route
+[2026-05-17T08:39:52.990Z] [LOG][RoutesResolver] CartController {/api/cart}:
+[2026-05-17T08:39:52.990Z] [LOG][RouterExplorer] Mapped {/api/cart, GET} route
+[2026-05-17T08:39:52.990Z] [LOG][RouterExplorer] Mapped {/api/cart/items, POST} route
+[2026-05-17T08:39:52.990Z] [LOG][RouterExplorer] Mapped {/api/cart/items/:courseId, DELETE} route
+[2026-05-17T08:39:52.990Z] [LOG][RouterExplorer] Mapped {/api/cart, DELETE} route
+[2026-05-17T08:39:52.990Z] [LOG][RoutesResolver] OrdersController {/api}:
+[2026-05-17T08:39:52.990Z] [LOG][RouterExplorer] Mapped {/api/orders, POST} route
+[2026-05-17T08:39:52.990Z] [LOG][RouterExplorer] Mapped {/api/my-orders, GET} route
+[2026-05-17T08:39:52.990Z] [LOG][RouterExplorer] Mapped {/api/my-orders/:orderId, GET} route
+[2026-05-17T08:39:52.990Z] [LOG][RouterExplorer] Mapped {/api/orders/:orderId/qr-code, GET} route
+[2026-05-17T08:39:52.990Z] [LOG][RouterExplorer] Mapped {/api/orders/:orderId/check-payment, POST} route
+[2026-05-17T08:39:52.990Z] [LOG][RouterExplorer] Mapped {/api/admin/orders, GET} route
+[2026-05-17T08:39:52.990Z] [LOG][RouterExplorer] Mapped {/api/admin/orders/:orderId, GET} route
+[2026-05-17T08:39:52.990Z] [LOG][RouterExplorer] Mapped {/api/admin/orders/:orderId/status, PUT} route
+[2026-05-17T08:39:52.990Z] [LOG][RoutesResolver] CommentsController {/api}:
+[2026-05-17T08:39:52.991Z] [LOG][RouterExplorer] Mapped {/api/lessons/:lessonId/comments, POST} route
+[2026-05-17T08:39:52.991Z] [LOG][RouterExplorer] Mapped {/api/lessons/:lessonId/comments, GET} route
+[2026-05-17T08:39:52.991Z] [LOG][RouterExplorer] Mapped {/api/lessons/:lessonId/comments/:commentId, GET} route
+[2026-05-17T08:39:52.991Z] [LOG][RouterExplorer] Mapped {/api/lessons/:lessonId/comments/:commentId, PUT} route
+[2026-05-17T08:39:52.991Z] [LOG][RouterExplorer] Mapped {/api/lessons/:lessonId/comments/:commentId, DELETE} route
+[2026-05-17T08:39:52.991Z] [LOG][RouterExplorer] Mapped {/api/admin/comments, GET} route
+[2026-05-17T08:39:52.991Z] [LOG][RouterExplorer] Mapped {/api/admin/lessons/:lessonId/comments/:commentId, PUT} route
+[2026-05-17T08:39:52.991Z] [LOG][RouterExplorer] Mapped {/api/admin/lessons/:lessonId/comments/:commentId, DELETE} route
+[2026-05-17T08:39:52.991Z] [LOG][RoutesResolver] DocumentCategoriesController {/api}:
+[2026-05-17T08:39:52.991Z] [LOG][RouterExplorer] Mapped {/api/document-categories, GET} route
+[2026-05-17T08:39:52.991Z] [LOG][RouterExplorer] Mapped {/api/document-categories/:id, GET} route
+[2026-05-17T08:39:52.991Z] [LOG][RouterExplorer] Mapped {/api/admin/document-categories, POST} route
+[2026-05-17T08:39:52.991Z] [LOG][RouterExplorer] Mapped {/api/admin/document-categories/:id, PUT} route
+[2026-05-17T08:39:52.991Z] [LOG][RouterExplorer] Mapped {/api/admin/document-categories/:id, DELETE} route
+[2026-05-17T08:39:52.991Z] [LOG][RoutesResolver] DocumentTagsController {/api/document-tags}:
+[2026-05-17T08:39:52.991Z] [LOG][RouterExplorer] Mapped {/api/document-tags, GET} route
+[2026-05-17T08:39:52.991Z] [LOG][RouterExplorer] Mapped {/api/document-tags/trending, GET} route
+[2026-05-17T08:39:52.992Z] [LOG][RouterExplorer] Mapped {/api/document-tags/:id, GET} route
+[2026-05-17T08:39:52.992Z] [LOG][RouterExplorer] Mapped {/api/document-tags, POST} route
+[2026-05-17T08:39:52.992Z] [LOG][RouterExplorer] Mapped {/api/document-tags/:id, PUT} route
+[2026-05-17T08:39:52.992Z] [LOG][RouterExplorer] Mapped {/api/document-tags/:id, DELETE} route
+[2026-05-17T08:39:52.992Z] [LOG][RoutesResolver] DocumentsController {/api}:
+[2026-05-17T08:39:52.992Z] [LOG][RouterExplorer] Mapped {/api/documents, GET} route
+[2026-05-17T08:39:52.992Z] [LOG][RouterExplorer] Mapped {/api/documents/trending, GET} route
+[2026-05-17T08:39:52.992Z] [LOG][RouterExplorer] Mapped {/api/documents/top-contributors, GET} route
+[2026-05-17T08:39:52.992Z] [LOG][RouterExplorer] Mapped {/api/documents/:id, GET} route
+[2026-05-17T08:39:52.992Z] [LOG][RouterExplorer] Mapped {/api/documents, POST} route
+[2026-05-17T08:39:52.992Z] [LOG][RouterExplorer] Mapped {/api/documents/:id, PUT} route
+[2026-05-17T08:39:52.992Z] [LOG][RouterExplorer] Mapped {/api/documents/:id, DELETE} route
+[2026-05-17T08:39:52.992Z] [LOG][RouterExplorer] Mapped {/api/documents/:id/like, POST} route
+[2026-05-17T08:39:52.992Z] [LOG][RouterExplorer] Mapped {/api/documents/:id/like, DELETE} route
+[2026-05-17T08:39:52.992Z] [LOG][RouterExplorer] Mapped {/api/documents/:id/download, POST} route
+[2026-05-17T08:39:52.992Z] [LOG][RouterExplorer] Mapped {/api/my-documents, GET} route
+[2026-05-17T08:39:52.993Z] [LOG][RouterExplorer] Mapped {/api/my-liked-documents, GET} route
+[2026-05-17T08:39:52.993Z] [LOG][RouterExplorer] Mapped {/api/admin/documents, GET} route
+[2026-05-17T08:39:52.993Z] [LOG][RouterExplorer] Mapped {/api/admin/documents/:id/verify, PUT} route
+[2026-05-17T08:39:52.993Z] [LOG][RouterExplorer] Mapped {/api/admin/documents/:id, DELETE} route
+[2026-05-17T08:39:52.993Z] [LOG][RoutesResolver] DashboardController {/api/admin/dashboard}:
+[2026-05-17T08:39:52.993Z] [LOG][RouterExplorer] Mapped {/api/admin/dashboard/overview, GET} route
+[2026-05-17T08:39:52.993Z] [LOG][RouterExplorer] Mapped {/api/admin/dashboard/revenue, GET} route
+[2026-05-17T08:39:52.993Z] [LOG][RouterExplorer] Mapped {/api/admin/dashboard/users, GET} route
+[2026-05-17T08:39:52.993Z] [LOG][RouterExplorer] Mapped {/api/admin/dashboard/courses, GET} route
+[2026-05-17T08:39:52.993Z] [LOG][RouterExplorer] Mapped {/api/admin/dashboard/documents, GET} route
+[2026-05-17T08:39:52.993Z] [LOG][RouterExplorer] Mapped {/api/admin/dashboard/charts/revenue, GET} route
+[2026-05-17T08:39:52.993Z] [LOG][RouterExplorer] Mapped {/api/admin/dashboard/charts/users, GET} route
+[2026-05-17T08:39:52.993Z] [LOG][RoutesResolver] InstructorController {/api/instructor}:
+[2026-05-17T08:39:52.993Z] [LOG][RouterExplorer] Mapped {/api/instructor/dashboard/stats, GET} route
+[2026-05-17T08:39:52.993Z] [LOG][RouterExplorer] Mapped {/api/instructor/analytics/courses, GET} route
+[2026-05-17T08:39:52.993Z] [LOG][RouterExplorer] Mapped {/api/instructor/revenue/chart, GET} route
+[2026-05-17T08:39:52.993Z] [LOG][RouterExplorer] Mapped {/api/instructor/students, GET} route
+[2026-05-17T08:39:59.636Z] [LOG][NestApplication] Nest application successfully started
+[2026-05-17T08:41:30.484Z] [LOG][R2Service] Generating presigned upload URL for key: lessons/raw-videos/1779007290484-bai2.mp4...
+[2026-05-17T08:46:57.333Z] [LOG][R2Service] Deleting file from R2. Key: lessons/raw-videos/1779007290484-bai2.mp4...
+[2026-05-17T08:46:57.712Z] [LOG][R2Service] Successfully deleted file from R2! Key: lessons/raw-videos/1779007290484-bai2.mp4

@@ -13,6 +13,7 @@ import {
 } from "./course-content.dto";
 import { Public } from "src/shared/decorator/auth.decorator";
 import { PrismaService } from "src/shared/service/prisma.service";
+import { R2Service } from "src/shared/service/r2.service";
 
 
 
@@ -21,6 +22,7 @@ export class CourseContentController {
   constructor(
     private readonly courseContentService: CourseContentService,
     private readonly prisma: PrismaService,
+    private readonly r2Service: R2Service,
   ) {}
 
 
@@ -105,6 +107,13 @@ export class CourseContentController {
     const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
     if (uuidRegex.test(body.video_id)) {
       try {
+        // 1. Fetch current lesson to get its original raw video storageUrl before we edit/delete it
+        const currentLesson = await this.prisma.lesson.findUnique({
+          where: { id: body.video_id },
+        });
+
+        const rawVideoUrl = currentLesson?.storageUrl;
+
         if (body.status === "SUCCESS" && body.new_url) {
           await this.prisma.lesson.update({
             where: { id: body.video_id },
@@ -116,10 +125,27 @@ export class CourseContentController {
           });
           console.log(`[WEBHOOK] Successfully updated Lesson ${body.video_id} with HLS R2 URL: ${body.new_url}`);
         } else {
-          console.warn(`[WEBHOOK] Task failed or missing URL for Lesson ${body.video_id}`);
+          console.warn(`[WEBHOOK] Task failed or missing URL for Lesson ${body.video_id}. Deleting lesson...`);
+          // Transcoding failed, delete the newly created broken lesson completely
+          await this.prisma.lesson.delete({
+            where: { id: body.video_id },
+          });
+          console.log(`[WEBHOOK] Successfully deleted broken Lesson ${body.video_id} due to HLS transcoding failure.`);
+        }
+
+        // 2. Delete original raw video from R2 under lessons/raw-videos/ folder to free up space
+        if (rawVideoUrl && rawVideoUrl.includes('raw-videos')) {
+          try {
+            const urlObj = new URL(rawVideoUrl);
+            const r2Key = decodeURIComponent(urlObj.pathname.slice(1)); // Extract path, e.g. lessons/raw-videos/1778989387601-video.mp4
+            console.log(`[WEBHOOK] Clean up: Deleting original raw video from R2. Key: ${r2Key}...`);
+            await this.r2Service.deleteVideo(r2Key);
+          } catch (deleteError) {
+            console.error(`[WEBHOOK] Failed to delete raw R2 video file (${rawVideoUrl}):`, deleteError.message);
+          }
         }
       } catch (error) {
-        console.error(`[WEBHOOK] Failed to update database for Lesson ${body.video_id}:`, error.message);
+        console.error(`[WEBHOOK] Failed to process webhook for Lesson ${body.video_id}:`, error.message);
       }
     } else {
       console.log(`[WEBHOOK] Received mock or non-UUID video_id: ${body.video_id}`);
