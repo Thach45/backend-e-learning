@@ -100,6 +100,7 @@ export class CourseContentController {
       video_id: string;
       status: string;
       new_url: string;
+      duration?: number;
     },
   ): Promise<{ received: boolean }> {
     console.log("[WEBHOOK] Video done payload:", body);
@@ -121,9 +122,10 @@ export class CourseContentController {
               storageUrl: body.new_url,
               storageType: "CLOUDFLARE_R2" as any,
               isActive: true,
+              duration: body.duration ? Math.round(body.duration) : undefined,
             },
           });
-          console.log(`[WEBHOOK] Successfully updated Lesson ${body.video_id} with HLS R2 URL: ${body.new_url}`);
+          console.log(`[WEBHOOK] Successfully updated Lesson ${body.video_id} with HLS R2 URL: ${body.new_url} (Duration: ${body.duration}s)`);
         } else {
           console.warn(`[WEBHOOK] Task failed or missing URL for Lesson ${body.video_id}. Deleting lesson...`);
           // Transcoding failed, delete the newly created broken lesson completely

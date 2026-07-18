@@ -1,0 +1,23 @@
+FROM python:3.10-slim
+
+WORKDIR /app
+
+# Cài đặt ffmpeg và các thư viện hệ thống cần thiết
+RUN apt-get update && \
+    apt-get install -y ffmpeg git && \
+    rm -rf /var/lib/apt/lists/*
+
+# Copy thư mục Python Worker
+COPY transtation-video/requirements.txt .
+
+# Cài đặt thư viện Python
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy toàn bộ code NestJS và Worker (do config file đòi hỏi ../.env)
+COPY . .
+
+# Set working directory vào đúng thư mục chứa worker
+WORKDIR /app/transtation-video
+
+# Khởi chạy Celery Worker
+CMD ["celery", "-A", "config.app", "worker", "--loglevel=info"]

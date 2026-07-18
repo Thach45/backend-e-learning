@@ -1,22 +1,28 @@
-import { Controller, Post, Get, Query, UploadedFile, UseInterceptors, Body, BadRequestException } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Get,
+  Query,
+  UploadedFile,
+  UseInterceptors,
+  Body,
+  BadRequestException,
+  Logger,
+} from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { HttpService } from '@nestjs/axios';
 import { CloudinaryService } from 'src/shared/service/cloudinary.service';
 import { R2Service } from 'src/shared/service/r2.service';
-import * as celery from 'celery-node';
 
 @Controller('api/upload')
-
 export class UploadController {
-  private celeryClient: any;
+  private readonly logger = new Logger(UploadController.name);
 
   constructor(
     private readonly cloudinaryService: CloudinaryService,
     private readonly r2Service: R2Service,
-  ) {
-    const redisUrl = process.env.REDIS_URL ?? '';
-    const redisUrlDb0 = redisUrl.replace(/\/\d+$/, '') + '/0';
-    this.celeryClient = celery.createClient(redisUrlDb0, redisUrlDb0);
-  }
+    private readonly httpService: HttpService,
+  ) {}
 
   @Post('image')
   @UseInterceptors(FileInterceptor('file'))
@@ -43,7 +49,6 @@ export class UploadController {
     };
   }
 
-
   @Get('r2-presigned-url')
   async getR2PresignedUrl(
     @Query('fileName') fileName: string,
@@ -53,7 +58,7 @@ export class UploadController {
       throw new BadRequestException('fileName and contentType query parameters are required.');
     }
 
-    console.log(`[R2] Requesting presigned upload URL for: ${fileName} (${contentType})`);
+    this.logger.log(`[R2] Requesting presigned upload URL for: ${fileName} (${contentType})`);
     const result = await this.r2Service.getPresignedUploadUrl(fileName, contentType, 'raw-videos');
 
     return {
@@ -72,9 +77,30 @@ export class UploadController {
       throw new BadRequestException('lessonId and videoUrl are required in request body.');
     }
 
-    console.log(`[Celery] Dispatching dubbing & HLS job for direct uploaded video ${lessonId} at url: ${videoUrl} (isTranslate: ${!!isTranslate})...`);
-    const task = this.celeryClient.createTask('worker.process_dubbing_video');
-    task.delay(lessonId, videoUrl, !!isTranslate);
+    const fastapiUrl = process.env.FASTAPI_WORKER_URL;
+    if (!fastapiUrl) {
+      throw new BadRequestException('FASTAPI_WORKER_URL is not configured on this server.');
+    }
+
+    this.logger.log(
+      `[FastAPI] Dispatching dubbing & HLS job for lesson ${lessonId} (isTranslate: ${!!isTranslate})...`,
+    );
+
+    await this.httpService.axiosRef.post(
+      `${fastapiUrl}/process-video`,
+      {
+        lesson_id: lessonId,
+        video_url: videoUrl,
+        is_translate: !!isTranslate,
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Internal-Secret': process.env.INTERNAL_API_SECRET ?? '',
+        },
+        timeout: 10000,
+      },
+    );
 
     return {
       success: true,
@@ -85,9 +111,7 @@ export class UploadController {
     };
   }
 
-
   @Post('file')
-
   @UseInterceptors(FileInterceptor('file'))
   async uploadFile(@UploadedFile() file: Express.Multer.File) {
     if (!file) {
@@ -136,4 +160,3 @@ export class UploadController {
     };
   }
 }
-

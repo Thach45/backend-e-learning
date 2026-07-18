@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const StorageTypeEnum = z.enum(["YOUTUBE", "GOOGLE_DRIVE", "CLOUDINARY", "DIRECT_UPLOAD", "OTHER"]);
+export const StorageTypeEnum = z.enum(["YOUTUBE", "GOOGLE_DRIVE", "CLOUDINARY", "DIRECT_UPLOAD", "OTHER", "CLOUDFLARE_R2"]);
 
 export const LessonSchema = z.object({
   id: z.string().uuid(),
