@@ -22,6 +22,12 @@ const commentSelect = {
     select: {
       id: true,
       title: true,
+      content: {
+        select: {
+          courseId: true,
+          course: { select: { instructorId: true, title: true } },
+        },
+      },
     },
   },
   parent: {

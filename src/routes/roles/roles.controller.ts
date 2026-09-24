@@ -9,7 +9,6 @@ export class RolesController {
     @Get()
     // @ZodSerializerDto(GetListRolesResponseDto)
     async listRoles() {
-        console.log("listRoles");
         return this.rolesService.listRoles();
     }
 

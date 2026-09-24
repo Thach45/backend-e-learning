@@ -10,6 +10,11 @@ import {
   RegisterResponseSchema,
   SendOtpSchema,
   ForgotPasswordSchema,
+  GoogleExchangeBodySchema,
+  ChangePasswordBodySchema,
+  UpdateProfileBodySchema,
+  MessageResponseSchema,
+  RegisterResponseSchema as UserResponseSchema,
 } from './auth.model'
 
 export class RegisterBodyDto extends createZodDto(RegisterBodySchema) {}
@@ -29,3 +34,13 @@ export class RefreshTokenResponseDto extends createZodDto(RefreshTokenResponseSc
 export class LogoutBodyDto extends createZodDto(LogoutSchema) {}
 
 export class ForgotPasswordBodyDto extends createZodDto(ForgotPasswordSchema) {}
+
+export class GoogleExchangeBodyDto extends createZodDto(GoogleExchangeBodySchema) {}
+
+export class ChangePasswordBodyDto extends createZodDto(ChangePasswordBodySchema) {}
+
+export class UpdateProfileBodyDto extends createZodDto(UpdateProfileBodySchema) {}
+
+export class MessageResponseDto extends createZodDto(MessageResponseSchema) {}
+
+export class UpdateProfileResponseDto extends createZodDto(UserResponseSchema) {}

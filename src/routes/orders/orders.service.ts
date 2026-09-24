@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { OrdersRepo } from './orders.repo';
 import { CreateOrderBody, GetOrdersQuery, UpdateOrderStatusBody } from './orders.model';
 import { OrderStatus } from '@prisma/client';
@@ -7,6 +7,8 @@ import { SendEmailService } from 'src/shared/service/send-email.service';
 
 @Injectable()
 export class OrdersService {
+    private readonly logger = new Logger(OrdersService.name);
+
     constructor(
         private readonly repo: OrdersRepo,
         private readonly paymentProviderFactory: PaymentProviderFactory,
@@ -30,7 +32,7 @@ export class OrdersService {
                 myCoursesUrl: `/checkout/payment/${order.id}`,
             });
         } catch (emailError) {
-            console.error('Failed to send order created email:', emailError.message);
+            this.logger.error(`Failed to send order created email: ${emailError.message}`);
         }
         return order;
     }
@@ -89,7 +91,7 @@ export class OrdersService {
                 myCoursesUrl: '/my-courses',
             });
         } catch (emailError) {
-            console.error('Failed to send successful payment email:', emailError.message);
+            this.logger.error(`Failed to send successful payment email: ${emailError.message}`);
         }
 
         return updatedOrder;

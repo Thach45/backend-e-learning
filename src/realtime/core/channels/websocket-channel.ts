@@ -8,11 +8,13 @@ import { RealtimeEvent } from '../interfaces/realtime-event.interface';
 export class WebsocketChannel implements RealtimeChannel {
   constructor(private readonly gateway: RealtimeGateway) {}
 
-  async sendToUser(userId: string, event: RealtimeEvent): Promise<void> {
+  sendToUser(userId: string, event: RealtimeEvent): Promise<void> {
     this.gateway.server.to(`user:${userId}`).emit('event', event);
+    return Promise.resolve();
   }
 
-  async sendToRoom(room: string, event: RealtimeEvent): Promise<void> {
+  sendToRoom(room: string, event: RealtimeEvent): Promise<void> {
     this.gateway.server.to(room).emit('event', event);
+    return Promise.resolve();
   }
 }

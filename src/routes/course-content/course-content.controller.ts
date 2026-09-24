@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Logger, Param, Post, Put } from "@nestjs/common";
 import { ZodSerializerDto } from "nestjs-zod";
 import { CourseContentService } from "./course-content.service";
 import { ActiveUser } from "src/shared/decorator/active-user.decorator";
@@ -19,6 +19,8 @@ import { R2Service } from "src/shared/service/r2.service";
 
 @Controller("api")
 export class CourseContentController {
+  private readonly logger = new Logger(CourseContentController.name);
+
   constructor(
     private readonly courseContentService: CourseContentService,
     private readonly prisma: PrismaService,
@@ -87,7 +89,6 @@ export class CourseContentController {
     @Body() body: ReorderCourseContentsBodyDto,
     @ActiveUser() user: any,
   ) {
-    console.log(body);
     return this.courseContentService.reorderCourseContents((params as any).courseId, body as any, user.userId);
   }
 
@@ -103,7 +104,7 @@ export class CourseContentController {
       duration?: number;
     },
   ): Promise<{ received: boolean }> {
-    console.log("[WEBHOOK] Video done payload:", body);
+    this.logger.log(`[WEBHOOK] Video done payload: ${JSON.stringify(body)}`);
 
     const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
     if (uuidRegex.test(body.video_id)) {
@@ -125,14 +126,14 @@ export class CourseContentController {
               duration: body.duration ? Math.round(body.duration) : undefined,
             },
           });
-          console.log(`[WEBHOOK] Successfully updated Lesson ${body.video_id} with HLS R2 URL: ${body.new_url} (Duration: ${body.duration}s)`);
+          this.logger.log(`[WEBHOOK] Successfully updated Lesson ${body.video_id} with HLS R2 URL: ${body.new_url} (Duration: ${body.duration}s)`);
         } else {
-          console.warn(`[WEBHOOK] Task failed or missing URL for Lesson ${body.video_id}. Deleting lesson...`);
+          this.logger.warn(`[WEBHOOK] Task failed or missing URL for Lesson ${body.video_id}. Deleting lesson...`);
           // Transcoding failed, delete the newly created broken lesson completely
           await this.prisma.lesson.delete({
             where: { id: body.video_id },
           });
-          console.log(`[WEBHOOK] Successfully deleted broken Lesson ${body.video_id} due to HLS transcoding failure.`);
+          this.logger.log(`[WEBHOOK] Successfully deleted broken Lesson ${body.video_id} due to HLS transcoding failure.`);
         }
 
         // 2. Delete original raw video from R2 under lessons/raw-videos/ folder to free up space
@@ -140,17 +141,17 @@ export class CourseContentController {
           try {
             const urlObj = new URL(rawVideoUrl);
             const r2Key = decodeURIComponent(urlObj.pathname.slice(1)); // Extract path, e.g. lessons/raw-videos/1778989387601-video.mp4
-            console.log(`[WEBHOOK] Clean up: Deleting original raw video from R2. Key: ${r2Key}...`);
+            this.logger.log(`[WEBHOOK] Clean up: Deleting original raw video from R2. Key: ${r2Key}...`);
             await this.r2Service.deleteVideo(r2Key);
           } catch (deleteError) {
-            console.error(`[WEBHOOK] Failed to delete raw R2 video file (${rawVideoUrl}):`, deleteError.message);
+            this.logger.error(`[WEBHOOK] Failed to delete raw R2 video file (${rawVideoUrl}): ${deleteError.message}`);
           }
         }
       } catch (error) {
-        console.error(`[WEBHOOK] Failed to process webhook for Lesson ${body.video_id}:`, error.message);
+        this.logger.error(`[WEBHOOK] Failed to process webhook for Lesson ${body.video_id}: ${error.message}`);
       }
     } else {
-      console.log(`[WEBHOOK] Received mock or non-UUID video_id: ${body.video_id}`);
+      this.logger.log(`[WEBHOOK] Received mock or non-UUID video_id: ${body.video_id}`);
     }
 
     return { received: true };

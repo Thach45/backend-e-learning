@@ -1,8 +1,8 @@
-import { BadRequestException, Body, ClassSerializerInterceptor, Controller, Get, Post, Query, Req, Res, UseGuards, UseInterceptors } from '@nestjs/common';
+import { BadRequestException, Body, ClassSerializerInterceptor, Controller, Get, Patch, Post, Query, Req, Res, UseGuards, UseInterceptors } from '@nestjs/common';
 import { AuthService } from './auth.service';
 
 import { Response } from 'express';
-import { ForgotPasswordBodyDto, LoginBodyDto, LoginResponseDto, LogoutBodyDto, RefreshTokenBodyDto, RefreshTokenResponseDto, RegisterBodyDto, SendOtpDto, UserResponseDto } from './auth.dto';
+import { ChangePasswordBodyDto, ForgotPasswordBodyDto, GoogleExchangeBodyDto, LoginBodyDto, LoginResponseDto, LogoutBodyDto, MessageResponseDto, RefreshTokenBodyDto, RefreshTokenResponseDto, RegisterBodyDto, SendOtpDto, UpdateProfileBodyDto, UpdateProfileResponseDto, UserResponseDto } from './auth.dto';
 import { ZodSerializerDto    } from 'nestjs-zod';
 import { UserAgent } from 'src/shared/decorator/user-agent.decorator';
 import { GetIp } from 'src/shared/decorator/get-ip.decorator';
@@ -77,17 +77,39 @@ export class AuthController {
     async googleCallback(@Query('code') code: string, @Query('state') state: string, @Res() res: Response) {
         try {
             const data = await this.googleService.googleCallback(code, state);
-            res.redirect(process.env.GOOGLE_CLIENT_REDIRECT+ "?accessToken=" + data?.accessToken + "&refreshToken=" + data?.refreshToken);
+            // Không đặt access/refresh token thật vào URL — chỉ redirect với một mã
+            // one-time ngắn hạn, frontend đổi mã này lấy token thật qua POST.
+            const exchangeCode = await this.googleService.createExchangeCode(data);
+            res.redirect(process.env.GOOGLE_CLIENT_REDIRECT + "?code=" + exchangeCode);
         } catch (error) {
             const message = error instanceof Error ? error.message : 'Error in google callback';
            res.redirect(process.env.GOOGLE_CLIENT_REDIRECT+ "?error=" + message);
         }
     }
+
+    @Public()
+    @Post('google/exchange')
+    @ZodSerializerDto(LoginResponseDto)
+    async googleExchange(@Body() body: GoogleExchangeBodyDto) {
+        return this.googleService.consumeExchangeCode(body.code);
+    }
     @Get("/me")
     // @ZodSerializerDto(UserResponseDto)
     async me(@ActiveUser() user: any) {
         const userData = await this.authService.me(user.userId);
-        
+
         return userData;
+    }
+
+    @Patch("me")
+    @ZodSerializerDto(UpdateProfileResponseDto)
+    async updateProfile(@Body() body: UpdateProfileBodyDto, @ActiveUser() user: any) {
+        return this.authService.updateProfile(user.userId, body);
+    }
+
+    @Post("change-password")
+    @ZodSerializerDto(MessageResponseDto)
+    async changePassword(@Body() body: ChangePasswordBodyDto, @ActiveUser() user: any) {
+        return this.authService.changePassword(user.userId, body);
     }
 }

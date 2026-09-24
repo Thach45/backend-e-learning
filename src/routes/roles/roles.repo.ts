@@ -10,7 +10,6 @@ export class RolesRepo {
             this.prisma.role.findMany({ where: { deletedAt: null }, include: { rolePermissions: { include: { permission: true } } } }),
             this.prisma.role.count({ where: { deletedAt: null } }),
         ]);
-        console.log(roles);
         return { data: roles, total };
     }
 

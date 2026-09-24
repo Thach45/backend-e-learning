@@ -17,7 +17,6 @@ export class DashboardController {
   @Get('overview')
   @ZodSerializerDto(GetOverviewStatsResponseDto)
   async getOverviewStats() {
-    console.log('getOverviewStats');
     return this.service.getOverviewStats();
   }
 

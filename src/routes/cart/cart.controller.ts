@@ -11,7 +11,6 @@ export class CartController {
     @Get()
     // @ZodSerializerDto(GetCartResponseDto)
     async getCart(@ActiveUser() user: any) {
-        console.log('getCart', user.userId);
         return this.cartService.getCart(user.userId);
     }
 

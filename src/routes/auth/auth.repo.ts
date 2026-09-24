@@ -17,7 +17,7 @@ type UpdateDeviceType = {
     lastActiveAt: Date;
     isActive: boolean;
 };
-type UpdateUserType = Pick<User, "password">;
+type UpdateUserType = Partial<Pick<User, "password" | "name" | "phoneNumber" | "avatar">>;
 type CreateOtpType = Pick<VerificationCode, "email" | "type" | "code" | "expiresAt">;
 
 @Injectable()
@@ -139,12 +139,18 @@ export class AuthRepository {
     async getUserById(userId: string) {
         return this.prisma.user.findUnique({
             where: { id: userId },
-           
+
             omit: {
                 password: true,
                 totpSecret: true,
             }
         });
-        
+
+    }
+    async getUserPasswordById(userId: string) {
+        return this.prisma.user.findUnique({
+            where: { id: userId },
+            select: { id: true, password: true },
+        });
     }
 }

@@ -32,6 +32,8 @@ import { InstructorModule } from "./routes/instructor/instructor.module";
 import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
 import { UserThrottlerGuard } from "./shared/guards/throttler.guard";
 import { RealtimeModule } from "./realtime/core/realtime.module";
+import { NotificationsModule } from "./routes/notifications/notifications.module";
+import { HealthModule } from "./routes/health/health.module";
 
 @Module({
   imports: [
@@ -63,6 +65,8 @@ import { RealtimeModule } from "./realtime/core/realtime.module";
     DashboardModule,
     InstructorModule,
     RealtimeModule,
+    NotificationsModule,
+    HealthModule,
   ],
   controllers: [AppController],
   providers: [
