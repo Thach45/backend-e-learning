@@ -37,6 +37,10 @@ import { HealthModule } from "./routes/health/health.module";
 import { InstructorsModule } from "./routes/instructors/instructors.module";
 import { GamificationModule } from "./routes/gamification/gamification.module";
 import { AuditLogModule } from "./routes/audit-log/audit-log.module";
+import { LessonNotesModule } from "./routes/lesson-notes/lesson-notes.module";
+import { LessonQuestionsModule } from "./routes/lesson-questions/lesson-questions.module";
+import { QuizzesModule } from "./routes/quizzes/quizzes.module";
+import { CourseSurveyModule } from "./routes/course-survey/course-survey.module";
 
 @Module({
   imports: [
@@ -73,6 +77,10 @@ import { AuditLogModule } from "./routes/audit-log/audit-log.module";
     InstructorsModule,
     GamificationModule,
     AuditLogModule,
+    LessonNotesModule,
+    LessonQuestionsModule,
+    QuizzesModule,
+    CourseSurveyModule,
   ],
   controllers: [AppController],
   providers: [

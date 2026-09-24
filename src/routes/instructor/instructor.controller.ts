@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Patch, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Query } from '@nestjs/common';
 import { ZodSerializerDto } from 'nestjs-zod';
 import { InstructorService } from './instructor.service';
 import {
@@ -10,6 +10,11 @@ import {
   GetRevenueChartQueryDto,
   UpdateInstructorProfileBodyDto,
   InstructorProfileResponseDto,
+  CourseIdParamsDto,
+  CourseDropoffAnalyticsResponseDto,
+  CoursePreviewContentsResponseDto,
+  PreviewLessonParamsDto,
+  PreviewLessonDetailResponseDto,
 } from './instructor.dto';
 import { ActiveUser } from 'src/shared/decorator/active-user.decorator';
 
@@ -51,6 +56,24 @@ export class InstructorController {
   @ZodSerializerDto(InstructorProfileResponseDto)
   async updateProfile(@ActiveUser() user: any, @Body() body: UpdateInstructorProfileBodyDto) {
     return this.service.updateProfile(user.userId, body);
+  }
+
+  @Get('courses/:courseId/analytics/dropoff')
+  @ZodSerializerDto(CourseDropoffAnalyticsResponseDto)
+  async getCourseDropoffAnalytics(@Param() params: CourseIdParamsDto, @ActiveUser() user: any) {
+    return this.service.getCourseDropoffAnalytics(user.userId, params.courseId);
+  }
+
+  @Get('courses/:courseId/preview/contents')
+  @ZodSerializerDto(CoursePreviewContentsResponseDto)
+  async getCoursePreviewContents(@Param() params: CourseIdParamsDto, @ActiveUser() user: any) {
+    return this.service.getCoursePreviewContents(user.userId, params.courseId);
+  }
+
+  @Get('courses/:courseId/preview/lessons/:lessonId')
+  @ZodSerializerDto(PreviewLessonDetailResponseDto)
+  async getPreviewLessonDetail(@Param() params: PreviewLessonParamsDto, @ActiveUser() user: any) {
+    return this.service.getPreviewLessonDetail(user.userId, params.courseId, params.lessonId);
   }
 }
 

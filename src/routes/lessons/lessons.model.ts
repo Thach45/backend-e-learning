@@ -10,6 +10,7 @@ export const LessonSchema = z.object({
   storageUrl: z.string().nullable().optional(),
   contentText: z.string().nullable().optional(),
   duration: z.number().int().nonnegative().nullable().optional(),
+  transcript: z.string().nullable().optional(),
   createdAt: z.date(),
 });
 
@@ -31,6 +32,7 @@ export const CreateLessonBodySchema = z.object({
   storageUrl: z.string().optional(),
   contentText: z.string().optional(),
   duration: z.number().int().nonnegative().optional(),
+  transcript: z.string().optional(),
 }).strict();
 
 export const UpdateLessonBodySchema = z.object({
@@ -39,6 +41,7 @@ export const UpdateLessonBodySchema = z.object({
   storageUrl: z.string().nullable().optional(),
   contentText: z.string().nullable().optional(),
   duration: z.number().int().nonnegative().nullable().optional(),
+  transcript: z.string().nullable().optional(),
 }).strict();
 
 export const GetLessonResponseSchema = LessonSchema;

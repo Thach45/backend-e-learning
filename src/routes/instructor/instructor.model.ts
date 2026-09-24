@@ -140,3 +140,82 @@ export const InstructorProfileResponseSchema = z.object({
 
 export type InstructorProfileResponse = z.infer<typeof InstructorProfileResponseSchema>;
 
+// Course drop-off analytics
+export const CourseIdParamsSchema = z.object({
+  courseId: z.string().uuid(),
+}).strict();
+
+export type CourseIdParams = z.infer<typeof CourseIdParamsSchema>;
+
+export const LessonDropoffSchema = z.object({
+  lessonId: z.string().uuid(),
+  lessonTitle: z.string(),
+  reached: z.number().int(),
+  completed: z.number().int(),
+  reachRate: z.number(),
+  completionRate: z.number(),
+  dropoffRate: z.number(),
+}).strict();
+
+export const CourseDropoffAnalyticsSchema = z.object({
+  courseId: z.string().uuid(),
+  totalEnrollments: z.number().int(),
+  lessons: z.array(LessonDropoffSchema),
+}).strict();
+
+export type CourseDropoffAnalytics = z.infer<typeof CourseDropoffAnalyticsSchema>;
+
+// Student-view preview (instructor viewing their own course as a student would)
+export const PreviewLessonSchema = z.object({
+  id: z.string().uuid(),
+  title: z.string(),
+  type: z.enum(['VIDEO', 'TEXT', 'QUIZ', 'GAME']),
+  duration: z.string(),
+  isLocked: z.boolean(),
+}).strict();
+
+export const PreviewSectionSchema = z.object({
+  id: z.string().uuid(),
+  title: z.string(),
+  orderIndex: z.number().int(),
+  duration: z.string(),
+  lessons: z.array(PreviewLessonSchema),
+}).strict();
+
+export const CoursePreviewContentsSchema = z.object({
+  courseId: z.string().uuid(),
+  courseTitle: z.string(),
+  thumbnailUrl: z.string().nullable().optional(),
+  contents: z.array(PreviewSectionSchema),
+}).strict();
+
+export type CoursePreviewContents = z.infer<typeof CoursePreviewContentsSchema>;
+
+export const PreviewLessonParamsSchema = z.object({
+  courseId: z.string().uuid(),
+  lessonId: z.string().uuid(),
+}).strict();
+
+export type PreviewLessonParams = z.infer<typeof PreviewLessonParamsSchema>;
+
+export const PreviewLessonDetailSchema = z.object({
+  id: z.string().uuid(),
+  title: z.string(),
+  type: z.enum(['VIDEO', 'TEXT', 'QUIZ', 'GAME']),
+  storageType: z.enum(['YOUTUBE', 'GOOGLE_DRIVE', 'CLOUDINARY', 'DIRECT_UPLOAD', 'OTHER', 'CLOUDFLARE_R2']),
+  storageUrl: z.string().nullable().optional(),
+  contentText: z.string().nullable().optional(),
+  transcript: z.string().nullable().optional(),
+  duration: z.number().nullable().optional(),
+  description: z.string().nullable().optional(),
+  resources: z.array(
+    z.object({
+      name: z.string(),
+      url: z.string(),
+      type: z.string(),
+    })
+  ).optional(),
+}).strict();
+
+export type PreviewLessonDetail = z.infer<typeof PreviewLessonDetailSchema>;
+

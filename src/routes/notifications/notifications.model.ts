@@ -7,6 +7,8 @@ export const NotificationTypeEnum = z.enum([
   "NEW_REPLY",
   "ORDER_STATUS",
   "LEARNING_PROGRESS",
+  "NEW_QUESTION",
+  "NEW_ANSWER",
 ]);
 
 export const NotificationStatusEnum = z.enum(["UNREAD", "READ"]);

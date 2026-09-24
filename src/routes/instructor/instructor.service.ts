@@ -8,6 +8,9 @@ import type {
   GetEnrolledStudentsResponse,
   UpdateInstructorProfileBody,
   InstructorProfileResponse,
+  CourseDropoffAnalytics,
+  CoursePreviewContents,
+  PreviewLessonDetail,
 } from './instructor.model';
 
 @Injectable()
@@ -39,6 +42,18 @@ export class InstructorService {
 
   async updateProfile(instructorId: string, body: UpdateInstructorProfileBody): Promise<InstructorProfileResponse> {
     return this.repo.upsertProfile(instructorId, body);
+  }
+
+  async getCourseDropoffAnalytics(instructorId: string, courseId: string): Promise<CourseDropoffAnalytics> {
+    return this.repo.getCourseDropoffAnalytics(instructorId, courseId);
+  }
+
+  async getCoursePreviewContents(instructorId: string, courseId: string): Promise<CoursePreviewContents> {
+    return this.repo.getCoursePreviewContents(instructorId, courseId);
+  }
+
+  async getPreviewLessonDetail(instructorId: string, courseId: string, lessonId: string): Promise<PreviewLessonDetail> {
+    return this.repo.getPreviewLessonDetail(instructorId, courseId, lessonId);
   }
 }
 

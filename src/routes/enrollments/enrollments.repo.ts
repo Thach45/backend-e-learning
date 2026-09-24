@@ -558,6 +558,7 @@ export class EnrollmentsRepository {
         storageUrl: true,
         contentText: true,
         duration: true,
+        transcript: true,
         content: {
           select: {
             courseId: true,
@@ -618,6 +619,7 @@ export class EnrollmentsRepository {
       storageUrl: lesson.storageUrl,
       contentText: lesson.contentText,
       duration: lesson.duration,
+      transcript: lesson.transcript,
       description: courseDetail?.description || null,
       resources: resources.map((res) => ({
         name: res.title,

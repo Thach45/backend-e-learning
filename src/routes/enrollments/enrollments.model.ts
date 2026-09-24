@@ -104,6 +104,7 @@ export const LessonDetailSchema = z.object({
   storageUrl: z.string().nullable().optional(),
   contentText: z.string().nullable().optional(),
   duration: z.number().nullable().optional(),
+  transcript: z.string().nullable().optional(),
   description: z.string().nullable().optional(),
   resources: z.array(
     z.object({
