@@ -1,4 +1,4 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Body, Controller, Get, Patch, Query } from '@nestjs/common';
 import { ZodSerializerDto } from 'nestjs-zod';
 import { InstructorService } from './instructor.service';
 import {
@@ -8,6 +8,8 @@ import {
   GetEnrolledStudentsResponseDto,
   GetEnrolledStudentsQueryDto,
   GetRevenueChartQueryDto,
+  UpdateInstructorProfileBodyDto,
+  InstructorProfileResponseDto,
 } from './instructor.dto';
 import { ActiveUser } from 'src/shared/decorator/active-user.decorator';
 
@@ -43,6 +45,12 @@ export class InstructorController {
     @Query() query: GetEnrolledStudentsQueryDto,
   ) {
     return this.service.getEnrolledStudents(user.userId, query as any);
+  }
+
+  @Patch('profile')
+  @ZodSerializerDto(InstructorProfileResponseDto)
+  async updateProfile(@ActiveUser() user: any, @Body() body: UpdateInstructorProfileBodyDto) {
+    return this.service.updateProfile(user.userId, body);
   }
 }
 

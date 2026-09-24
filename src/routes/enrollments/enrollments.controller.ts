@@ -14,6 +14,7 @@ import {
   GetCourseContentsResponseDto,
   GetLessonDetailResponseDto,
   GetLessonParamsDto,
+  GetContinueWatchingResponseDto,
 } from "./enrollments.dto";
 
 @Controller("api")
@@ -40,6 +41,12 @@ export class EnrollmentsController {
   @ZodSerializerDto(GetEnrollmentStatsResponseDto)
   async getMyEnrollmentStats(@ActiveUser() user: any) {
     return this.enrollmentsService.getEnrollmentStats(user.userId);
+  }
+
+  @Get("my-enrollments/continue-watching")
+  @ZodSerializerDto(GetContinueWatchingResponseDto)
+  async getContinueWatching(@ActiveUser() user: any) {
+    return this.enrollmentsService.getContinueWatching(user.userId);
   }
 
   @Get("my-enrollments/:courseId")

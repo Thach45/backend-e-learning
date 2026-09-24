@@ -34,6 +34,7 @@ import { UserThrottlerGuard } from "./shared/guards/throttler.guard";
 import { RealtimeModule } from "./realtime/core/realtime.module";
 import { NotificationsModule } from "./routes/notifications/notifications.module";
 import { HealthModule } from "./routes/health/health.module";
+import { InstructorsModule } from "./routes/instructors/instructors.module";
 
 @Module({
   imports: [
@@ -67,6 +68,7 @@ import { HealthModule } from "./routes/health/health.module";
     RealtimeModule,
     NotificationsModule,
     HealthModule,
+    InstructorsModule,
   ],
   controllers: [AppController],
   providers: [

@@ -8,6 +8,8 @@ import type {
   EnrolledStudent,
   GetEnrolledStudentsQuery,
   GetEnrolledStudentsResponse,
+  UpdateInstructorProfileBody,
+  InstructorProfileResponse,
 } from './instructor.model';
 
 @Injectable()
@@ -325,6 +327,26 @@ export class InstructorRepo {
       limit,
       totalPages: Math.ceil(totalItems / limit),
     };
+  }
+
+  async upsertProfile(instructorId: string, body: UpdateInstructorProfileBody): Promise<InstructorProfileResponse> {
+    const data = {
+      title: body.title,
+      bio: body.bio,
+      expertise: body.expertise,
+      yearsOfExperience: body.yearsOfExperience,
+      websiteUrl: body.websiteUrl || null,
+      linkedinUrl: body.linkedinUrl || null,
+      githubUrl: body.githubUrl || null,
+      youtubeUrl: body.youtubeUrl || null,
+      facebookUrl: body.facebookUrl || null,
+    };
+
+    return this.prisma.instructorProfile.upsert({
+      where: { userId: instructorId },
+      update: data,
+      create: { userId: instructorId, ...data },
+    });
   }
 }
 

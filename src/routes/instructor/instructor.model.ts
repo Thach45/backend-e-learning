@@ -111,3 +111,32 @@ export const GetRevenueChartQuerySchema = z.object({
 
 export type GetRevenueChartQuery = z.infer<typeof GetRevenueChartQuerySchema>;
 
+// Instructor public profile (bio, social links, expertise)
+export const UpdateInstructorProfileBodySchema = z.object({
+  title: z.string().max(150).optional(),
+  bio: z.string().max(2000).optional(),
+  expertise: z.array(z.string().min(1).max(50)).max(20).optional(),
+  yearsOfExperience: z.coerce.number().int().min(0).max(80).optional(),
+  websiteUrl: z.string().url().optional().or(z.literal('')),
+  linkedinUrl: z.string().url().optional().or(z.literal('')),
+  githubUrl: z.string().url().optional().or(z.literal('')),
+  youtubeUrl: z.string().url().optional().or(z.literal('')),
+  facebookUrl: z.string().url().optional().or(z.literal('')),
+}).strict();
+
+export type UpdateInstructorProfileBody = z.infer<typeof UpdateInstructorProfileBodySchema>;
+
+export const InstructorProfileResponseSchema = z.object({
+  title: z.string().nullable().optional(),
+  bio: z.string().nullable().optional(),
+  expertise: z.array(z.string()),
+  yearsOfExperience: z.number().nullable().optional(),
+  websiteUrl: z.string().nullable().optional(),
+  linkedinUrl: z.string().nullable().optional(),
+  githubUrl: z.string().nullable().optional(),
+  youtubeUrl: z.string().nullable().optional(),
+  facebookUrl: z.string().nullable().optional(),
+}).strict();
+
+export type InstructorProfileResponse = z.infer<typeof InstructorProfileResponseSchema>;
+

@@ -176,6 +176,26 @@ export const MessageResponseSchema = z.object({
 })
 export type MessageResponseType = z.infer<typeof MessageResponseSchema>
 
+export const DeviceSchema = z.object({
+  id: z.string(),
+  userAgent: z.string(),
+  ipAddress: z.string(),
+  lastActiveAt: z.date(),
+  isActive: z.boolean(),
+  isCurrent: z.boolean(),
+})
+export type DeviceType = z.infer<typeof DeviceSchema>
+
+export const GetDevicesResponseSchema = z.object({
+  data: z.array(DeviceSchema),
+})
+export type GetDevicesResponseType = z.infer<typeof GetDevicesResponseSchema>
+
+export const DeviceParamsSchema = z.object({
+  id: z.string(),
+}).strict()
+export type DeviceParamsType = z.infer<typeof DeviceParamsSchema>
+
 export const ForgotPasswordSchema = z.object({
   email: z.string().email(),
   code: z.string().length(6),

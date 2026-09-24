@@ -11,6 +11,7 @@ import {
   GetCourseContentsResponseSchema,
   LessonDetailSchema,
   GetLessonParamsSchema,
+  GetContinueWatchingResponseSchema,
 } from "./enrollments.model";
 
 export class CreateEnrollmentBodyDto extends createZodDto(CreateEnrollmentBodySchema) {}
@@ -24,4 +25,5 @@ export class GetEnrollmentStatsResponseDto extends createZodDto(GetEnrollmentSta
 export class GetCourseContentsResponseDto extends createZodDto(GetCourseContentsResponseSchema) {}
 export class GetLessonDetailResponseDto extends createZodDto(LessonDetailSchema) {}
 export class GetLessonParamsDto extends createZodDto(GetLessonParamsSchema) {}
+export class GetContinueWatchingResponseDto extends createZodDto(GetContinueWatchingResponseSchema) {}
 

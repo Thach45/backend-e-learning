@@ -49,5 +49,9 @@ export class EnrollmentsService {
   async createEnrollmentByInstructor(courseId: string, body: CreateEnrollmentByInstructorBody, instructorId: string) {
     return this.repo.createEnrollmentByInstructor(courseId, body.userId, instructorId);
   }
+
+  async getContinueWatching(userId: string) {
+    return this.repo.getContinueWatching(userId);
+  }
 }
 

@@ -15,6 +15,8 @@ import {
   UpdateProfileBodySchema,
   MessageResponseSchema,
   RegisterResponseSchema as UserResponseSchema,
+  GetDevicesResponseSchema,
+  DeviceParamsSchema,
 } from './auth.model'
 
 export class RegisterBodyDto extends createZodDto(RegisterBodySchema) {}
@@ -44,3 +46,7 @@ export class UpdateProfileBodyDto extends createZodDto(UpdateProfileBodySchema) 
 export class MessageResponseDto extends createZodDto(MessageResponseSchema) {}
 
 export class UpdateProfileResponseDto extends createZodDto(UserResponseSchema) {}
+
+export class GetDevicesResponseDto extends createZodDto(GetDevicesResponseSchema) {}
+
+export class DeviceParamsDto extends createZodDto(DeviceParamsSchema) {}

@@ -134,3 +134,21 @@ export type GetCourseContentsResponse = z.infer<typeof GetCourseContentsResponse
 export type GetLessonDetailResponse = z.infer<typeof LessonDetailSchema>;
 export type GetLessonParams = z.infer<typeof GetLessonParamsSchema>;
 
+// Continue watching
+export const ContinueWatchingItemSchema = z.object({
+  courseId: z.string().uuid(),
+  courseTitle: z.string(),
+  courseThumbnail: z.string().nullable().optional(),
+  lessonId: z.string().uuid(),
+  lessonTitle: z.string(),
+  progressPercent: z.number(),
+  lastAccessed: z.date(),
+});
+
+export const GetContinueWatchingResponseSchema = z.object({
+  data: z.array(ContinueWatchingItemSchema),
+});
+
+export type ContinueWatchingItem = z.infer<typeof ContinueWatchingItemSchema>;
+export type GetContinueWatchingResponse = z.infer<typeof GetContinueWatchingResponseSchema>;
+

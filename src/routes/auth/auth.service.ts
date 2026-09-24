@@ -140,6 +140,18 @@ export class AuthService {
                 primaryRole?.id || "",
                 primaryRole?.name || ""
             );
+
+            // Không chặn luồng login nếu gửi email thất bại
+            this.sendEmailService.sendNewLoginAlert({
+                recipientEmail: user.email,
+                userName: user.name,
+                loginTime: new Date().toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' }),
+                userAgent: body.userAgent,
+                ipAddress: body.ipAddress,
+            }).catch((error) => {
+                this.logger.error(`Failed to send new login alert email: ${error}`);
+            });
+
             return {
                 accessToken,
                 refreshToken
@@ -147,8 +159,8 @@ export class AuthService {
         } catch (error) {
             throw error;
         }
-        
-        
+
+
     }
 
     async generateTokens(userId: string, deviceId: string, roleId: string, roleName: string) {
@@ -330,6 +342,24 @@ export class AuthService {
     async updateProfile(userId: string, body: UpdateProfileBodyType) {
         await this.authRepository.updateUser(userId, body);
         return this.me(userId);
+    }
+
+    async listDevices(userId: string, currentDeviceId?: string) {
+        const devices = await this.authRepository.listActiveDevices(userId);
+        return {
+            data: devices.map((device) => ({
+                ...device,
+                isCurrent: device.id === currentDeviceId,
+            })),
+        };
+    }
+
+    async revokeDevice(deviceId: string, userId: string) {
+        const revoked = await this.authRepository.revokeDevice(deviceId, userId);
+        if (!revoked) {
+            throw new UnauthorizedException('Device not found');
+        }
+        return { message: 'Device revoked successfully' };
     }
 }
 

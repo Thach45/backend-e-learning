@@ -6,6 +6,8 @@ import type {
   RevenueChartData,
   GetEnrolledStudentsQuery,
   GetEnrolledStudentsResponse,
+  UpdateInstructorProfileBody,
+  InstructorProfileResponse,
 } from './instructor.model';
 
 @Injectable()
@@ -33,6 +35,10 @@ export class InstructorService {
     query: GetEnrolledStudentsQuery,
   ): Promise<GetEnrolledStudentsResponse> {
     return this.repo.getEnrolledStudents(instructorId, query);
+  }
+
+  async updateProfile(instructorId: string, body: UpdateInstructorProfileBody): Promise<InstructorProfileResponse> {
+    return this.repo.upsertProfile(instructorId, body);
   }
 }
 

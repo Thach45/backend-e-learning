@@ -6,6 +6,8 @@ import {
   GetEnrolledStudentsResponseSchema,
   GetEnrolledStudentsQuerySchema,
   GetRevenueChartQuerySchema,
+  UpdateInstructorProfileBodySchema,
+  InstructorProfileResponseSchema,
 } from './instructor.model';
 
 export class GetInstructorStatsResponseDto extends createZodDto(GetInstructorStatsResponseSchema) {}
@@ -14,4 +16,6 @@ export class GetRevenueChartDataResponseDto extends createZodDto(GetRevenueChart
 export class GetEnrolledStudentsResponseDto extends createZodDto(GetEnrolledStudentsResponseSchema) {}
 export class GetEnrolledStudentsQueryDto extends createZodDto(GetEnrolledStudentsQuerySchema) {}
 export class GetRevenueChartQueryDto extends createZodDto(GetRevenueChartQuerySchema) {}
+export class UpdateInstructorProfileBodyDto extends createZodDto(UpdateInstructorProfileBodySchema) {}
+export class InstructorProfileResponseDto extends createZodDto(InstructorProfileResponseSchema) {}
 

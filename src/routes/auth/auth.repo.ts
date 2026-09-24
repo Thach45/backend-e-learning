@@ -153,4 +153,24 @@ export class AuthRepository {
             select: { id: true, password: true },
         });
     }
+    async listActiveDevices(userId: string) {
+        return this.prisma.device.findMany({
+            where: { userId, isActive: true },
+            orderBy: { lastActiveAt: 'desc' },
+        });
+    }
+    async revokeDevice(deviceId: string, userId: string) {
+        const device = await this.prisma.device.findFirst({
+            where: { id: deviceId, userId },
+            select: { id: true },
+        });
+        if (!device) {
+            return null;
+        }
+        await this.prisma.refreshToken.deleteMany({ where: { deviceId } });
+        return this.prisma.device.update({
+            where: { id: deviceId },
+            data: { isActive: false },
+        });
+    }
 }

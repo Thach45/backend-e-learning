@@ -1,8 +1,8 @@
-import { BadRequestException, Body, ClassSerializerInterceptor, Controller, Get, Patch, Post, Query, Req, Res, UseGuards, UseInterceptors } from '@nestjs/common';
+import { BadRequestException, Body, ClassSerializerInterceptor, Controller, Delete, Get, Param, Patch, Post, Query, Req, Res, UseGuards, UseInterceptors } from '@nestjs/common';
 import { AuthService } from './auth.service';
 
 import { Response } from 'express';
-import { ChangePasswordBodyDto, ForgotPasswordBodyDto, GoogleExchangeBodyDto, LoginBodyDto, LoginResponseDto, LogoutBodyDto, MessageResponseDto, RefreshTokenBodyDto, RefreshTokenResponseDto, RegisterBodyDto, SendOtpDto, UpdateProfileBodyDto, UpdateProfileResponseDto, UserResponseDto } from './auth.dto';
+import { ChangePasswordBodyDto, DeviceParamsDto, ForgotPasswordBodyDto, GetDevicesResponseDto, GoogleExchangeBodyDto, LoginBodyDto, LoginResponseDto, LogoutBodyDto, MessageResponseDto, RefreshTokenBodyDto, RefreshTokenResponseDto, RegisterBodyDto, SendOtpDto, UpdateProfileBodyDto, UpdateProfileResponseDto, UserResponseDto } from './auth.dto';
 import { ZodSerializerDto    } from 'nestjs-zod';
 import { UserAgent } from 'src/shared/decorator/user-agent.decorator';
 import { GetIp } from 'src/shared/decorator/get-ip.decorator';
@@ -111,5 +111,17 @@ export class AuthController {
     @ZodSerializerDto(MessageResponseDto)
     async changePassword(@Body() body: ChangePasswordBodyDto, @ActiveUser() user: any) {
         return this.authService.changePassword(user.userId, body);
+    }
+
+    @Get("devices")
+    @ZodSerializerDto(GetDevicesResponseDto)
+    async listDevices(@ActiveUser() user: any) {
+        return this.authService.listDevices(user.userId, user.deviceId);
+    }
+
+    @Delete("devices/:id")
+    @ZodSerializerDto(MessageResponseDto)
+    async revokeDevice(@Param() params: DeviceParamsDto, @ActiveUser() user: any) {
+        return this.authService.revokeDevice((params as any).id, user.userId);
     }
 }

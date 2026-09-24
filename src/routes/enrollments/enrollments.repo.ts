@@ -626,5 +626,50 @@ export class EnrollmentsRepository {
       })),
     };
   }
+
+  async getContinueWatching(userId: string, limit = 6) {
+    // Lấy các bản ghi tiến độ gần nhất, dedupe theo course (giữ bản ghi mới nhất mỗi course)
+    const recentProgress = await this.prisma.learningProgress.findMany({
+      where: { userId, progressPercent: { lt: 100 } },
+      orderBy: { lastAccessed: "desc" },
+      take: limit * 5,
+      select: {
+        courseId: true,
+        lessonId: true,
+        progressPercent: true,
+        lastAccessed: true,
+        course: { select: { id: true, title: true, thumbnail: true } },
+        lesson: { select: { id: true, title: true } },
+      },
+    });
+
+    const seenCourses = new Set<string>();
+    const result: Array<{
+      courseId: string;
+      courseTitle: string;
+      courseThumbnail: string | null;
+      lessonId: string;
+      lessonTitle: string;
+      progressPercent: number;
+      lastAccessed: Date;
+    }> = [];
+
+    for (const p of recentProgress) {
+      if (seenCourses.has(p.courseId)) continue;
+      seenCourses.add(p.courseId);
+      result.push({
+        courseId: p.courseId,
+        courseTitle: p.course.title,
+        courseThumbnail: p.course.thumbnail,
+        lessonId: p.lessonId,
+        lessonTitle: p.lesson.title,
+        progressPercent: p.progressPercent,
+        lastAccessed: p.lastAccessed,
+      });
+      if (result.length >= limit) break;
+    }
+
+    return { data: result };
+  }
 }
 

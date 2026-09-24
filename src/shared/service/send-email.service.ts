@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { generateTemplate } from '../helper/generate-template';
 import { generateSuccessfulOrderTemplate, InvoiceCourseItem } from '../helper/generate-successful-order-template';
 import { generateOrderCreatedTemplate, OrderCourseItem } from '../helper/generate-order-created-template';
+import { generateNewLoginTemplate } from '../helper/generate-new-login-template';
 
 
 @Injectable()
@@ -105,6 +106,42 @@ export class SendEmailService {
       "123 Nguyen Van Linh, Q9, TP.HCM"
     );
 
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        recipientEmail,
+        content
+      }),
+    });
+    const data = await response.json();
+    return data;
+  }
+
+  async sendNewLoginAlert({
+    recipientEmail,
+    userName,
+    loginTime,
+    userAgent,
+    ipAddress,
+  }: {
+    recipientEmail: string;
+    userName: string;
+    loginTime: string;
+    userAgent: string;
+    ipAddress: string;
+  }) {
+    const url = `${process.env.URL_EMAIL}/api/email/send`;
+    const content = generateNewLoginTemplate(
+      userName,
+      loginTime,
+      userAgent,
+      ipAddress,
+      "U Đê Mê",
+      "123 Nguyen Van Linh, Q9, TP.HCM",
+    );
     const response = await fetch(url, {
       method: 'POST',
       headers: {
