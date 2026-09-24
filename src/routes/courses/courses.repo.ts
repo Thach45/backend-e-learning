@@ -127,6 +127,81 @@ export class CoursesRepository {
     return { data, total, page, limit, totalPages: Math.ceil(total / limit) };
   }
 
+  async getRelatedCourses(courseId: string, limit = 6) {
+    const course = await this.prisma.course.findFirst({
+      where: { id: courseId, deletedAt: null },
+      select: { categoryId: true, instructorId: true },
+    });
+    if (!course) throw new NotFoundException(`Course with ID ${courseId} not found`);
+
+    const baseWhere: Prisma.CourseWhereInput = {
+      id: { not: courseId },
+      deletedAt: null,
+      status: "PUBLISHED",
+    };
+
+    let related = course.categoryId
+      ? await this.prisma.course.findMany({
+          where: { ...baseWhere, categoryId: course.categoryId },
+          take: limit,
+          orderBy: { createdAt: "desc" },
+          select: courseSelect,
+        })
+      : [];
+
+    if (related.length < limit) {
+      const excludeIds = [courseId, ...related.map((c) => c.id)];
+      const sameInstructor = await this.prisma.course.findMany({
+        where: { ...baseWhere, id: { notIn: excludeIds }, instructorId: course.instructorId },
+        take: limit - related.length,
+        orderBy: { createdAt: "desc" },
+        select: courseSelect,
+      });
+      related = [...related, ...sameInstructor];
+    }
+
+    if (related.length < limit) {
+      const excludeIds = [courseId, ...related.map((c) => c.id)];
+      const featured = await this.prisma.course.findMany({
+        where: { ...baseWhere, id: { notIn: excludeIds } },
+        take: limit - related.length,
+        orderBy: [{ isFeatured: "desc" }, { createdAt: "desc" }],
+        select: courseSelect,
+      });
+      related = [...related, ...featured];
+    }
+
+    const courseIds = related.map((c) => c.id);
+    const [reviewSum, reviewCount, enrollmentCount] = await Promise.all([
+      this.prisma.review.groupBy({
+        by: ["courseId"],
+        where: { courseId: { in: courseIds } },
+        _sum: { rating: true },
+      }),
+      this.prisma.review.groupBy({
+        by: ["courseId"],
+        where: { courseId: { in: courseIds } },
+        _count: { _all: true },
+      }),
+      this.prisma.enrollment.groupBy({
+        by: ["courseId"],
+        where: { courseId: { in: courseIds } },
+        _count: { _all: true },
+      }),
+    ]);
+
+    const sumMap = new Map(reviewSum.map((r) => [r.courseId, r._sum.rating ?? 0]));
+    const reviewsCountMap = new Map(reviewCount.map((r) => [r.courseId, r._count._all]));
+    const learnersMap = new Map(enrollmentCount.map((r) => [r.courseId, r._count._all]));
+
+    return related.map((c) => ({
+      ...c,
+      totalStars: sumMap.get(c.id) ?? 0,
+      reviewsCount: reviewsCountMap.get(c.id) ?? 0,
+      totalLearners: learnersMap.get(c.id) ?? 0,
+    }));
+  }
+
   async getCourseById(id: string) {
     // Get course with all related data
     const course = await this.prisma.course.findFirst({

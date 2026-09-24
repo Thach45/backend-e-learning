@@ -10,6 +10,8 @@ import {
   GetCourseSummaryResponseDto,
   GetCoursesResponseDto,
   UpdateCourseBodyDto,
+  GetRelatedCoursesQueryDto,
+  GetRelatedCoursesResponseDto,
 } from "./courses.dto";
 import { Public } from "src/shared/decorator/auth.decorator";
 import { GetIp } from "src/shared/decorator/get-ip.decorator";
@@ -37,6 +39,13 @@ export class CoursesController {
   @ZodSerializerDto(GetCourseResponseDto)
   async getCourseById(@Param() params: GetCourseParamsDto) {
     return this.coursesService.getCourseById((params as any).id);
+  }
+
+  @Public()
+  @Get("courses/:id/related")
+  @ZodSerializerDto(GetRelatedCoursesResponseDto)
+  async getRelatedCourses(@Param() params: GetCourseParamsDto, @Query() query: GetRelatedCoursesQueryDto) {
+    return this.coursesService.getRelatedCourses((params as any).id, query.limit);
   }
   // @Get("courses/:id/overview")
   // @ZodSerializerDto(OverviewResponseDto)

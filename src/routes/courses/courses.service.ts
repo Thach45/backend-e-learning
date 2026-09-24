@@ -15,6 +15,10 @@ export class CoursesService {
     return this.repo.getCourseById(id);
   }
 
+  async getRelatedCourses(id: string, limit?: number) {
+    return this.repo.getRelatedCourses(id, limit);
+  }
+
   async createCourse(body: CreateCourseBody, actor: { userId: string }) {
     return this.repo.createCourse(body, actor);
   }
