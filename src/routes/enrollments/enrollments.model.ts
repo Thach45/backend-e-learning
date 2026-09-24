@@ -152,3 +152,18 @@ export const GetContinueWatchingResponseSchema = z.object({
 export type ContinueWatchingItem = z.infer<typeof ContinueWatchingItemSchema>;
 export type GetContinueWatchingResponse = z.infer<typeof GetContinueWatchingResponseSchema>;
 
+// Lesson progress tracking
+export const UpdateLessonProgressBodySchema = z.object({
+  progressPercent: z.coerce.number().int().min(0).max(100),
+}).strict();
+
+export const LessonProgressResponseSchema = z.object({
+  courseId: z.string().uuid(),
+  lessonId: z.string().uuid(),
+  progressPercent: z.number(),
+  lastAccessed: z.date(),
+});
+
+export type UpdateLessonProgressBody = z.infer<typeof UpdateLessonProgressBodySchema>;
+export type LessonProgressResponse = z.infer<typeof LessonProgressResponseSchema>;
+

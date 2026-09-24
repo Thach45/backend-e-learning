@@ -10,6 +10,7 @@ import {
   GetReviewByIdParamsDto,
   GetReviewResponseDto,
   GetReviewsResponseDto,
+  ReplyReviewBodyDto,
 } from "./reviews.dto";
 
 @Controller("api")
@@ -87,6 +88,21 @@ export class ReviewsController {
       (params as any).reviewId,
       (params as any).courseId,
       user.userId,
+    );
+  }
+
+  @Post("instructor/courses/:courseId/reviews/:reviewId/reply")
+  @ZodSerializerDto(GetReviewResponseDto)
+  async replyToReview(
+    @Param() params: GetReviewByIdParamsDto,
+    @Body() body: ReplyReviewBodyDto,
+    @ActiveUser() user: any,
+  ) {
+    return this.reviewsService.replyToReview(
+      (params as any).reviewId,
+      (params as any).courseId,
+      user.userId,
+      body,
     );
   }
 

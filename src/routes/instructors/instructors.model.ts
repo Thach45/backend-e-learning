@@ -29,6 +29,7 @@ export const PublicInstructorProfileSchema = z.object({
   totalStudents: z.number(),
   averageRating: z.number(),
   followerCount: z.number(),
+  isFollowing: z.boolean().optional(),
   courses: z.array(InstructorCourseSchema),
 }).strict();
 
@@ -42,3 +43,14 @@ export type GetInstructorParams = z.infer<typeof GetInstructorParamsSchema>;
 
 export const GetInstructorResponseSchema = PublicInstructorProfileSchema;
 export type GetInstructorResponse = z.infer<typeof GetInstructorResponseSchema>;
+
+export const FollowInstructorResponseSchema = z.object({
+  following: z.boolean(),
+  followerCount: z.number(),
+}).strict();
+export type FollowInstructorResponse = z.infer<typeof FollowInstructorResponseSchema>;
+
+export const FollowStatusResponseSchema = z.object({
+  following: z.boolean(),
+}).strict();
+export type FollowStatusResponse = z.infer<typeof FollowStatusResponseSchema>;

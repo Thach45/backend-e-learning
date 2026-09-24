@@ -1,10 +1,14 @@
 import { Injectable } from "@nestjs/common";
 import { EnrollmentsRepository } from "./enrollments.repo";
 import { CreateEnrollmentBody, CreateEnrollmentByInstructorBody, GetEnrollmentsQuery } from "./enrollments.model";
+import { GamificationService } from "src/routes/gamification/gamification.service";
 
 @Injectable()
 export class EnrollmentsService {
-  constructor(private readonly repo: EnrollmentsRepository) {}
+  constructor(
+    private readonly repo: EnrollmentsRepository,
+    private readonly gamificationService: GamificationService,
+  ) {}
 
   async getEnrollments(query: GetEnrollmentsQuery, userId?: string) {
     return this.repo.getEnrollments(query, userId);
@@ -19,7 +23,9 @@ export class EnrollmentsService {
   }
 
   async completeEnrollment(courseId: string, userId: string) {
-    return this.repo.completeEnrollment(courseId, userId);
+    const result = await this.repo.completeEnrollment(courseId, userId);
+    await this.gamificationService.checkCourseCompletionBadges(userId);
+    return result;
   }
 
   async getEnrollmentsByCourse(courseId: string, instructorId: string, query: GetEnrollmentsQuery) {
@@ -52,6 +58,12 @@ export class EnrollmentsService {
 
   async getContinueWatching(userId: string) {
     return this.repo.getContinueWatching(userId);
+  }
+
+  async updateLessonProgress(courseId: string, lessonId: string, userId: string, progressPercent: number) {
+    const result = await this.repo.updateLessonProgress(courseId, lessonId, userId, progressPercent);
+    await this.gamificationService.checkStreakBadges(userId);
+    return result;
   }
 }
 

@@ -12,10 +12,15 @@ import {
   UpdateCourseBodyDto,
 } from "./courses.dto";
 import { Public } from "src/shared/decorator/auth.decorator";
+import { GetIp } from "src/shared/decorator/get-ip.decorator";
+import { AuditLogService } from "src/shared/service/audit-log.service";
 
 @Controller("api")
 export class CoursesController {
-  constructor(private readonly coursesService: CoursesService) {}
+  constructor(
+    private readonly coursesService: CoursesService,
+    private readonly auditLogService: AuditLogService,
+  ) {}
 
   // Client-facing
   @Public()
@@ -87,26 +92,58 @@ export class CoursesController {
   // Admin-only
   @Post("admin/courses/:id/approve-publish")
   @ZodSerializerDto(GetCourseSummaryResponseDto)
-  async approvePublish(@Param() params: GetCourseParamsDto, @ActiveUser() user: any) {
-    return this.coursesService.approvePublish((params as any).id, user.userId);
+  async approvePublish(@Param() params: GetCourseParamsDto, @ActiveUser() user: any, @GetIp() ip: string) {
+    const result = await this.coursesService.approvePublish((params as any).id, user.userId);
+    await this.auditLogService.log({
+      actorId: user.userId,
+      action: "course.approve_publish",
+      targetType: "Course",
+      targetId: (params as any).id,
+      ipAddress: ip,
+    });
+    return result;
   }
 
   @Post("admin/courses/:id/reject-publish")
   @ZodSerializerDto(GetCourseSummaryResponseDto)
-  async rejectPublish(@Param() params: GetCourseParamsDto, @ActiveUser() user: any) {
-    return this.coursesService.rejectPublish((params as any).id, user.userId);
+  async rejectPublish(@Param() params: GetCourseParamsDto, @ActiveUser() user: any, @GetIp() ip: string) {
+    const result = await this.coursesService.rejectPublish((params as any).id, user.userId);
+    await this.auditLogService.log({
+      actorId: user.userId,
+      action: "course.reject_publish",
+      targetType: "Course",
+      targetId: (params as any).id,
+      ipAddress: ip,
+    });
+    return result;
   }
 
   @Post("admin/courses/:id/approve-delete")
   @ZodSerializerDto(GetCourseSummaryResponseDto)
-  async approveDelete(@Param() params: GetCourseParamsDto, @ActiveUser() user: any) {
-    return this.coursesService.approveDelete((params as any).id, user.userId);
+  async approveDelete(@Param() params: GetCourseParamsDto, @ActiveUser() user: any, @GetIp() ip: string) {
+    const result = await this.coursesService.approveDelete((params as any).id, user.userId);
+    await this.auditLogService.log({
+      actorId: user.userId,
+      action: "course.approve_delete",
+      targetType: "Course",
+      targetId: (params as any).id,
+      ipAddress: ip,
+    });
+    return result;
   }
 
   @Post("admin/courses/:id/reject-delete")
   @ZodSerializerDto(GetCourseSummaryResponseDto)
-  async rejectDelete(@Param() params: GetCourseParamsDto, @ActiveUser() user: any) {
-    return this.coursesService.rejectDelete((params as any).id, user.userId);
+  async rejectDelete(@Param() params: GetCourseParamsDto, @ActiveUser() user: any, @GetIp() ip: string) {
+    const result = await this.coursesService.rejectDelete((params as any).id, user.userId);
+    await this.auditLogService.log({
+      actorId: user.userId,
+      action: "course.reject_delete",
+      targetType: "Course",
+      targetId: (params as any).id,
+      ipAddress: ip,
+    });
+    return result;
   }
 
   // Admin list all courses with pagination, filters, search

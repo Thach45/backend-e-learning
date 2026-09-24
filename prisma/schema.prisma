@@ -138,6 +138,56 @@ model User {
   instructorFollowers InstructorFollow[] @relation("InstructorFollowers")
   followingInstructors InstructorFollow[] @relation("FollowerUsers")
   commentReactions   CommentReaction[]
+  badges             UserBadge[]
+  auditLogs          AuditLog[]
+}
+
+enum BadgeCode {
+  FIRST_COURSE_COMPLETED
+  FIVE_COURSES_COMPLETED
+  STREAK_7_DAYS
+  STREAK_30_DAYS
+  FIRST_REVIEW
+}
+
+model Badge {
+  id          String    @id @default(uuid())
+  code        BadgeCode @unique
+  name        String
+  description String
+  icon        String?
+  createdAt   DateTime  @default(now())
+
+  users       UserBadge[]
+}
+
+model UserBadge {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  badgeId   String
+  badge     Badge    @relation(fields: [badgeId], references: [id], onDelete: Cascade)
+  awardedAt DateTime @default(now())
+
+  @@unique([userId, badgeId])
+  @@index([userId])
+}
+
+model AuditLog {
+  id         String   @id @default(uuid())
+  actorId    String?
+  actor      User?    @relation(fields: [actorId], references: [id], onDelete: SetNull)
+  action     String
+  targetType String?
+  targetId   String?
+  metadata   Json?
+  ipAddress  String?
+  createdAt  DateTime @default(now())
+
+  @@index([actorId])
+  @@index([action])
+  @@index([targetType, targetId])
+  @@index([createdAt])
 }
 
 model InstructorProfile {
@@ -508,14 +558,16 @@ model LearningProgress {
 }
 
 model Review {
-  id         String   @id @default(uuid())
-  user       User     @relation(fields: [userId], references: [id])
-  userId     String
-  course     Course   @relation(fields: [courseId], references: [id])
-  courseId   String
-  rating     Int
-  comment    String?
-  createdAt  DateTime @default(now())
+  id                 String    @id @default(uuid())
+  user               User      @relation(fields: [userId], references: [id])
+  userId             String
+  course             Course    @relation(fields: [courseId], references: [id])
+  courseId           String
+  rating             Int
+  comment            String?
+  instructorReply    String?
+  instructorReplyAt  DateTime?
+  createdAt          DateTime  @default(now())
 
   @@unique([userId, courseId])
 }

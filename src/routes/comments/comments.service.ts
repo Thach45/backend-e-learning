@@ -1,6 +1,6 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { CommentsRepository } from "./comments.repo";
-import { CreateCommentBody, GetCommentsQuery, UpdateCommentBody } from "./comments.model";
+import { CreateCommentBody, GetCommentsQuery, ReactionTypeValue, UpdateCommentBody } from "./comments.model";
 import { NotificationsService } from "src/routes/notifications/notifications.service";
 
 @Injectable()
@@ -12,12 +12,12 @@ export class CommentsService {
     private readonly notificationsService: NotificationsService,
   ) {}
 
-  async getComments(query: GetCommentsQuery) {
-    return this.commentsRepo.getComments(query);
+  async getComments(query: GetCommentsQuery, viewerUserId?: string) {
+    return this.commentsRepo.getComments(query, viewerUserId);
   }
 
-  async getCommentById(commentId: string, lessonId: string) {
-    return this.commentsRepo.getCommentById(commentId, lessonId);
+  async getCommentById(commentId: string, lessonId: string, viewerUserId?: string) {
+    return this.commentsRepo.getCommentById(commentId, lessonId, viewerUserId);
   }
 
   async createComment(body: CreateCommentBody, userId: string) {
@@ -68,7 +68,11 @@ export class CommentsService {
     return this.commentsRepo.deleteComment(commentId, lessonId, userId);
   }
 
-  async getCommentsByLesson(lessonId: string, query: GetCommentsQuery) {
-    return this.commentsRepo.getCommentsByLesson(lessonId, query);
+  async getCommentsByLesson(lessonId: string, query: GetCommentsQuery, viewerUserId?: string) {
+    return this.commentsRepo.getCommentsByLesson(lessonId, query, viewerUserId);
+  }
+
+  async toggleReaction(commentId: string, userId: string, type: ReactionTypeValue) {
+    return this.commentsRepo.toggleReaction(commentId, userId, type);
   }
 }

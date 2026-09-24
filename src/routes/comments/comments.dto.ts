@@ -7,6 +7,8 @@ import {
   GetCommentByIdParamsSchema,
   GetCommentResponseSchema,
   GetCommentsResponseSchema,
+  ToggleReactionBodySchema,
+  ToggleReactionResponseSchema,
 } from "./comments.model";
 
 export class CreateCommentBodyDto extends createZodDto(CreateCommentBodySchema) {}
@@ -16,4 +18,6 @@ export class GetCommentsParamsDto extends createZodDto(GetCommentsParamsSchema) 
 export class GetCommentByIdParamsDto extends createZodDto(GetCommentByIdParamsSchema) {}
 export class GetCommentResponseDto extends createZodDto(GetCommentResponseSchema) {}
 export class GetCommentsResponseDto extends createZodDto(GetCommentsResponseSchema) {}
+export class ToggleReactionBodyDto extends createZodDto(ToggleReactionBodySchema) {}
+export class ToggleReactionResponseDto extends createZodDto(ToggleReactionResponseSchema) {}
 

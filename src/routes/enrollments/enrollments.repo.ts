@@ -671,5 +671,40 @@ export class EnrollmentsRepository {
 
     return { data: result };
   }
+
+  async updateLessonProgress(courseId: string, lessonId: string, userId: string, progressPercent: number) {
+    const enrollment = await this.prisma.enrollment.findUnique({
+      where: { userId_courseId: { userId, courseId } },
+      select: { id: true },
+    });
+    if (!enrollment) {
+      throw new NotFoundException("You are not enrolled in this course");
+    }
+
+    const lesson = await this.prisma.lesson.findFirst({
+      where: { id: lessonId, content: { courseId } },
+      select: { id: true },
+    });
+    if (!lesson) {
+      throw new NotFoundException(`Lesson with ID ${lessonId} not found in this course`);
+    }
+
+    const existing = await this.prisma.learningProgress.findUnique({
+      where: { userId_courseId_lessonId: { userId, courseId, lessonId } },
+      select: { progressPercent: true },
+    });
+
+    // Không cho tiến độ lùi lại khi user tua video về trước
+    const nextPercent = Math.max(existing?.progressPercent ?? 0, progressPercent);
+
+    const updated = await this.prisma.learningProgress.upsert({
+      where: { userId_courseId_lessonId: { userId, courseId, lessonId } },
+      update: { progressPercent: nextPercent, lastAccessed: new Date() },
+      create: { userId, courseId, lessonId, progressPercent: nextPercent },
+      select: { courseId: true, lessonId: true, progressPercent: true, lastAccessed: true },
+    });
+
+    return updated;
+  }
 }
 

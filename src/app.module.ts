@@ -35,6 +35,8 @@ import { RealtimeModule } from "./realtime/core/realtime.module";
 import { NotificationsModule } from "./routes/notifications/notifications.module";
 import { HealthModule } from "./routes/health/health.module";
 import { InstructorsModule } from "./routes/instructors/instructors.module";
+import { GamificationModule } from "./routes/gamification/gamification.module";
+import { AuditLogModule } from "./routes/audit-log/audit-log.module";
 
 @Module({
   imports: [
@@ -69,6 +71,8 @@ import { InstructorsModule } from "./routes/instructors/instructors.module";
     NotificationsModule,
     HealthModule,
     InstructorsModule,
+    GamificationModule,
+    AuditLogModule,
   ],
   controllers: [AppController],
   providers: [

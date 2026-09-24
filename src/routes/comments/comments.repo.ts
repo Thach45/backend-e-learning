@@ -1,7 +1,9 @@
 import { Injectable, BadRequestException, NotFoundException, ForbiddenException } from "@nestjs/common";
 import { PrismaService } from "src/shared/service/prisma.service";
-import { CreateCommentBody, GetCommentsQuery, UpdateCommentBody } from "./comments.model";
-import { Prisma } from "@prisma/client";
+import { CreateCommentBody, GetCommentsQuery, ReactionTypeValue, UpdateCommentBody } from "./comments.model";
+import { Prisma, ReactionType } from "@prisma/client";
+
+const reactionSelect = { select: { type: true, userId: true } } as const;
 
 const commentSelect = {
   id: true,
@@ -10,6 +12,7 @@ const commentSelect = {
   content: true,
   parentId: true,
   createdAt: true,
+  reactions: reactionSelect,
   user: {
     select: {
       id: true,
@@ -38,6 +41,7 @@ const commentSelect = {
       content: true,
       parentId: true,
       createdAt: true,
+      reactions: reactionSelect,
       user: {
         select: {
           id: true,
@@ -56,6 +60,7 @@ const commentSelect = {
       content: true,
       parentId: true,
       createdAt: true,
+      reactions: reactionSelect,
       user: {
         select: {
           id: true,
@@ -69,11 +74,67 @@ const commentSelect = {
   },
 } as const;
 
+type RawReaction = { type: ReactionType; userId: string };
+
+type CommentUser = { id: string; name: string; email: string; avatar: string | null };
+
+type LeafComment = {
+  id: string;
+  userId: string;
+  lessonId: string;
+  content: string;
+  parentId: string | null;
+  createdAt: Date;
+  reactions?: RawReaction[];
+  user?: CommentUser;
+};
+
+type FullComment = LeafComment & {
+  lesson?: {
+    id: string;
+    title: string;
+    content?: {
+      courseId: string;
+      course?: { instructorId: string; title: string } | null;
+    } | null;
+  };
+  parent?: LeafComment | null;
+  replies?: LeafComment[];
+};
+
+function summarizeReactions(reactions: RawReaction[], viewerUserId?: string) {
+  const reactionCounts = { LIKE: 0, LOVE: 0, HELPFUL: 0 };
+  let myReaction: ReactionTypeValue | null = null;
+  for (const r of reactions) {
+    reactionCounts[r.type] += 1;
+    if (viewerUserId && r.userId === viewerUserId) {
+      myReaction = r.type;
+    }
+  }
+  return { reactionCounts, myReaction };
+}
+
+function summarizeLeaf(comment: LeafComment, viewerUserId?: string) {
+  const { reactions, ...rest } = comment;
+  return { ...rest, ...summarizeReactions(reactions ?? [], viewerUserId) };
+}
+
+// Gắn reactionCounts/myReaction vào comment (và parent/replies lồng bên trong), bỏ mảng reactions thô.
+function withReactionSummary(comment: FullComment, viewerUserId?: string) {
+  const { reactions, parent, replies, ...rest } = comment;
+  return {
+    ...rest,
+    ...summarizeReactions(reactions ?? [], viewerUserId),
+    parent: parent ? summarizeLeaf(parent, viewerUserId) : parent,
+    replies: replies ? replies.map((r) => summarizeLeaf(r, viewerUserId)) : replies,
+  };
+}
+
 @Injectable()
 export class CommentsRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async getComments(query: GetCommentsQuery) {
+  async getComments(query: GetCommentsQuery, viewerUserId?: string) {
     const { page, limit, lessonId, userId, parentId } = query;
     if (page < 1 || limit < 1) {
       throw new BadRequestException("Page and limit must be positive numbers");
@@ -87,7 +148,7 @@ export class CommentsRepository {
       ...(parentId !== undefined ? { parentId } : {}),
     };
 
-    const [data, total] = await Promise.all([
+    const [rows, total] = await Promise.all([
       this.prisma.comment.findMany({
         where,
         skip: (page - 1) * limit,
@@ -98,10 +159,11 @@ export class CommentsRepository {
       this.prisma.comment.count({ where }),
     ]);
 
+    const data = rows.map((row) => withReactionSummary(row, viewerUserId));
     return { data, total, page, limit, totalPages: Math.ceil(total / limit) };
   }
 
-  async getCommentById(commentId: string, lessonId: string) {
+  async getCommentById(commentId: string, lessonId: string, viewerUserId?: string) {
     const comment = await this.prisma.comment.findFirst({
       where: { id: commentId, lessonId },
       select: commentSelect,
@@ -109,7 +171,7 @@ export class CommentsRepository {
     if (!comment) {
       throw new NotFoundException(`Comment with ID ${commentId} not found`);
     }
-    return comment;
+    return withReactionSummary(comment, viewerUserId);
   }
 
   async createComment(body: CreateCommentBody, userId: string) {
@@ -169,7 +231,7 @@ export class CommentsRepository {
       },
       select: commentSelect,
     });
-    return created;
+    return withReactionSummary(created, userId);
   }
 
   async updateComment(commentId: string, lessonId: string, body: UpdateCommentBody, userId?: string) {
@@ -194,7 +256,7 @@ export class CommentsRepository {
       },
       select: commentSelect,
     });
-    return updated;
+    return withReactionSummary(updated, userId);
   }
 
   async deleteComment(commentId: string, lessonId: string, userId?: string) {
@@ -219,7 +281,7 @@ export class CommentsRepository {
     return { success: true };
   }
 
-  async getCommentsByLesson(lessonId: string, query: GetCommentsQuery) {
+  async getCommentsByLesson(lessonId: string, query: GetCommentsQuery, viewerUserId?: string) {
     // Validate lesson exists
     const lesson = await this.prisma.lesson.findFirst({
       where: { id: lessonId },
@@ -229,6 +291,40 @@ export class CommentsRepository {
       throw new NotFoundException(`Lesson with ID ${lessonId} not found`);
     }
 
-    return this.getComments({ ...query, lessonId });
+    return this.getComments({ ...query, lessonId }, viewerUserId);
+  }
+
+  async toggleReaction(commentId: string, userId: string, type: ReactionTypeValue) {
+    const comment = await this.prisma.comment.findUnique({
+      where: { id: commentId },
+      select: { id: true },
+    });
+    if (!comment) {
+      throw new NotFoundException(`Comment with ID ${commentId} not found`);
+    }
+
+    const existing = await this.prisma.commentReaction.findUnique({
+      where: { commentId_userId: { commentId, userId } },
+    });
+
+    if (existing && existing.type === type) {
+      // Bấm lại cùng loại reaction -> bỏ reaction
+      await this.prisma.commentReaction.delete({ where: { id: existing.id } });
+    } else if (existing) {
+      await this.prisma.commentReaction.update({
+        where: { id: existing.id },
+        data: { type },
+      });
+    } else {
+      await this.prisma.commentReaction.create({
+        data: { commentId, userId, type },
+      });
+    }
+
+    const reactions = await this.prisma.commentReaction.findMany({
+      where: { commentId },
+      select: { type: true, userId: true },
+    });
+    return summarizeReactions(reactions, userId);
   }
 }

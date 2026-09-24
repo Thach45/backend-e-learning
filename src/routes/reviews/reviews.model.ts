@@ -6,6 +6,8 @@ export const ReviewSchema = z.object({
   courseId: z.string().uuid(),
   rating: z.number().int().min(1).max(5),
   comment: z.string().nullable().optional(),
+  instructorReply: z.string().nullable().optional(),
+  instructorReplyAt: z.date().nullable().optional(),
   createdAt: z.date(),
   user: z
     .object({
@@ -50,6 +52,10 @@ export const UpdateReviewBodySchema = z.object({
   comment: z.string().nullable().optional(),
 }).strict();
 
+export const ReplyReviewBodySchema = z.object({
+  reply: z.string().min(1, "Nội dung phản hồi không được để trống").max(2000),
+}).strict();
+
 export const GetReviewResponseSchema = ReviewSchema;
 
 export const GetReviewsResponseSchema = z.object({
@@ -68,4 +74,5 @@ export type CreateReviewBody = z.infer<typeof CreateReviewBodySchema> & { course
 export type UpdateReviewBody = z.infer<typeof UpdateReviewBodySchema>;
 export type GetReviewResponse = z.infer<typeof GetReviewResponseSchema>;
 export type GetReviewsResponse = z.infer<typeof GetReviewsResponseSchema>;
+export type ReplyReviewBody = z.infer<typeof ReplyReviewBodySchema>;
 
