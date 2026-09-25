@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { 
@@ -20,16 +20,17 @@ import {
   Edit3,
   X,
   Loader2,
-  Lock
+  Lock,
+  ThumbsUp
 } from 'lucide-react';
 import { useCourse, useRelatedCourses, usePreviewLesson } from '../hooks/useCourses';
 import MediaPreviewModal, { guessStorageType } from '../components/course/MediaPreviewModal';
 import { useSEO } from '../hooks/useSEO';
 import { useAddToCart } from '../hooks/useCart';
-import { useReviewsByCourse, useMyReview, useCreateReview } from '../hooks/useReviews';
+import { useReviewsByCourse, useMyReview, useCreateReview, useSetReviewHelpful } from '../hooks/useReviews';
 import { useAuthStatus } from '../hooks/useAuthStatus';
 import ReportButton from '../components/common/ReportButton';
-import type { CreateReviewBody } from '../api/reviews';
+import type { CreateReviewBody, Review } from '../api/reviews';
 import { useAddToWishlist, useCheckWishlist, useRemoveFromWishlist } from '../hooks/useWishlist';
 import { PLACEHOLDER_IMAGE } from '../utils/placeholder';
 
@@ -139,10 +140,39 @@ const CourseDetailPage = () => {
 
   // Reviews
   const [reviewsPage, setReviewsPage] = useState(1);
-  const { data: reviewsData, isLoading: isLoadingReviews } = useReviewsByCourse(courseId, { 
-    page: reviewsPage, 
-    limit: 5 
+  const [reviewSort, setReviewSort] = useState<'newest' | 'helpful' | 'highest' | 'lowest'>('newest');
+  const [reviewStarFilter, setReviewStarFilter] = useState<number | undefined>(undefined);
+  const [onlyWithComment, setOnlyWithComment] = useState(false);
+  const { data: reviewsData, isLoading: isLoadingReviews } = useReviewsByCourse(courseId, {
+    page: reviewsPage,
+    limit: 5,
+    sort: reviewSort,
+    rating: reviewStarFilter,
+    hasComment: onlyWithComment ? true : undefined,
   });
+  // Gộp các trang đã tải (bấm "Xem thêm" thì nối thêm, không thay cả danh sách); đổi bộ lọc thì bắt đầu lại từ trang 1
+  const [loadedReviews, setLoadedReviews] = useState<Review[]>([]);
+  useEffect(() => {
+    if (!reviewsData) return;
+    setLoadedReviews((prev) =>
+      reviewsPage === 1 ? reviewsData.data : [...prev, ...reviewsData.data.filter((r) => !prev.some((p) => p.id === r.id))],
+    );
+  }, [reviewsData, reviewsPage]);
+  const helpfulMutation = useSetReviewHelpful();
+  const handleHelpful = (review: Review) => {
+    const on = !review.markedHelpful;
+    helpfulMutation.mutate(
+      { reviewId: review.id, on },
+      {
+        onSuccess: (r) =>
+          setLoadedReviews((list) => list.map((x) => (x.id === review.id ? { ...x, helpfulCount: r.helpfulCount, markedHelpful: r.markedHelpful } : x))),
+      },
+    );
+  };
+  const changeReviewFilter = (apply: () => void) => {
+    apply();
+    setReviewsPage(1);
+  };
   const { data: myReview, refetch: refetchMyReview } = useMyReview(courseId);
   const { data: wishlistCheck } = useCheckWishlist(courseId);
   const isInWishlist = wishlistCheck?.isInWishlist || false;
@@ -576,15 +606,45 @@ const CourseDetailPage = () => {
                   </div>
                 )}
 
+                {/* Bộ lọc và sắp xếp đánh giá */}
+                {(course.reviewsCount > 0 || reviewStarFilter || onlyWithComment) && (
+                  <div className="flex flex-wrap items-center gap-2 mb-6 text-sm">
+                    <select
+                      value={reviewSort}
+                      onChange={(e) => changeReviewFilter(() => setReviewSort(e.target.value as typeof reviewSort))}
+                      className="px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900"
+                      aria-label="Sắp xếp đánh giá"
+                    >
+                      <option value="newest">Mới nhất</option>
+                      <option value="helpful">Hữu ích nhất</option>
+                      <option value="highest">Điểm cao nhất</option>
+                      <option value="lowest">Điểm thấp nhất</option>
+                    </select>
+                    {[5, 4, 3, 2, 1].map((star) => (
+                      <button
+                        key={star}
+                        onClick={() => changeReviewFilter(() => setReviewStarFilter(reviewStarFilter === star ? undefined : star))}
+                        className={`px-3 py-1.5 rounded-full border ${reviewStarFilter === star ? 'bg-amber-400 border-amber-400 text-white' : 'border-slate-200 dark:border-slate-800 hover:border-amber-300'}`}
+                      >
+                        {star} ★
+                      </button>
+                    ))}
+                    <label className="inline-flex items-center gap-2 ml-1 cursor-pointer">
+                      <input type="checkbox" checked={onlyWithComment} onChange={(e) => changeReviewFilter(() => setOnlyWithComment(e.target.checked))} className="accent-indigo-600" />
+                      Có nhận xét
+                    </label>
+                  </div>
+                )}
+
                 {/* Review List */}
-                {isLoadingReviews ? (
+                {isLoadingReviews && loadedReviews.length === 0 ? (
                   <div className="flex items-center justify-center py-8">
                     <Loader2 className="animate-spin h-6 w-6 text-indigo-600" />
                   </div>
-                ) : reviewsData && reviewsData.data.length > 0 ? (
+                ) : loadedReviews.length > 0 ? (
                   <>
                     <div className="space-y-6">
-                      {reviewsData.data.map(review => (
+                      {loadedReviews.map(review => (
                         <div key={review.id} className="border-b border-slate-100 dark:border-slate-800 pb-6 last:border-none">
                           <div className="flex justify-between items-start mb-3">
                             <div className="flex items-center gap-3">
@@ -612,6 +672,19 @@ const CourseDetailPage = () => {
                           {review.comment && (
                             <p className="text-sm text-slate-700 dark:text-slate-200 leading-relaxed mb-3">{review.comment}</p>
                           )}
+                          {currentUser?.id && review.userId !== currentUser.id ? (
+                            <button
+                              onClick={() => handleHelpful(review)}
+                              disabled={helpfulMutation.isPending}
+                              className={`mt-1 mb-2 inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border transition-colors ${
+                                review.markedHelpful ? 'bg-indigo-50 border-indigo-300 text-indigo-700' : 'border-slate-200 dark:border-slate-800 text-slate-500 hover:border-indigo-300'
+                              }`}
+                            >
+                              <ThumbsUp size={13} className={review.markedHelpful ? 'fill-current' : ''} /> Hữu ích{review.helpfulCount ? ` (${review.helpfulCount})` : ''}
+                            </button>
+                          ) : (
+                            !!review.helpfulCount && <p className="text-xs text-slate-500 mb-2">{review.helpfulCount} người thấy hữu ích</p>
+                          )}
                           {review.instructorReply && (
                             <div className="ml-4 pl-4 border-l-2 border-indigo-200 dark:border-indigo-900 mt-2">
                               <p className="text-xs font-bold text-indigo-600 dark:text-indigo-400 mb-1">Phản hồi từ giảng viên</p>
@@ -621,12 +694,12 @@ const CourseDetailPage = () => {
                         </div>
                       ))}
                     </div>
-                    {reviewsData.totalPages > reviewsPage && (
+                    {reviewsData && reviewsData.totalPages > reviewsPage && (
                       <button
                         onClick={() => setReviewsPage(prev => prev + 1)}
                         className="w-full py-2.5 mt-4 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 text-sm font-bold rounded-xl hover:bg-slate-50 dark:bg-slate-950 transition-colors"
                       >
-                        Xem thêm đánh giá ({reviewsData.total - reviewsData.data.length} còn lại)
+                        Xem thêm đánh giá ({Math.max(0, reviewsData!.total - loadedReviews.length)} còn lại)
                       </button>
                     )}
                   </>

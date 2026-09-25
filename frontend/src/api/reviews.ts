@@ -10,10 +10,12 @@ export type Review = {
   instructorReply?: string | null;
   instructorReplyAt?: string | null;
   createdAt: string;
+  helpfulCount?: number;
+  markedHelpful?: boolean;
   user?: {
     id: string;
     name: string;
-    email: string;
+    email?: string; // chỉ có ở API admin/giảng viên
     avatar?: string | null;
   };
   course?: {
@@ -28,6 +30,8 @@ export type GetReviewsParams = {
   courseId?: string;
   userId?: string;
   rating?: number; // 1-5
+  sort?: 'newest' | 'helpful' | 'highest' | 'lowest';
+  hasComment?: boolean;
 };
 
 export type GetReviewsResponse = {
@@ -50,6 +54,12 @@ export type UpdateReviewBody = {
 
 // Reviews API functions
 export const reviewsApi = {
+  // Bấm/bỏ "Hữu ích" cho một đánh giá
+  setHelpful: async (reviewId: string, on: boolean): Promise<{ helpfulCount: number; markedHelpful: boolean }> => {
+    const response = on ? await apiClient.post(`/reviews/${reviewId}/helpful`) : await apiClient.delete(`/reviews/${reviewId}/helpful`);
+    return response.data.data;
+  },
+
   // Create review for a course
   createReview: async (courseId: string, body: CreateReviewBody): Promise<Review> => {
     const response = await apiClient.post(`/courses/${courseId}/reviews`, body);

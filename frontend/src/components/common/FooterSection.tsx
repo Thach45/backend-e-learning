@@ -44,7 +44,8 @@ const FooterSection = () => {
         </div>
 
         <div className="footer-section">
-          <h4>Điều khoản & Liên hệ</h4>
+          <h4>Hỗ trợ & Điều khoản</h4>
+          <Link to="/help">Trung tâm trợ giúp</Link>
           <Link to="/terms">Điều khoản sử dụng</Link>
           <Link to="/privacy">Chính sách bảo mật</Link>
           {hasContact && (

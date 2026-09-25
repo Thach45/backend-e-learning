@@ -19,7 +19,9 @@ import {
   Ticket,
   BarChart3,
   Tags,
-  Mail
+  Mail,
+  Headset,
+  HelpCircle
 } from 'lucide-react';
 import ThemeToggle from '../components/common/ThemeToggle';
 import { usePendingReportCount } from '../hooks/useModeration';
@@ -44,6 +46,8 @@ const AdminLayout = () => {
     { icon: Shield, label: 'Phân quyền', path: '/admin/permissions' },
     { icon: ScrollText, label: 'Nhật ký', path: '/admin/audit-logs' },
     { icon: Mail, label: 'Email', path: '/admin/email-campaigns' },
+    { icon: Headset, label: 'Hỗ trợ', path: '/admin/support' },
+    { icon: HelpCircle, label: 'FAQ', path: '/admin/faq' },
     { icon: Tags, label: 'Thẻ kỹ năng', path: '/admin/tags' },
     { icon: Settings, label: 'Cài đặt', path: '/admin/settings' },
   ];

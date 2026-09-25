@@ -60,6 +60,17 @@ import AdminEmailCampaignEditorPage from './pages/admin/AdminEmailCampaignEditor
 import InstructorAnnouncementsPage from './pages/instructor/InstructorAnnouncementsPage';
 import InstructorAnnouncementEditorPage from './pages/instructor/InstructorAnnouncementEditorPage';
 import UnsubscribePage from './pages/UnsubscribePage';
+import AdminSupportPage from './pages/admin/AdminSupportPage';
+import AdminTicketPage from './pages/admin/AdminTicketPage';
+import AdminFaqPage from './pages/admin/AdminFaqPage';
+import CourseAssignmentsPage from './pages/instructor/CourseAssignmentsPage';
+import AssignmentSubmissionsPage from './pages/instructor/AssignmentSubmissionsPage';
+import MyAssignmentsPage from './pages/MyAssignmentsPage';
+import AssignmentDetailPage from './pages/AssignmentDetailPage';
+import HelpCenterPage from './pages/HelpCenterPage';
+import MyTicketsPage from './pages/support/MyTicketsPage';
+import NewTicketPage from './pages/support/NewTicketPage';
+import TicketDetailPage from './pages/support/TicketDetailPage';
 import OnboardingWizard from './components/profile/OnboardingWizard';
 import PrivacyPage from './pages/PrivacyPage';
 import TermsPage from './pages/TermsPage';
@@ -128,11 +139,52 @@ const AppContent = () => {
           <Route path="courses/:id" element={<CourseDetailPage />} />
           <Route path="community" element={<CommunityPage />} />
           <Route path="unsubscribe" element={<UnsubscribePage />} />
+          <Route path="help" element={<HelpCenterPage />} />
           <Route path="privacy" element={<PrivacyPage />} />
           <Route path="terms" element={<TermsPage />} />
           <Route path="instructors/:id" element={<InstructorProfilePage />} />
           
           {/* Protected routes - require authentication */}
+          <Route
+            path="my-assignments"
+            element={
+              <ProtectedRoute>
+                <MyAssignmentsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="assignments/:id"
+            element={
+              <ProtectedRoute>
+                <AssignmentDetailPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="support/tickets"
+            element={
+              <ProtectedRoute>
+                <MyTicketsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="support/tickets/new"
+            element={
+              <ProtectedRoute>
+                <NewTicketPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="support/tickets/:id"
+            element={
+              <ProtectedRoute>
+                <TicketDetailPage />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="my-courses"
             element={
@@ -256,6 +308,9 @@ const AppContent = () => {
           <Route path="tags" element={<AdminTagsPage />} />
           <Route path="email-campaigns" element={<AdminEmailCampaignsPage />} />
           <Route path="email-campaigns/:id" element={<AdminEmailCampaignEditorPage />} />
+          <Route path="support" element={<AdminSupportPage />} />
+          <Route path="support/:id" element={<AdminTicketPage />} />
+          <Route path="faq" element={<AdminFaqPage />} />
         </Route>
         {/* Instructor routes - require INSTRUCTOR role */}
         <Route
@@ -279,6 +334,8 @@ const AppContent = () => {
           <Route path="reviews" element={<InstructorReviewsPage />} />
           <Route path="analytics" element={<InstructorAnalyticsPage />} />
           <Route path="settings" element={<InstructorSettingsPage />} />
+          <Route path="courses/:id/assignments" element={<CourseAssignmentsPage />} />
+          <Route path="assignments/:id/submissions" element={<AssignmentSubmissionsPage />} />
           <Route path="announcements" element={<InstructorAnnouncementsPage />} />
           <Route path="announcements/:id" element={<InstructorAnnouncementEditorPage />} />
         </Route>

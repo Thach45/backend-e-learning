@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Search, Menu, X, ShoppingCart, ChevronDown, Receipt, LogOut, User, Settings, BookOpen, Heart } from 'lucide-react';
+import { Search, Menu, X, ShoppingCart, ChevronDown, Receipt, LogOut, User, Settings, BookOpen, Heart, ClipboardList, LifeBuoy } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuthStatus } from '../../hooks/useAuthStatus';
 import { useLogout } from '../../hooks/useAuth';
@@ -173,6 +173,22 @@ const HomeHeader = ({ cartCount = 0 }: HeaderProps) => {
                         <span className="font-medium">Khóa học của tôi</span>
                       </Link>
                       <Link
+                        to="/my-assignments"
+                        onClick={() => setIsUserMenuOpen(false)}
+                        className="flex items-center gap-3 px-4 py-3 hover:bg-slate-50 dark:bg-slate-950 transition-colors text-slate-700 dark:text-slate-200"
+                      >
+                        <ClipboardList size={18} className="text-indigo-600" />
+                        <span className="font-medium">Bài tập của tôi</span>
+                      </Link>
+                      <Link
+                        to="/support/tickets"
+                        onClick={() => setIsUserMenuOpen(false)}
+                        className="flex items-center gap-3 px-4 py-3 hover:bg-slate-50 dark:bg-slate-950 transition-colors text-slate-700 dark:text-slate-200"
+                      >
+                        <LifeBuoy size={18} className="text-indigo-600" />
+                        <span className="font-medium">Yêu cầu hỗ trợ</span>
+                      </Link>
+                      <Link
                         to="/account/orders"
                         onClick={() => setIsUserMenuOpen(false)}
                         className="flex items-center gap-3 px-4 py-3 hover:bg-slate-50 dark:bg-slate-950 transition-colors text-slate-700 dark:text-slate-200"
@@ -326,6 +342,8 @@ const HomeHeader = ({ cartCount = 0 }: HeaderProps) => {
                 </div>
                 <div className="flex flex-col gap-2">
                   <Link to="/my-courses" className="p-2 font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:bg-slate-950 rounded-lg text-sm">Khóa học của tôi</Link>
+                  <Link to="/my-assignments" className="p-2 font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:bg-slate-950 rounded-lg text-sm">Bài tập của tôi</Link>
+                  <Link to="/support/tickets" className="p-2 font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:bg-slate-950 rounded-lg text-sm">Yêu cầu hỗ trợ</Link>
                   <Link to="/account/orders" className="p-2 font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:bg-slate-950 rounded-lg text-sm">Đơn hàng của tôi</Link>
                   <Link to="/wishlist" className="p-2 font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:bg-slate-950 rounded-lg text-sm">Danh sách yêu thích</Link>
                   <Link to="/notifications" className="p-2 font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:bg-slate-950 rounded-lg text-sm">Thông báo</Link>

@@ -48,3 +48,16 @@ export const useAddStudentToCourse = () => {
   });
 };
 
+
+export const useStudentProgress = (courseId?: string, userId?: string) =>
+  useQuery({
+    queryKey: ['instructor', 'student-progress', courseId, userId],
+    queryFn: () => instructorStudentsApi.getStudentProgress(courseId as string, userId as string),
+    enabled: !!courseId && !!userId,
+  });
+
+export const useExportStudentsCsv = () =>
+  useMutation({
+    mutationFn: (params?: { courseId?: string; search?: string }) => instructorStudentsApi.exportCsv(params),
+    onError: () => toast.error('Không thể xuất file CSV.'),
+  });

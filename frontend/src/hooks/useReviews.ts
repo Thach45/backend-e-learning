@@ -177,3 +177,13 @@ export const useDeleteReviewAdmin = () => {
   });
 };
 
+
+// "Hữu ích" cho một đánh giá (không refetch cả danh sách: nơi gọi tự cập nhật số đếm từ kết quả trả về)
+export const useSetReviewHelpful = () =>
+  useMutation({
+    mutationFn: ({ reviewId, on }: { reviewId: string; on: boolean }) => reviewsApi.setHelpful(reviewId, on),
+    onError: (error) => {
+      const e = error as { response?: { data?: { message?: string } } };
+      toast.error(e?.response?.data?.message || 'Không thể thực hiện. Vui lòng thử lại.');
+    },
+  });

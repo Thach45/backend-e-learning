@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, Loader2, AlertCircle, Save, FileText, Info, BookOpen } from 'lucide-react';
+import { ArrowLeft, Loader2, AlertCircle, Save, FileText, Info, BookOpen, ClipboardList } from 'lucide-react';
 import { useInstructorCourse, useUpdateInstructorCourse } from '../../hooks/useInstructorCourses';
 import { useAdminCategories } from '../../hooks/useAdminCategories';
 import { useCourseDetail, useCreateCourseDetail, useUpdateCourseDetail } from '../../hooks/useCourseDetail';
@@ -238,13 +238,22 @@ const EditCoursePage = () => {
             <p className="text-slate-500 dark:text-slate-400 mt-1">Cập nhật thông tin khóa học</p>
           </div>
         </div>
-        <button
-          onClick={() => navigate(`/instructor/courses/${id}/content`)}
-          className="px-6 py-3 bg-purple-600 text-white font-semibold rounded-xl hover:bg-purple-500 transition-colors flex items-center gap-2"
-        >
-          <BookOpen size={18} />
-          Quản lý nội dung
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => navigate(`/instructor/courses/${id}/assignments`)}
+            className="px-6 py-3 border border-purple-300 text-purple-700 font-semibold rounded-xl hover:bg-purple-50 transition-colors flex items-center gap-2"
+          >
+            <ClipboardList size={18} />
+            Bài tập
+          </button>
+          <button
+            onClick={() => navigate(`/instructor/courses/${id}/content`)}
+            className="px-6 py-3 bg-purple-600 text-white font-semibold rounded-xl hover:bg-purple-500 transition-colors flex items-center gap-2"
+          >
+            <BookOpen size={18} />
+            Quản lý nội dung
+          </button>
+        </div>
       </div>
 
       {/* Tabs */}

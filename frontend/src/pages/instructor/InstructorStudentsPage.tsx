@@ -1,5 +1,7 @@
 import { useState } from 'react';
-import { Search, Mail, Calendar, Loader2, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Search, Mail, Calendar, Loader2, ChevronLeft, ChevronRight, Download } from 'lucide-react';
+import StudentProgressModal from '../../components/instructor/StudentProgressModal';
+import { useExportStudentsCsv } from '../../hooks/useInstructorStudents';
 import { useEnrolledStudents } from '../../hooks/useInstructor';
 import { useInstructorCourses } from '../../hooks/useInstructorCourses';
 
@@ -8,6 +10,8 @@ const InstructorStudentsPage = () => {
   const [limit] = useState(20);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCourseId, setSelectedCourseId] = useState<string>('');
+  const [detail, setDetail] = useState<{ courseId: string; userId: string } | null>(null);
+  const exportCsv = useExportStudentsCsv();
 
   const { data: studentsData, isLoading } = useEnrolledStudents({
     page,
@@ -39,6 +43,13 @@ const InstructorStudentsPage = () => {
           <h1 className="text-3xl font-bold text-slate-800 dark:text-slate-100">Học viên của tôi</h1>
           <p className="text-slate-500 dark:text-slate-400 mt-1">Quản lý học viên đã ghi danh vào khóa học của bạn</p>
         </div>
+        <button
+          onClick={() => exportCsv.mutate({ courseId: selectedCourseId || undefined, search: searchTerm || undefined })}
+          disabled={exportCsv.isPending}
+          className="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-sm font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 disabled:opacity-50"
+        >
+          {exportCsv.isPending ? <Loader2 size={16} className="animate-spin" /> : <Download size={16} />} Xuất CSV
+        </button>
       </div>
 
       {/* Filters */}
@@ -100,7 +111,8 @@ const InstructorStudentsPage = () => {
                       <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase">Ngày ghi danh</th>
                       <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase">Tiến độ</th>
                       <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase">Trạng thái</th>
-                    </tr>
+                    
+                      <th className="px-6 py-3" /></tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                     {students.map((student) => {
@@ -170,6 +182,9 @@ const InstructorStudentsPage = () => {
                             </span>
                           )}
                         </td>
+                        <td className="px-6 py-4 text-right">
+                          <button onClick={() => setDetail({ courseId: student.courseId, userId: student.userId })} className="text-sm font-semibold text-purple-700 hover:underline">Chi tiết</button>
+                        </td>
                       </tr>
                     )})}
                   </tbody>
@@ -204,6 +219,7 @@ const InstructorStudentsPage = () => {
           )}
         </div>
       )}
+      {detail && <StudentProgressModal courseId={detail.courseId} userId={detail.userId} onClose={() => setDetail(null)} />}
     </div>
   );
 };
