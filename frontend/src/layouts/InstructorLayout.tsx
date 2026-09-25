@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import FloatingMessagesButton from '../components/common/FloatingMessagesButton';
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import { 
   LayoutDashboard, 
@@ -127,6 +128,7 @@ const InstructorLayout = () => {
           <Outlet />
         </div>
       </main>
+      <FloatingMessagesButton />
     </div>
   );
 };

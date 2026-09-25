@@ -1,6 +1,7 @@
 import { Outlet } from 'react-router-dom';
 import HomeHeader from '../components/common/HomeHeader';
 import FooterSection from '../components/common/FooterSection';
+import FloatingMessagesButton from '../components/common/FloatingMessagesButton';
 import { useGetCart } from '../hooks/useCart';
 
 const MainLayout: React.FC = () => {
@@ -14,6 +15,7 @@ const MainLayout: React.FC = () => {
         <Outlet />
       </main>
       <FooterSection />
+      <FloatingMessagesButton />
     </div>
   );
 };
