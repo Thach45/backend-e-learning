@@ -1,3 +1,4 @@
+import { Audit } from 'src/shared/decorator/audit.decorator';
 import { Controller, Get, Post, Put, Delete, Query, Param, Body } from '@nestjs/common';
 import { ZodSerializerDto } from 'nestjs-zod';
 import { DocumentTagsService } from './document-tags.service';
@@ -37,12 +38,14 @@ export class DocumentTagsController {
     return this.service.findById((params as any).id);
   }
 
+  @Audit('document_tag.create', 'DocumentTag')
   @Post()
   @ZodSerializerDto(GetDocumentTagResponseDto)
   async create(@Body() body: CreateDocumentTagBodyDto) {
     return this.service.create(body as any);
   }
 
+  @Audit('document_tag.update', 'DocumentTag')
   @Put(':id')
   @ZodSerializerDto(GetDocumentTagResponseDto)
   async update(
@@ -52,6 +55,7 @@ export class DocumentTagsController {
     return this.service.update((params as any).id, body as any);
   }
 
+  @Audit('document_tag.delete', 'DocumentTag')
   @Delete(':id')
   async delete(@Param() params: GetDocumentTagParamsDto) {
     return this.service.delete((params as any).id);

@@ -2,6 +2,7 @@ import { Injectable, BadRequestException, NotFoundException } from "@nestjs/comm
 import { PrismaService } from "src/shared/service/prisma.service";
 import { CreateOrderBody, GetOrdersQuery } from "./orders.model";
 import { Prisma, OrderStatus } from "@prisma/client";
+import { CouponsService } from "../coupons/coupons.service";
 
 const orderItemSelect = {
   id: true,
@@ -24,6 +25,9 @@ const orderSelect = {
   id: true,
   userId: true,
   totalAmount: true,
+  couponCode: true,
+  discountAmount: true,
+  expiresAt: true,
   status: true,
   createdAt: true,
   orderItems: {
@@ -39,9 +43,18 @@ const orderSelect = {
   },
 } as const;
 
+/** Thời gian được thanh toán sau khi tạo đơn (phút, cấu hình bằng ORDER_PAYMENT_TIMEOUT_MINUTES, mặc định 10). */
+export function getPaymentTimeoutMs(): number {
+    const minutes = Number(process.env.ORDER_PAYMENT_TIMEOUT_MINUTES);
+    return (Number.isFinite(minutes) && minutes > 0 ? minutes : 10) * 60 * 1000;
+}
+
 @Injectable()
 export class OrdersRepo {
-    constructor(private readonly prisma: PrismaService) {}
+    constructor(
+        private readonly prisma: PrismaService,
+        private readonly couponsService: CouponsService,
+    ) {}
 
     async createOrder(userId: string, body: CreateOrderBody) {
         // Get cart with items
@@ -85,34 +98,93 @@ export class OrdersRepo {
             }
         }
 
-        // Calculate total amount
-        const totalAmount = cart.cartItems.reduce((sum, item) => {
-            const price = item.course?.salePrice || item.course?.price || 0;
-            return sum + price;
-        }, 0);
+        // Calculate subtotal
+        const lines = cart.cartItems.map((item) => ({
+            courseId: item.courseId,
+            price: item.course?.salePrice || item.course?.price || 0,
+        }));
+        const subtotal = lines.reduce((sum, l) => sum + l.price, 0);
+        const expiresAt = new Date(Date.now() + getPaymentTimeoutMs());
 
-        // Create order with order items
-        const order = await this.prisma.order.create({
-            data: {
-                userId,
-                totalAmount,
-                status: OrderStatus.PENDING,
-                orderItems: {
-                    create: cart.cartItems.map((item) => ({
-                        courseId: item.courseId,
-                        price: item.course?.salePrice || item.course?.price || 0,
-                    })),
-                },
+        // Kiểm tra mã, tạo đơn, ghi lượt dùng, xóa giỏ: cùng một transaction (lỗi ở đâu thì không trừ lượt nào).
+        return this.prisma.$transaction(
+            async (tx) => {
+                let totalAmount = subtotal;
+                let discountAmount = 0;
+                let applied: Awaited<ReturnType<CouponsService["evaluate"]>> | null = null;
+
+                if (body.couponCode) {
+                    // Khóa mã trước khi đếm lượt để các đơn dùng cùng mã xếp hàng, không vượt usageLimit
+                    await this.couponsService.lockByCode(tx, body.couponCode);
+                    applied = await this.couponsService.evaluate(body.couponCode, userId, lines, tx);
+                    totalAmount = applied.total;
+                    discountAmount = applied.discountAmount;
+                }
+
+                const order = await tx.order.create({
+                    data: {
+                        userId,
+                        totalAmount,
+                        discountAmount,
+                        couponId: applied?.coupon.id,
+                        couponCode: applied?.coupon.code,
+                        status: OrderStatus.PENDING,
+                        expiresAt,
+                        orderItems: {
+                            create: lines.map((l) => ({ courseId: l.courseId, price: l.price })),
+                        },
+                    },
+                    select: orderSelect,
+                });
+
+                if (applied) {
+                    await this.couponsService.recordRedemption(tx, {
+                        coupon: applied.coupon,
+                        userId,
+                        orderId: order.id,
+                        discountAmount,
+                        usedSlots: applied.userSlots,
+                    });
+                }
+
+                await tx.cart.delete({ where: { userId } });
+                return order;
             },
-            select: orderSelect,
-        });
+            { timeout: 20000 },
+        );
+    }
 
-        // Delete cart after creating order
-        await this.prisma.cart.delete({
-            where: { userId },
+    /**
+     * Hủy đơn chưa thanh toán (hết hạn, admin đổi FAILED...): PENDING -> FAILED có điều kiện rồi trả lượt coupon.
+     * Đây là NƠI DUY NHẤT nên dùng để hủy đơn PENDING, để lượt coupon không bao giờ bị sót.
+     * Trả về false nếu đơn không còn PENDING (đã PAID/FAILED) nên không làm gì.
+     */
+    async failPendingOrder(orderId: string): Promise<boolean> {
+        return this.prisma.$transaction(async (tx) => {
+            const res = await tx.order.updateMany({
+                where: { id: orderId, status: OrderStatus.PENDING },
+                data: { status: OrderStatus.FAILED },
+            });
+            if (res.count === 0) return false;
+            await this.couponsService.releaseByOrder(tx, orderId);
+            return true;
         });
+    }
 
-        return order;
+    /** Đơn PENDING đã quá hạn thanh toán (kể cả đơn cũ chưa có expiresAt). */
+    async findOverduePendingOrderIds(limit = 200): Promise<string[]> {
+        const now = new Date();
+        const legacyCutoff = new Date(now.getTime() - getPaymentTimeoutMs());
+        const rows = await this.prisma.order.findMany({
+            where: {
+                status: OrderStatus.PENDING,
+                OR: [{ expiresAt: { lte: now } }, { expiresAt: null, createdAt: { lte: legacyCutoff } }],
+            },
+            select: { id: true },
+            orderBy: { createdAt: "asc" },
+            take: limit,
+        });
+        return rows.map((r) => r.id);
     }
 
     async getOrders(query: GetOrdersQuery, userId?: string) {
@@ -174,63 +246,58 @@ export class OrdersRepo {
         return order;
     }
 
-    async payOrder(orderId: string, userId: string) {
-        // Get order
-        const order = await this.prisma.order.findFirst({
-            where: { id: orderId, userId },
-            select: {
-                id: true,
-                status: true,
-                orderItems: {
-                    select: {
-                        courseId: true,
-                    },
-                },
-            },
+    /**
+     * Chốt đơn đã thanh toán: chuyển PENDING -> PAID (có điều kiện) và ghi danh các khóa học trong đơn.
+     * Dùng chung cho webhook và luồng kiểm tra thủ công. Chạy song song vẫn an toàn:
+     * chỉ một bên chuyển được trạng thái, ghi danh bỏ qua bản ghi trùng.
+     */
+    async markOrderPaid(
+        db: Prisma.TransactionClient,
+        orderId: string,
+    ): Promise<"PAID" | "ALREADY_PAID" | "NOT_PENDING"> {
+        const res = await db.order.updateMany({
+            where: { id: orderId, status: OrderStatus.PENDING },
+            data: { status: OrderStatus.PAID },
         });
 
-        if (!order) {
+        if (res.count === 0) {
+            const current = await db.order.findUnique({ where: { id: orderId }, select: { status: true } });
+            if (!current) throw new NotFoundException(`Order with ID ${orderId} not found`);
+            return current.status === OrderStatus.PAID ? "ALREADY_PAID" : "NOT_PENDING";
+        }
+
+        const order = await db.order.findUniqueOrThrow({
+            where: { id: orderId },
+            select: { userId: true, orderItems: { select: { courseId: true } } },
+        });
+        await db.enrollment.createMany({
+            data: order.orderItems.map((item) => ({
+                userId: order.userId,
+                courseId: item.courseId,
+                completedAt: new Date(), // Đã thanh toán thành công
+            })),
+            skipDuplicates: true,
+        });
+        return "PAID";
+    }
+
+    /** Trả về đơn và cờ `transitioned` (true nếu lần gọi này là lần chuyển sang PAID). */
+    async payOrder(orderId: string, userId: string) {
+        const exists = await this.prisma.order.findFirst({
+            where: { id: orderId, userId },
+            select: { id: true },
+        });
+        if (!exists) {
             throw new NotFoundException(`Order with ID ${orderId} not found`);
         }
 
-        if (order.status !== OrderStatus.PENDING) {
-            throw new BadRequestException(`Order is already ${order.status}`);
+        const outcome = await this.prisma.$transaction((tx) => this.markOrderPaid(tx, orderId));
+        if (outcome === "NOT_PENDING") {
+            throw new BadRequestException("Order is not pending");
         }
 
-        // Update order status to PAID
-        const updated = await this.prisma.order.update({
-            where: { id: orderId },
-            data: { status: OrderStatus.PAID },
-            select: orderSelect,
-        });
-
-        // Create enrollments for all courses in order
-        const courseIds = order.orderItems.map((item) => item.courseId);
-        
-        // Check existing enrollments
-        const existingEnrollments = await this.prisma.enrollment.findMany({
-            where: {
-                userId,
-                courseId: { in: courseIds },
-            },
-            select: { courseId: true },
-        });
-
-        const existingCourseIds = new Set(existingEnrollments.map((e) => e.courseId));
-        const newCourseIds = courseIds.filter((id) => !existingCourseIds.has(id));
-
-        // Create enrollments for new courses
-        if (newCourseIds.length > 0) {
-            await this.prisma.enrollment.createMany({
-                data: newCourseIds.map((courseId) => ({
-                    userId,
-                    courseId,
-                    completedAt: new Date(), // Đã thanh toán thành công
-                })),
-            });
-        }
-
-        return updated;
+        const order = await this.prisma.order.findUniqueOrThrow({ where: { id: orderId }, select: orderSelect });
+        return { order, transitioned: outcome === "PAID" };
     }
 
     async updateOrderStatus(orderId: string, status: OrderStatus, userId?: string) {

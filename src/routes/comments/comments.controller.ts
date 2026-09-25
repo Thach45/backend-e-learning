@@ -1,3 +1,4 @@
+import { Audit } from 'src/shared/decorator/audit.decorator';
 import { Body, Controller, Delete, Get, Param, Post, Put, Query } from "@nestjs/common";
 import { ZodSerializerDto } from "nestjs-zod";
 import { CommentsService } from "./comments.service";
@@ -100,6 +101,7 @@ export class CommentsController {
     return this.commentsService.getComments(query as any);
   }
 
+  @Audit('comment.admin_update', 'Comment', { idParam: 'commentId' })
   @Put("admin/lessons/:lessonId/comments/:commentId")
   @ZodSerializerDto(GetCommentResponseDto)
   async updateCommentAdmin(
@@ -113,6 +115,7 @@ export class CommentsController {
     );
   }
 
+  @Audit('comment.admin_delete', 'Comment', { idParam: 'commentId' })
   @Delete("admin/lessons/:lessonId/comments/:commentId")
   async deleteCommentAdmin(@Param() params: GetCommentByIdParamsDto) {
     return this.commentsService.deleteComment(

@@ -80,6 +80,43 @@ enum NotificationType {
   NEW_ANSWER // Có câu trả lời mới cho câu hỏi
 }
 
+enum ReportTargetType {
+  COMMENT
+  LESSON_QUESTION
+  LESSON_ANSWER
+  REVIEW
+}
+
+enum ReportReason {
+  SPAM
+  INAPPROPRIATE
+  HARASSMENT
+  MISLEADING
+  OTHER
+}
+
+enum ReportStatus {
+  PENDING
+  RESOLVED
+  DISMISSED
+}
+
+enum PaymentTxOutcome {
+  PAID // Khớp đơn PENDING, đã chốt PAID và ghi danh
+  ALREADY_PAID // Đơn đã PAID trước đó (ví dụ đã chốt bằng luồng kiểm tra thủ công)
+  ORDER_NOT_PENDING // Khớp đơn nhưng đơn không còn PENDING (ví dụ FAILED): cần xử lý tay
+  AMOUNT_MISMATCH // Khớp đơn nhưng số tiền không đúng: cần xử lý tay
+  ORDER_NOT_FOUND // Nội dung có mã đơn nhưng không có đơn nào
+  NO_ORDER_REF // Nội dung chuyển khoản không có mã đơn
+  WRONG_ACCOUNT // Giao dịch vào tài khoản khác với tài khoản cấu hình
+  IGNORED // Không phải tiền vào
+}
+
+enum CouponType {
+  PERCENT // value = % giảm (1-100)
+  FIXED // value = số tiền giảm cố định
+}
+
 enum NotificationStatus {
   UNREAD
   READ
@@ -149,6 +186,9 @@ model User {
   lessonAnswers        LessonAnswer[]
   quizAttempts         QuizAttempt[]
   surveyResponses      CourseSurveyResponse[]
+  reportsFiled         ContentReport[]        @relation("ReportsFiled")
+  reportsHandled       ContentReport[]        @relation("ReportsHandled")
+  couponRedemptions    CouponRedemption[]
 }
 
 enum BadgeCode {
@@ -625,14 +665,23 @@ model CommentReaction {
 }
 
 model Order {
-  id            String         @id @default(uuid())
-  user          User           @relation(fields: [userId], references: [id])
-  userId        String
-  totalAmount   Float
-  status        OrderStatus    @default(PENDING)
-  orderItems    OrderItem[]
-  notifications Notification[]
-  createdAt     DateTime       @default(now())
+  id                  String               @id @default(uuid())
+  user                User                 @relation(fields: [userId], references: [id])
+  userId              String
+  totalAmount         Float
+  status              OrderStatus          @default(PENDING)
+  orderItems          OrderItem[]
+  notifications       Notification[]
+  coupon              Coupon?              @relation(fields: [couponId], references: [id], onDelete: SetNull)
+  couponId            String?
+  couponCode          String? // Snapshot mã tại thời điểm đặt đơn
+  discountAmount      Float                @default(0) // Số tiền đã giảm (totalAmount = tổng gốc - discountAmount)
+  createdAt           DateTime             @default(now())
+  paymentTransactions PaymentTransaction[]
+  expiresAt           DateTime? // Hạn thanh toán; quá hạn mà chưa PAID thì đơn bị hủy (FAILED)
+  couponRedemption    CouponRedemption?
+
+  @@index([couponId])
 }
 
 model OrderItem {
@@ -896,4 +945,93 @@ model CourseSurveyResponse {
 
   @@unique([userId, courseId])
   @@index([courseId])
+}
+
+// Báo cáo vi phạm nội dung (bình luận, hỏi đáp, đánh giá)
+model ContentReport {
+  id              String           @id @default(uuid())
+  reporter        User             @relation("ReportsFiled", fields: [reporterId], references: [id], onDelete: Cascade)
+  reporterId      String
+  targetType      ReportTargetType
+  targetId        String
+  reason          ReportReason
+  details         String?
+  contentSnapshot String? // Nội dung tại thời điểm báo cáo (vẫn xem được sau khi nội dung bị gỡ)
+  targetAuthorId  String? // Tác giả nội dung bị báo cáo
+  targetContext   String? // Ngữ cảnh: khóa học / bài học chứa nội dung
+  status          ReportStatus     @default(PENDING)
+  handledBy       User?            @relation("ReportsHandled", fields: [handledById], references: [id], onDelete: SetNull)
+  handledById     String?
+  handledAt       DateTime?
+  resolutionNote  String?
+  contentRemoved  Boolean          @default(false)
+  createdAt       DateTime         @default(now())
+
+  @@unique([reporterId, targetType, targetId])
+  @@index([status, createdAt])
+  @@index([targetType, targetId])
+}
+
+// Mã giảm giá
+model Coupon {
+  id             String             @id @default(uuid())
+  code           String             @unique // Luôn lưu chữ HOA
+  description    String?
+  type           CouponType
+  value          Float
+  maxDiscount    Float? // Chỉ áp dụng cho PERCENT: trần số tiền giảm
+  minOrderAmount Float? // Giá trị đơn tối thiểu (tính trên phần khóa học hợp lệ)
+  startsAt       DateTime?
+  expiresAt      DateTime?
+  usageLimit     Int? // Tổng số lượt dùng tối đa (null = không giới hạn)
+  perUserLimit   Int                @default(1)
+  courseIds      String[]           @default([]) // Rỗng = áp dụng mọi khóa học
+  isActive       Boolean            @default(true)
+  createdById    String?
+  orders         Order[]
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+  redemptions    CouponRedemption[]
+
+  @@index([isActive])
+  @@index([expiresAt])
+}
+
+// Giao dịch ngân hàng nhận từ webhook của cổng thanh toán (SePay). Dùng để chống xử lý trùng và đối soát.
+model PaymentTransaction {
+  id            String           @id @default(uuid())
+  provider      String           @default("sepay")
+  providerTxId  String // ID giao dịch phía cổng thanh toán (SePay `id`)
+  order         Order?           @relation(fields: [orderId], references: [id], onDelete: SetNull)
+  orderId       String?
+  amount        Float
+  transferType  String
+  content       String?
+  accountNumber String?
+  referenceCode String?
+  outcome       PaymentTxOutcome
+  raw           Json
+  createdAt     DateTime         @default(now())
+
+  @@unique([provider, providerTxId])
+  @@index([orderId])
+  @@index([outcome])
+}
+
+// Mỗi lần dùng mã giảm giá = một dòng. Đơn bị hủy/hết hạn thì XÓA dòng này (trả lại lượt).
+// Số lượt đã dùng của mã = số dòng; số lượt của một người = số dòng của người đó.
+model CouponRedemption {
+  id             String   @id @default(uuid())
+  coupon         Coupon   @relation(fields: [couponId], references: [id], onDelete: Cascade)
+  couponId       String
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId         String
+  order          Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderId        String   @unique
+  slot           Int // 1..perUserLimit; ràng buộc duy nhất chặn một người dùng quá số lượt kể cả khi gửi song song
+  discountAmount Float
+  createdAt      DateTime @default(now())
+
+  @@unique([couponId, userId, slot])
+  @@index([couponId])
 }

@@ -1,3 +1,4 @@
+import { Audit } from 'src/shared/decorator/audit.decorator';
 import { Body, Controller, Delete, Get, Param, Post, Put, Query } from "@nestjs/common";
 import { ZodSerializerDto } from "nestjs-zod";
 import { ReviewsService } from "./reviews.service";
@@ -125,6 +126,7 @@ export class ReviewsController {
     });
   }
 
+  @Audit('review.admin_update', 'Review', { idParam: 'reviewId' })
   @Put("admin/courses/:courseId/reviews/:reviewId")
   @ZodSerializerDto(GetReviewResponseDto)
   async updateReviewAdmin(
@@ -138,6 +140,7 @@ export class ReviewsController {
     );
   }
 
+  @Audit('review.admin_delete', 'Review', { idParam: 'reviewId' })
   @Delete("admin/courses/:courseId/reviews/:reviewId")
   async deleteReviewAdmin(@Param() params: GetReviewByIdParamsDto) {
     return this.reviewsService.deleteReview(

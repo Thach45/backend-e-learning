@@ -1,3 +1,4 @@
+import { Audit } from 'src/shared/decorator/audit.decorator';
 import { Body, Controller, Get, Logger, Param, Post, Put } from '@nestjs/common';
 import { ZodSerializerDto } from 'nestjs-zod';
 import { CreateCategoryBodyDto, UpdateCategoryBodyDto, CategoryResponseDto, GetListAdminCategoriesResponseDto, GetListCategoriesResponseDto } from './categories.dto';
@@ -30,11 +31,13 @@ export class CategoriesController {
     async getCategoryById(@Param("id") id: string) {
         return this.categoriesService.getCategoryById(id);
     }
+    @Audit('category.create', 'Category')
     @Post("/admin/categories")
     @ZodSerializerDto(CategoryResponseDto)
     async createCategory(@Body() body: CreateCategoryBodyDto, @ActiveUser() user: any) {
         return this.categoriesService.createCategory(body, user);
     }
+    @Audit('category.update', 'Category')
     @Put("/admin/categories/:id")
     @ZodSerializerDto(CategoryResponseDto)
     async updateCategory(@Param("id") id: string, @Body() body: UpdateCategoryBodyDto, @ActiveUser() user: any) {

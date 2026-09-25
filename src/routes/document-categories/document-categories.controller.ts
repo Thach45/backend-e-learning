@@ -1,3 +1,4 @@
+import { Audit } from 'src/shared/decorator/audit.decorator';
 import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/common';
 import { ZodSerializerDto } from 'nestjs-zod';
 import { DocumentCategoriesService } from './document-categories.service';
@@ -31,12 +32,14 @@ export class DocumentCategoriesController {
   }
 
   // Admin endpoints
+  @Audit('document_category.create', 'DocumentCategory')
   @Post('admin/document-categories')
   @ZodSerializerDto(GetDocumentCategoryResponseDto)
   async createCategory(@Body() body: CreateDocumentCategoryBodyDto) {
     return this.service.createCategory(body as any);
   }
 
+  @Audit('document_category.update', 'DocumentCategory')
   @Put('admin/document-categories/:id')
   @ZodSerializerDto(GetDocumentCategoryResponseDto)
   async updateCategory(
@@ -46,6 +49,7 @@ export class DocumentCategoriesController {
     return this.service.updateCategory((params as any).id, body as any);
   }
 
+  @Audit('document_category.delete', 'DocumentCategory')
   @Delete('admin/document-categories/:id')
   async deleteCategory(@Param() params: GetDocumentCategoryParamsDto) {
     return this.service.deleteCategory((params as any).id);

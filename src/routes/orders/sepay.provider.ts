@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PaymentProvider } from './payment.provider';
 import { PaymentCheckResult, PaymentQr } from './payment.types';
+import { extractOrderIdFromContent } from './sepay.util';
 
 @Injectable()
 export class SepayPaymentProvider implements PaymentProvider {
@@ -70,30 +71,9 @@ export class SepayPaymentProvider implements PaymentProvider {
           continue;
         }
 
-        const pattern =
-          /orderid\s+([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}|[a-f0-9]{32})/i;
-        const matcher = transactionContent.match(pattern);
-
-        if (!matcher) {
+        const normalizedExtractedUuid = extractOrderIdFromContent(transactionContent);
+        if (!normalizedExtractedUuid) {
           continue;
-        }
-
-        let extractedUuid = matcher[1].toLowerCase();
-
-        let normalizedExtractedUuid: string;
-        if (extractedUuid.length === 32) {
-          normalizedExtractedUuid =
-            extractedUuid.substring(0, 8) +
-            '-' +
-            extractedUuid.substring(8, 12) +
-            '-' +
-            extractedUuid.substring(12, 16) +
-            '-' +
-            extractedUuid.substring(16, 20) +
-            '-' +
-            extractedUuid.substring(20, 32);
-        } else {
-          normalizedExtractedUuid = extractedUuid.toLowerCase();
         }
 
         const normalizedOrderId = order.id.toLowerCase();

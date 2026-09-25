@@ -1,3 +1,4 @@
+import { Audit } from 'src/shared/decorator/audit.decorator';
 import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 import { ZodSerializerDto } from 'nestjs-zod';
 import { RolesService } from './roles.service';
@@ -25,18 +26,21 @@ export class RolesController {
         return this.rolesService.getRole(id);
     }
 
+    @Audit('role.create', 'Role')
     @Post()
     @ZodSerializerDto(RoleResponseDto)
     async createRole(@Body() body: CreateRoleBodyDto) {
         return this.rolesService.createRole(body);
     }
 
+    @Audit('role.update', 'Role')
     @Patch(':id')
     @ZodSerializerDto(RoleResponseDto)
     async updateRole(@Param('id') id: string, @Body() body: UpdateRoleBodyDto) {
         return this.rolesService.updateRole(id, body);
     }
 
+    @Audit('role.delete', 'Role')
     @Delete(':id')
     @ZodSerializerDto(AssignPermissionsResponseDto)
     async deleteRole(@Param('id') id: string) {

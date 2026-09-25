@@ -1,3 +1,4 @@
+import { Audit } from 'src/shared/decorator/audit.decorator';
 import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/common';
 import { ZodSerializerDto } from 'nestjs-zod';
 import { UsersService } from './users.service';
@@ -34,12 +35,14 @@ export class UsersController {
     return this.usersService.getUserById((params as any).id);
   }
 
+  @Audit('user.create', 'User')
   @Post('admin/users')
   @ZodSerializerDto(GetUserResponseDto)
   async createUser(@Body() body: CreateUserBodyDto, @ActiveUser() user: any) {
     return this.usersService.createUser(body as any, user);
   }
 
+  @Audit('user.update', 'User')
   @Put('admin/users/:id')
   @ZodSerializerDto(GetUserResponseDto)
   async updateUser(

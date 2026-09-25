@@ -1,3 +1,4 @@
+import { Audit } from 'src/shared/decorator/audit.decorator';
 import { Body, Controller, Delete, Get, Param, Post, Put, Query, Req } from '@nestjs/common';
 import { ZodSerializerDto } from 'nestjs-zod';
 import { DocumentsService } from './documents.service';
@@ -122,6 +123,7 @@ export class DocumentsController {
     return this.service.getAdminDocuments(query as any);
   }
 
+  @Audit('document.verify', 'Document')
   @Put('admin/documents/:id/verify')
   @ZodSerializerDto(GetDocumentResponseDto)
   async toggleVerified(
@@ -131,6 +133,7 @@ export class DocumentsController {
     return this.service.toggleVerified((params as any).id, (body as any).isVerified);
   }
 
+  @Audit('document.admin_delete', 'Document')
   @Delete('admin/documents/:id')
   async adminDeleteDocument(@Param() params: GetDocumentParamsDto) {
     return this.service.adminDeleteDocument((params as any).id);

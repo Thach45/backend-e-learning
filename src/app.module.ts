@@ -5,6 +5,11 @@ import { SharedModule } from "./shared/shared.module";
 import { AuthModule } from "./routes/auth/auth.module";
 import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from "@nestjs/core";
 import { ZodSerializerInterceptor, ZodValidationPipe } from "nestjs-zod";
+import { ModerationModule } from "./routes/moderation/moderation.module";
+import { CouponsModule } from "./routes/coupons/coupons.module";
+import { AdminAnalyticsModule } from "./routes/admin-analytics/admin-analytics.module";
+import { BullModule } from "@nestjs/bullmq";
+import { AuditInterceptor } from "./shared/interceptor/audit.interceptor";
 import { AuthenticationGuard } from "./shared/guards/authentication.guard";
 import { PermissionModule } from "./routes/permission/permission.module";
 import { TransformInterceptor } from "./shared/interceptor/transform.interceptor";
@@ -45,10 +50,27 @@ import { CourseSurveyModule } from "./routes/course-survey/course-survey.module"
 @Module({
   imports: [
     ThrottlerModule.forRoot([
-      { name: 'short', ttl: 1000, limit: 3 },
-      { name: 'medium', ttl: 10000, limit: 20 },
-      { name: 'long', ttl: 60000, limit: 100 },
+      { name: 'short', ttl: 1000, limit: process.env.NODE_ENV === 'production' ? 3 : 10000 },
+      { name: 'medium', ttl: 10000, limit: process.env.NODE_ENV === 'production' ? 20 : 10000 },
+      { name: 'long', ttl: 60000, limit: process.env.NODE_ENV === 'production' ? 100 : 10000 },
     ]),
+    // Hàng đợi BullMQ dùng chung Redis với RedisService (REDIS_URL)
+    BullModule.forRootAsync({
+      useFactory: () => {
+        const url = new URL(process.env.REDIS_URL ?? "redis://localhost:6379");
+        return {
+          connection: {
+            host: url.hostname,
+            port: Number(url.port) || 6379,
+            username: url.username ? decodeURIComponent(url.username) : undefined,
+            password: url.password ? decodeURIComponent(url.password) : undefined,
+            db: url.pathname.length > 1 ? Number(url.pathname.slice(1)) : undefined,
+            ...(url.protocol === "rediss:" ? { tls: {} } : {}),
+            maxRetriesPerRequest: null, // BullMQ yêu cầu
+          },
+        };
+      },
+    }),
     SharedModule,
     AuthModule,
     PermissionModule,
@@ -81,6 +103,9 @@ import { CourseSurveyModule } from "./routes/course-survey/course-survey.module"
     LessonQuestionsModule,
     QuizzesModule,
     CourseSurveyModule,
+    ModerationModule,
+    CouponsModule,
+    AdminAnalyticsModule,
   ],
   controllers: [AppController],
   providers: [
@@ -97,6 +122,10 @@ import { CourseSurveyModule } from "./routes/course-survey/course-survey.module"
     {
       provide: APP_INTERCEPTOR,
       useClass: ZodSerializerInterceptor,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: AuditInterceptor,
     },
 
     {

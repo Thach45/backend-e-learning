@@ -1,3 +1,4 @@
+import { Audit } from 'src/shared/decorator/audit.decorator';
 import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
 import { ZodSerializerDto } from 'nestjs-zod';
 import { ActiveUser } from 'src/shared/decorator/active-user.decorator';
@@ -58,6 +59,7 @@ export class OrdersController {
         return this.ordersService.getOrderById((params as any).orderId);
     }
 
+    @Audit('order.admin_status_change', 'Order', { idParam: 'orderId' })
     @Put('admin/orders/:orderId/status')
     @ZodSerializerDto(GetOrderResponseDto)
     async updateOrderStatus(@Param() params: GetOrderParamsDto, @Body() body: UpdateOrderStatusBodyDto) {

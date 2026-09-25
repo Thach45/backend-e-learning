@@ -23,6 +23,9 @@ export const OrderSchema = z.object({
   id: z.string().uuid(),
   userId: z.string().uuid(),
   totalAmount: z.number(),
+  couponCode: z.string().nullable().optional(),
+  discountAmount: z.number().optional(),
+  expiresAt: z.date().nullable().optional(),
   status: z.enum(["PENDING", "PAID", "FAILED"]),
   createdAt: z.date(),
   orderItems: z.array(OrderItemSchema),
@@ -38,7 +41,8 @@ export const OrderSchema = z.object({
 
 // Create Order Body (from cart)
 export const CreateOrderBodySchema = z.object({
-  // Empty - sẽ lấy từ cart của user
+  // Lấy khóa học từ cart của user; couponCode là tùy chọn
+  couponCode: z.string().trim().max(32).optional(),
 }).strict();
 
 // Get Orders Query

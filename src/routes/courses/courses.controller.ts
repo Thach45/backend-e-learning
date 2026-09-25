@@ -35,6 +35,7 @@ export class CoursesController {
     return this.coursesService.getCourses(q);
   }
 
+  @Public()
   @Get("courses/:id")
   @ZodSerializerDto(GetCourseResponseDto)
   async getCourseById(@Param() params: GetCourseParamsDto) {
