@@ -1,12 +1,21 @@
-node_modules
+# Bí mật: KHÔNG bao giờ commit (áp dụng cho mọi thư mục con: frontend/.env, e-learning-nest/.env, video-worker/.env)
 .env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-.env.development
-.env.test
-.env.production
-dist
-test
-scripts/*
+.env.*
+!.env.example
+
+# Phụ thuộc và kết quả build
+node_modules/
+dist/
+dist-ssr/
+
+# Python (video-worker)
+__pycache__/
+*.py[cod]
+venv/
+.venv/
+
+# Log, file tạm và file hệ thống
+logs/
+*.log
+tmp/
+.DS_Store

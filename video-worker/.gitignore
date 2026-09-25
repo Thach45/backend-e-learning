@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+.Python
+
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+
+# Environment variables (KHÔNG commit .env thật)
+.env
+!.env.example
+
+# Temporary processing files
+tmp/
+*.wav
+*.mp3
+*.mp4
+*.srt
+*_hls/
+
+# macOS
+.DS_Store
+
+# Logs
+*.log
+logs/
+
+# Whisper model cache
+~/.cache/whisper/
