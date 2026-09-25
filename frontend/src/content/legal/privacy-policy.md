@@ -2,10 +2,10 @@
 
 > **Bản nháp chưa công bố.** Các mục `[[...]]` cần chủ dự án điền. Nội dung bám theo cách hệ thống đang hoạt động (tháng 9/2026). Cần rà soát pháp lý trước khi đăng, đặc biệt theo Nghị định 13/2023/NĐ-CP về bảo vệ dữ liệu cá nhân.
 
-Cập nhật lần cuối: `[[ngày]]`
+Cập nhật lần cuối: 25/09/2026
 
 ## 1. Ai chịu trách nhiệm
-U Đê Mê ("chúng tôi") là nền tảng học trực tuyến do `[[TÊN ĐƠN VỊ / CÁ NHÂN VẬN HÀNH]]` vận hành, địa chỉ `[[ĐỊA CHỈ CỦA ĐƠN VỊ VẬN HÀNH]]`. Mọi câu hỏi về dữ liệu cá nhân xin gửi tới `[[EMAIL LIÊN HỆ VỀ DỮ LIỆU]]`.
+U Đê Mê ("chúng tôi") là nền tảng học trực tuyến do Arion vận hành, địa chỉ Võ Văn Ngân, Thủ Đức, TP Hồ Chí Minh. Mọi câu hỏi về dữ liệu cá nhân xin gửi tới hoangthach.dev@gmail.com.
 
 ## 2. Chúng tôi thu thập những gì
 
@@ -51,7 +51,7 @@ Thông tin công khai trên hồ sơ của bạn (họ tên, ảnh đại diện
 - Nhật ký bảo mật: `[[THỜI HẠN LƯU NHẬT KÝ]]`.
 
 ## 6. Quyền của bạn
-Bạn có quyền: xem, chỉnh sửa, yêu cầu xoá dữ liệu của mình; rút lại sự đồng ý (ví dụ tắt gợi ý cá nhân hoá); phản đối việc xử lý; khiếu nại. Bạn có thể tự chỉnh thông tin trong **Cài đặt tài khoản**. Với các yêu cầu còn lại (ví dụ xoá tài khoản), hãy gửi email tới `[[EMAIL LIÊN HỆ VỀ DỮ LIỆU]]` từ địa chỉ email đã đăng ký.
+Bạn có quyền: xem, chỉnh sửa, yêu cầu xoá dữ liệu của mình; rút lại sự đồng ý (ví dụ tắt gợi ý cá nhân hoá); phản đối việc xử lý; khiếu nại. Bạn có thể tự chỉnh thông tin trong **Cài đặt tài khoản**. Với các yêu cầu còn lại (ví dụ xoá tài khoản), hãy gửi email tới hoangthach.dev@gmail.com từ địa chỉ email đã đăng ký.
 
 **Từ chối nhận thư thông báo:** bấm liên kết "Ngừng nhận thư này" ở cuối mỗi thư, hoặc tắt công tắc "Nhận thư thông báo" trong Cài đặt tài khoản. Bạn có thể bật lại bất cứ lúc nào. Thư giao dịch (mục 3.3) vẫn được gửi.
 
@@ -65,4 +65,4 @@ Dịch vụ dành cho người từ `[[TUỔI TỐI THIỂU]]` tuổi trở lên
 Khi có thay đổi quan trọng, chúng tôi sẽ thông báo trên website hoặc qua email. Ngày cập nhật ghi ở đầu trang.
 
 ## 10. Liên hệ
-`[[TÊN ĐƠN VỊ]]` · `[[ĐỊA CHỈ]]` · `[[EMAIL]]` · `[[SỐ ĐIỆN THOẠI]]`
+Arion · Võ Văn Ngân, Thủ Đức, TP Hồ Chí Minh · hoangthach.dev@gmail.com

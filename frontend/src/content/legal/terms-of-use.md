@@ -2,10 +2,10 @@
 
 > **Bản nháp chưa công bố.** Các mục `[[...]]` cần chủ dự án điền hoặc quyết định. Cần rà soát pháp lý trước khi đăng. Nội dung bám theo cách hệ thống đang hoạt động.
 
-Cập nhật lần cuối: `[[ngày]]`
+Cập nhật lần cuối: 25/09/2026
 
 ## 1. Chấp nhận điều khoản
-Khi tạo tài khoản hoặc sử dụng U Đê Mê ("Dịch vụ"), bạn đồng ý với các điều khoản này và với [Chính sách bảo mật](/privacy). Nếu không đồng ý, vui lòng không sử dụng Dịch vụ. Dịch vụ do `[[TÊN ĐƠN VỊ VẬN HÀNH]]` vận hành.
+Khi tạo tài khoản hoặc sử dụng U Đê Mê ("Dịch vụ"), bạn đồng ý với các điều khoản này và với [Chính sách bảo mật](/privacy). Nếu không đồng ý, vui lòng không sử dụng Dịch vụ. Dịch vụ do Arion vận hành.
 
 ## 2. Tài khoản
 - Thông tin bạn cung cấp phải chính xác. Email dùng để đăng ký phải là email của bạn và được xác thực bằng mã OTP.
@@ -55,4 +55,4 @@ Chúng tôi có thể cập nhật điều khoản. Thay đổi quan trọng s�
 Điều khoản này chịu sự điều chỉnh của pháp luật Việt Nam. Tranh chấp được ưu tiên giải quyết bằng thương lượng; nếu không được, giải quyết tại Toà án có thẩm quyền `[[NƠI GIẢI QUYẾT]]`.
 
 ## 14. Liên hệ
-`[[TÊN ĐƠN VỊ]]` · `[[ĐỊA CHỈ]]` · `[[EMAIL HỖ TRỢ]]` · `[[SỐ ĐIỆN THOẠI]]`
+Arion · Võ Văn Ngân, Thủ Đức, TP Hồ Chí Minh · hoangthach.dev@gmail.com
