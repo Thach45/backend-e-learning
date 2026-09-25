@@ -31,6 +31,7 @@ import { useReviewsByCourse, useMyReview, useCreateReview, useSetReviewHelpful }
 import { useAuthStatus } from '../hooks/useAuthStatus';
 import ReportButton from '../components/common/ReportButton';
 import type { CreateReviewBody, Review } from '../api/reviews';
+import AddToCollection from '../components/course/AddToCollection';
 import { useAddToWishlist, useCheckWishlist, useRemoveFromWishlist } from '../hooks/useWishlist';
 import { PLACEHOLDER_IMAGE } from '../utils/placeholder';
 
@@ -796,6 +797,7 @@ const CourseDetailPage = () => {
                                 </span>
                               )}
                             </button>
+                            <AddToCollection courseId={courseId} />
                          </div>
                       </div>
 

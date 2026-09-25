@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Search, Menu, X, ShoppingCart, ChevronDown, Receipt, LogOut, User, Settings, BookOpen, Heart, ClipboardList, LifeBuoy } from 'lucide-react';
+import { Search, Menu, X, ShoppingCart, ChevronDown, Receipt, LogOut, User, Settings, BookOpen, Heart, ClipboardList, LifeBuoy, Bookmark } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuthStatus } from '../../hooks/useAuthStatus';
 import { useLogout } from '../../hooks/useAuth';
@@ -209,6 +209,14 @@ const HomeHeader = ({ cartCount = 0 }: HeaderProps) => {
                       >
                         <Heart size={18} className="text-indigo-600" />
                         <span className="font-medium">Danh sách yêu thích</span>
+                      </Link>
+                      <Link
+                        to="/collections"
+                        onClick={() => setIsUserMenuOpen(false)}
+                        className="flex items-center gap-3 px-4 py-3 hover:bg-slate-50 dark:bg-slate-950 transition-colors text-slate-700 dark:text-slate-200"
+                      >
+                        <Bookmark size={18} className="text-indigo-600" />
+                        <span className="font-medium">Bộ sưu tập của tôi</span>
                       </Link>
                       <Link
                         to="/account/settings"

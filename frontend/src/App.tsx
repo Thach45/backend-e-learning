@@ -68,6 +68,8 @@ import AdminPostsPage from './pages/admin/AdminPostsPage';
 import AdminHomePage from './pages/admin/AdminHomePage';
 import AdminPostEditorPage from './pages/admin/AdminPostEditorPage';
 import BlogListPage from './pages/BlogListPage';
+import MyCollectionsPage from './pages/MyCollectionsPage';
+import CollectionDetailPage from './pages/CollectionDetailPage';
 import ContentPostPage from './pages/ContentPostPage';
 import CourseAssignmentsPage from './pages/instructor/CourseAssignmentsPage';
 import AssignmentSubmissionsPage from './pages/instructor/AssignmentSubmissionsPage';
@@ -149,11 +151,13 @@ const AppContent = () => {
           <Route path="blog" element={<BlogListPage />} />
           <Route path="blog/:slug" element={<ContentPostPage kind="BLOG" />} />
           <Route path="p/:slug" element={<ContentPostPage kind="PAGE" />} />
+          <Route path="collections/:id" element={<CollectionDetailPage />} />
           <Route path="privacy" element={<PrivacyPage />} />
           <Route path="terms" element={<TermsPage />} />
           <Route path="instructors/:id" element={<InstructorProfilePage />} />
           
           {/* Protected routes - require authentication */}
+          <Route path="collections" element={<ProtectedRoute><MyCollectionsPage /></ProtectedRoute>} />
           <Route
             path="my-assignments"
             element={

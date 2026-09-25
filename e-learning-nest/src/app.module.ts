@@ -59,6 +59,7 @@ import { DataTransferModule } from "./routes/data-transfer/data-transfer.module"
 import { LessonResourcesModule } from "./routes/lesson-resources/lesson-resources.module";
 import { PostsModule } from "./routes/posts/posts.module";
 import { HomeConfigModule } from "./routes/home-config/home-config.module";
+import { CollectionsModule } from "./routes/collections/collections.module";
 
 @Module({
   imports: [
@@ -131,6 +132,7 @@ import { HomeConfigModule } from "./routes/home-config/home-config.module";
     LessonResourcesModule,
     PostsModule,
     HomeConfigModule,
+    CollectionsModule,
   ],
   controllers: [AppController],
   providers: [

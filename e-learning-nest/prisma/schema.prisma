@@ -182,6 +182,7 @@ model User {
   badges               UserBadge[]
   auditLogs            AuditLog[]
   posts                Post[]
+  collections          Collection[]
   lessonNotes          LessonNote[]
   lessonQuestions      LessonQuestion[]
   lessonAnswers        LessonAnswer[]
@@ -402,6 +403,7 @@ model Course {
   enrollments            Enrollment[]
   reviews                Review[]
   wishlists              Wishlist[]
+  collectionCourses      CollectionCourse[]
   orderItems             OrderItem[]
   notifications          Notification[]
   learningProgresses     LearningProgress[]
@@ -1472,4 +1474,31 @@ model Testimonial {
   updatedAt DateTime @updatedAt
 
   @@index([isActive, position])
+}
+
+// ===== Bộ sưu tập khoá học do người học tự tạo (công khai được để chia sẻ bằng liên kết) =====
+
+model Collection {
+  id          String             @id @default(uuid())
+  userId      String
+  user        User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title       String             @db.VarChar(100)
+  description String?            @db.VarChar(300)
+  isPublic    Boolean            @default(false)
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+  courses     CollectionCourse[]
+
+  @@index([userId])
+}
+
+model CollectionCourse {
+  collectionId String
+  courseId     String
+  addedAt      DateTime   @default(now())
+  collection   Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  course       Course     @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@id([collectionId, courseId])
+  @@index([courseId])
 }
