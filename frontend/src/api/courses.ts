@@ -52,7 +52,8 @@ export type CourseListParams = {
   page?: number;
   limit?: number;
   search?: string;
-  categoryId?: string;
+  categoryId?: string; // một hoặc nhiều id, ngăn cách bằng dấu phẩy
+  sort?: 'popular' | 'newest' | 'price-low' | 'price-high';
   level?: 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED';
   status?: string;
   isFeatured?: boolean;

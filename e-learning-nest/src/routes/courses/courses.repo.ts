@@ -1,4 +1,5 @@
 import { Injectable, BadRequestException, NotFoundException } from "@nestjs/common";
+import { sortByEffectivePrice } from "./course-sort.util";
 import { Prisma, CourseStatus, CourseLevel } from "@prisma/client";
 import { PrismaService } from "src/shared/service/prisma.service";
 import { CreateCourseBody, GetCoursesQuery, UpdateCourseBody } from "./courses.model";
@@ -27,7 +28,7 @@ export class CoursesRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   async getCourses(query: GetCoursesQuery) {
-    const { page, limit, search, level, status, categoryId, instructorId, isFeatured } = query;
+    const { page, limit, search, level, status, categoryId, instructorId, isFeatured, sort } = query;
     if (page < 1 || limit < 1) {
       throw new BadRequestException("Page and limit must be positive numbers");
     }
@@ -39,21 +40,27 @@ export class CoursesRepository {
         : {}),
       ...(level ? { level: level as unknown as CourseLevel } : {}),
       ...(status ? { status: status as unknown as CourseStatus } : {}),
-      ...(categoryId ? { categoryId } : {}),
+      ...(categoryId?.length ? { categoryId: { in: categoryId } } : {}),
       ...(instructorId ? { instructorId } : {}),
       ...(isFeatured !== undefined ? { isFeatured } : {}),
     };
 
-    const [rows, total] = await Promise.all([
-      this.prisma.course.findMany({
-        where,
-        skip: (page - 1) * limit,
-        take: Number(limit),
-        orderBy: { createdAt: "desc" },
-        select: courseSelect,
-      }),
-      this.prisma.course.count({ where }),
-    ]);
+    const skip = (page - 1) * limit;
+    let rows: Awaited<ReturnType<typeof this.fetchCourseRows>>;
+    let total: number;
+    if (sort === "price-low" || sort === "price-high") {
+      // Giá hiển thị (khuyến mãi hoặc giá gốc) không sắp xếp được bằng Prisma: lấy id + giá của toàn bộ kết quả, sắp xếp rồi mới cắt trang
+      const all = await this.prisma.course.findMany({ where, select: { id: true, price: true, salePrice: true, createdAt: true } });
+      total = all.length;
+      const pageIds = sortByEffectivePrice(all, sort === "price-low" ? "asc" : "desc").slice(skip, skip + Number(limit)).map((c) => c.id);
+      const fetched = await this.fetchCourseRows({ id: { in: pageIds } }, undefined, 0, pageIds.length);
+      const byId = new Map(fetched.map((c) => [c.id, c]));
+      rows = pageIds.map((id) => byId.get(id)!).filter(Boolean);
+    } else {
+      const orderBy: Prisma.CourseOrderByWithRelationInput[] =
+        sort === "popular" ? [{ enrollments: { _count: "desc" } }, { createdAt: "desc" }] : [{ createdAt: "desc" }];
+      [rows, total] = await Promise.all([this.fetchCourseRows(where, orderBy, skip, Number(limit)), this.prisma.course.count({ where })]);
+    }
 
     const courseIds = rows.map(c => c.id);
     const [reviewSum, reviewCount, enrollmentCount, wishlistCount, lessonsData] = await Promise.all([
@@ -126,6 +133,10 @@ export class CoursesRepository {
     }));
 
     return { data, total, page, limit, totalPages: Math.ceil(total / limit) };
+  }
+
+  private fetchCourseRows(where: Prisma.CourseWhereInput, orderBy: Prisma.CourseOrderByWithRelationInput[] | undefined, skip: number, take: number) {
+    return this.prisma.course.findMany({ where, skip, take, ...(orderBy ? { orderBy } : {}), select: courseSelect });
   }
 
   async getRelatedCourses(courseId: string, limit = 6) {

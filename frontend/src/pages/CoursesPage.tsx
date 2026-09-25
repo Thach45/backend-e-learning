@@ -216,17 +216,17 @@ const CourseListPage = () => {
     }
 
     if (selectedCategoryIds.length > 0) {
-      // If multiple categories selected, we'll need to handle this on backend or filter on frontend
-      // For now, use the first selected category
-      params.categoryId = selectedCategoryIds[0];
+      params.categoryId = selectedCategoryIds.join(',');
     }
+
+    params.sort = sortBy as NonNullable<CourseListParams['sort']>;
 
     if (selectedLevel) {
       params.level = selectedLevel;
     }
 
     return params;
-  }, [page, limit, searchQuery, selectedCategoryIds, selectedLevel]);
+  }, [page, limit, searchQuery, selectedCategoryIds, selectedLevel, sortBy]);
 
   // Fetch courses
   const { data: coursesData, isLoading: coursesLoading, error: coursesError } = useCourses(apiParams);
@@ -235,32 +235,11 @@ const CourseListPage = () => {
   const courses = useMemo(() => {
     if (!coursesData?.data) return [];
     
-    let transformed = coursesData.data.map(transformCourse);
-
-    // Filter by multiple categories on frontend if needed
-    if (selectedCategoryIds.length > 0) {
-      transformed = transformed.filter(course => 
-        course.categoryId && selectedCategoryIds.includes(course.categoryId)
-      );
-    }
-
-    // Sort courses
-    if (sortBy === 'newest') {
-      transformed = [...transformed].sort((a, b) => {
-        const courseA = coursesData.data.find(c => c.id === a.id);
-        const courseB = coursesData.data.find(c => c.id === b.id);
-        if (!courseA || !courseB) return 0;
-        return new Date(courseB.createdAt).getTime() - new Date(courseA.createdAt).getTime();
-      });
-    } else if (sortBy === 'price-low') {
-      transformed = [...transformed].sort((a, b) => a.price - b.price);
-    } else if (sortBy === 'price-high') {
-      transformed = [...transformed].sort((a, b) => b.price - a.price);
-    }
-    // 'popular' is default (already sorted by backend)
+    // Lọc theo danh mục và sắp xếp đều do backend làm trên toàn bộ kết quả, nên phân trang luôn khớp
+    const transformed = coursesData.data.map(transformCourse);
 
     return transformed;
-  }, [coursesData, selectedCategoryIds, sortBy]);
+  }, [coursesData]);
 
   const toggleCategory = (categoryId: string) => {
     const next = selectedCategoryIds.includes(categoryId)

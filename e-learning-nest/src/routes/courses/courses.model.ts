@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { splitIds } from "./course-sort.util";
 
 export const CourseLevelEnum = z.enum(["BEGINNER", "INTERMEDIATE", "ADVANCED"]);
 export const CourseStatusEnum = z.enum(["DRAFT", "PUBLISHED", "ARCHIVED", "PENDING_PUBLISHED", "PENDING_DRAFT"]);
@@ -35,9 +36,16 @@ export const GetCoursesQuerySchema = z.object({
   search: z.string().trim().optional(),
   level: CourseLevelEnum.optional(),
   status: CourseStatusEnum.optional(),
-  categoryId: z.string().uuid().optional(),
+  // Một hoặc nhiều id, ngăn cách bằng dấu phẩy: ?categoryId=a,b
+  categoryId: z
+    .string()
+    .transform((raw) => splitIds(raw))
+    .refine((ids) => ids.length <= 20 && ids.every((id) => z.string().uuid().safeParse(id).success), "categoryId không hợp lệ")
+    .optional(),
   instructorId: z.string().uuid().optional(),
   isFeatured: z.coerce.boolean().optional(),
+  // Không truyền thì giữ thứ tự cũ (mới nhất trước)
+  sort: z.enum(["popular", "newest", "price-low", "price-high"]).optional(),
 }).strict();
 
 export const GetCourseParamsSchema = z.object({
