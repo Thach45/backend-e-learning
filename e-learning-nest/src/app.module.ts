@@ -60,6 +60,7 @@ import { LessonResourcesModule } from "./routes/lesson-resources/lesson-resource
 import { PostsModule } from "./routes/posts/posts.module";
 import { HomeConfigModule } from "./routes/home-config/home-config.module";
 import { CollectionsModule } from "./routes/collections/collections.module";
+import { PublicProfileModule } from "./routes/public-profile/public-profile.module";
 
 @Module({
   imports: [
@@ -133,6 +134,7 @@ import { CollectionsModule } from "./routes/collections/collections.module";
     PostsModule,
     HomeConfigModule,
     CollectionsModule,
+    PublicProfileModule,
   ],
   controllers: [AppController],
   providers: [

@@ -183,6 +183,7 @@ model User {
   auditLogs            AuditLog[]
   posts                Post[]
   collections          Collection[]
+  publicProfile        PublicProfile?
   lessonNotes          LessonNote[]
   lessonQuestions      LessonQuestion[]
   lessonAnswers        LessonAnswer[]
@@ -1501,4 +1502,17 @@ model CollectionCourse {
 
   @@id([collectionId, courseId])
   @@index([courseId])
+}
+
+// ===== Hồ sơ học tập công khai (mặc định TẮT, người dùng tự bật và chọn phần hiển thị) =====
+
+model PublicProfile {
+  userId      String   @id
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  isPublic    Boolean  @default(false)
+  headline    String?  @db.VarChar(100)
+  bio         String?  @db.VarChar(500)
+  showCourses Boolean  @default(true) // khoá đã hoàn thành
+  showBadges  Boolean  @default(true)
+  updatedAt   DateTime @updatedAt
 }

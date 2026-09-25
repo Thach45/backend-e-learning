@@ -69,6 +69,7 @@ import AdminHomePage from './pages/admin/AdminHomePage';
 import AdminPostEditorPage from './pages/admin/AdminPostEditorPage';
 import BlogListPage from './pages/BlogListPage';
 import MyCollectionsPage from './pages/MyCollectionsPage';
+import PublicProfilePage from './pages/PublicProfilePage';
 import CollectionDetailPage from './pages/CollectionDetailPage';
 import ContentPostPage from './pages/ContentPostPage';
 import CourseAssignmentsPage from './pages/instructor/CourseAssignmentsPage';
@@ -152,6 +153,7 @@ const AppContent = () => {
           <Route path="blog/:slug" element={<ContentPostPage kind="BLOG" />} />
           <Route path="p/:slug" element={<ContentPostPage kind="PAGE" />} />
           <Route path="collections/:id" element={<CollectionDetailPage />} />
+          <Route path="u/:userId" element={<PublicProfilePage />} />
           <Route path="privacy" element={<PrivacyPage />} />
           <Route path="terms" element={<TermsPage />} />
           <Route path="instructors/:id" element={<InstructorProfilePage />} />

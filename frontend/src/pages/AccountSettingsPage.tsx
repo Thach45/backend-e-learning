@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { User, Lock, Monitor, LogOut, GraduationCap, Mail } from 'lucide-react';
 import { useEmailPreferences, useSetEmailPreferences } from '../hooks/useEmailCampaigns';
 import LearningProfileForm from '../components/profile/LearningProfileForm';
+import PublicProfileForm from '../components/profile/PublicProfileForm';
 import { useAuthStatus } from '../hooks/useAuthStatus';
 import { useChangePassword, useUpdateProfile, useMyDevices, useRevokeDevice } from '../hooks/useAuth';
 
@@ -237,6 +238,13 @@ const AccountSettingsPage = () => {
           </h2>
           <p className="text-sm text-slate-500 dark:text-slate-400 mb-6">Giúp chúng tôi gợi ý khóa học phù hợp với mục tiêu và trình độ của bạn. Tất cả đều tuỳ chọn.</p>
           <LearningProfileForm />
+        </section>
+
+        {/* Hồ sơ công khai */}
+        <section className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6">
+          <h2 className="text-lg font-bold text-slate-900 dark:text-slate-50 mb-1">Hồ sơ công khai</h2>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mb-6">Chia sẻ thành tích học tập bằng một liên kết. Mặc định tắt.</p>
+          <PublicProfileForm />
         </section>
       </main>
     </div>
