@@ -1427,3 +1427,49 @@ model Post {
   @@unique([kind, slug])
   @@index([kind, status, publishedAt])
 }
+
+// ===== Trang chủ cấu hình được (banner, lời chứng thực, bật/tắt khối) =====
+
+model HomeSetting {
+  id               String   @id @default("singleton")
+  heroTitle        String?  @db.VarChar(120)
+  heroSubtitle     String?  @db.VarChar(300)
+  showCategories   Boolean  @default(true)
+  showFeatured     Boolean  @default(true)
+  showTestimonials Boolean  @default(true)
+  showLatestPosts  Boolean  @default(true)
+  updatedById      String?
+  updatedAt        DateTime @updatedAt
+}
+
+model HomeBanner {
+  id        String    @id @default(uuid())
+  title     String    @db.VarChar(120)
+  subtitle  String?   @db.VarChar(250)
+  imageUrl  String
+  linkUrl   String? // https hoặc đường dẫn nội bộ bắt đầu bằng /
+  ctaLabel  String?   @db.VarChar(40)
+  position  Int       @default(0)
+  isActive  Boolean   @default(true)
+  startsAt  DateTime?
+  endsAt    DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@index([isActive, position])
+}
+
+model Testimonial {
+  id        String   @id @default(uuid())
+  name      String   @db.VarChar(80)
+  role      String?  @db.VarChar(120)
+  avatarUrl String?
+  content   String   @db.VarChar(600)
+  rating    Int? // 1-5, có thể để trống
+  position  Int      @default(0)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([isActive, position])
+}

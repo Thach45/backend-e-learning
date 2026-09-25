@@ -3,6 +3,11 @@ import CategoriesSection, { type Category } from '../components/home/CategoriesS
 import FeaturedCoursesSection, { type Course } from '../components/home/FeaturedCoursesSection';
 import RecommendedCoursesSection from '../components/home/RecommendedCoursesSection';
 import ContinueWatchingSection from '../components/home/ContinueWatchingSection';
+import BannerCarousel from '../components/home/BannerCarousel';
+import TestimonialsSection from '../components/home/TestimonialsSection';
+import LatestPostsSection from '../components/home/LatestPostsSection';
+import { useQuery } from '@tanstack/react-query';
+import { homeApi } from '../api/home';
 import { useCategories } from '../hooks/useCategories';
 import { useCourses } from '../hooks/useCourses';
 import { useSEO } from '../hooks/useSEO';
@@ -17,6 +22,10 @@ const HomePage = () => {
     title: 'Nền tảng học tập trực tuyến',
     description: 'Khám phá hàng trăm khóa học chất lượng cao từ các giảng viên hàng đầu trên U Đê Mê.',
   });
+
+  // Cấu hình trang chủ do admin quản lý; lỗi thì hiện bố cục mặc định
+  const { data: home } = useQuery({ queryKey: ['home-config'], queryFn: homeApi.config, staleTime: 60_000, retry: false });
+  const show = home?.sections ?? { categories: true, featured: true, testimonials: true, latestPosts: true };
 
   // Fetch categories
   const { data: categoriesData, isLoading: categoriesLoading, error: categoriesError } = useCategories();
@@ -91,14 +100,13 @@ const HomePage = () => {
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 font-sans text-slate-600 dark:text-slate-300">
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-16">
-        <HeroSection />
-        {/* <PurchaseFlowSection /> */}
-        {/* <TrustedCompaniesSection /> */}
+        <HeroSection hero={home?.hero} stats={home?.stats} />
+        {home && <BannerCarousel banners={home.banners} />}
         <ContinueWatchingSection />
         <RecommendedCoursesSection />
 
         {/* Categories Section */}
-        {categoriesLoading ? (
+        {!show.categories ? null : categoriesLoading ? (
           <div className="text-center py-12">
             <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
             <p className="mt-4 text-slate-500 dark:text-slate-400">Đang tải danh mục...</p>
@@ -112,7 +120,7 @@ const HomePage = () => {
         ) : null}
 
         {/* Featured Courses Section */}
-        {coursesLoading ? (
+        {!show.featured ? null : coursesLoading ? (
           <div className="text-center py-8">
             <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
             <p className="mt-4 text-slate-500 dark:text-slate-400">Đang tải khóa học...</p>
@@ -128,6 +136,8 @@ const HomePage = () => {
             <p className="text-slate-500 dark:text-slate-400">Chưa có khóa học nổi bật nào.</p>
           </div>
         )}
+        {home && show.testimonials && <TestimonialsSection items={home.testimonials} />}
+        {home && show.latestPosts && <LatestPostsSection posts={home.latestPosts} />}
       </main>
     </div>
   );

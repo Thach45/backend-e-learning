@@ -23,7 +23,8 @@ import {
   Headset,
   HelpCircle,
   Activity,
-  Newspaper
+  Newspaper,
+  Home
 } from 'lucide-react';
 import ThemeToggle from '../components/common/ThemeToggle';
 import { usePendingReportCount } from '../hooks/useModeration';
@@ -51,6 +52,7 @@ const AdminLayout = () => {
     { icon: Headset, label: 'Hỗ trợ', path: '/admin/support' },
     { icon: HelpCircle, label: 'FAQ', path: '/admin/faq' },
     { icon: Newspaper, label: 'Blog & trang tĩnh', path: '/admin/posts' },
+    { icon: Home, label: 'Trang chủ', path: '/admin/home' },
     { icon: Tags, label: 'Thẻ kỹ năng', path: '/admin/tags' },
     { icon: Activity, label: 'Hệ thống', path: '/admin/system' },
     { icon: Settings, label: 'Cài đặt', path: '/admin/settings' },

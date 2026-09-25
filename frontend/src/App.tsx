@@ -65,6 +65,7 @@ import AdminTicketPage from './pages/admin/AdminTicketPage';
 import AdminFaqPage from './pages/admin/AdminFaqPage';
 import AdminSystemPage from './pages/admin/AdminSystemPage';
 import AdminPostsPage from './pages/admin/AdminPostsPage';
+import AdminHomePage from './pages/admin/AdminHomePage';
 import AdminPostEditorPage from './pages/admin/AdminPostEditorPage';
 import BlogListPage from './pages/BlogListPage';
 import ContentPostPage from './pages/ContentPostPage';
@@ -320,6 +321,7 @@ const AppContent = () => {
           <Route path="support/:id" element={<AdminTicketPage />} />
           <Route path="faq" element={<AdminFaqPage />} />
           <Route path="system" element={<AdminSystemPage />} />
+          <Route path="home" element={<AdminHomePage />} />
           <Route path="posts" element={<AdminPostsPage />} />
           <Route path="posts/:id" element={<AdminPostEditorPage />} />
         </Route>
