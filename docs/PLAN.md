@@ -1,6 +1,6 @@
 # Kế hoạch nâng cấp U Đê Mê (+30%)
 
-Trạng thái: **bản nháp chờ duyệt** (2026-09-25). Chưa có dòng code nào được sửa theo kế hoạch này.
+Trạng thái (2026-09-25): **đã code xong toàn bộ** đợt 0 đến 3 và backlog (D5, D7, B2, D2, D3, A3, A4, A5, C1). Mới commit ở máy cục bộ, **chưa push và chưa deploy**. Xem mục 8 để biết chỗ thực hiện khác kế hoạch.
 
 ## 1. Phạm vi đã chốt
 
@@ -319,8 +319,25 @@ Từ chối nhận thư (4 route): `GET /email/unsubscribe?token=` (công khai, 
 - Học viên tạo, xem, trả lời, đóng ticket; admin xem tất cả, gán người, đổi trạng thái, trả lời (mail giao dịch qua hàng đợi khi nhân viên trả lời). FAQ công khai có tìm kiếm, admin quản lý và sắp xếp.
 - Trang `/help` sẽ làm cho link "Trung tâm trợ giúp" ở footer hoạt động.
 
-## 8. Backlog (chưa xếp lịch, chờ xác nhận)
-D2 blog/CMS và trang tĩnh, D3 trang chủ cấu hình được (banner, khối, lời chứng thực), D5 giám sát hàng đợi (xem job lỗi, thử lại mail), D7 nhập/xuất CSV hàng loạt, B2 tài liệu đính kèm và phụ đề .vtt, A3 bộ sưu tập khoá học, A4 hồ sơ công khai, A5 lộ trình học, C1 nhắn tin. Tổng khoảng 16 bảng, 72 route, 15 trang, tức khoảng +30% nữa.
+## 8. Backlog: đã làm xong
+
+Số liệu thực tế sau khi làm hết: **77 bảng (từ 50), 341 route (từ 216), 79 trang FE (từ 46)**. Đã kiểm thử bằng 68 unit test và 11 bộ test tích hợp (khoảng 330 kiểm tra) chạy với Postgres/Redis của docker compose.
+
+| Mã | Đã làm | Khác kế hoạch |
+|---|---|---|
+| D5 | `/admin/system`: số job theo hàng đợi (mail, chiến dịch, hết hạn đơn), xem/thử lại/xoá job lỗi, trạng thái DB, Redis, hạn mức mail trong ngày | Không lộ nội dung thư, OTP hay email đầy đủ; mọi thao tác được ghi nhật ký |
+| D7 | Xuất và nhập danh mục CSV (`/admin/csv/categories/*`), nhập có chế độ chạy thử, chỉ tạo mới | Xuất người dùng/khoá học đã có sẵn ở admin-analytics nên không làm lại. **Báo cáo định kỳ qua mail đã bỏ** vì hạn mức 100 mail/ngày dùng chung với OTP và đơn hàng |
+| B2 | Tài liệu đính kèm (tối đa 10/bài) và phụ đề WebVTT/SRT (tối đa 8 ngôn ngữ/bài) cho bài học | Phụ đề lưu thẳng trong DB, làm sạch thẻ HTML, phát bằng Blob URL nên không cần CORS. Chỉ áp dụng cho video tải lên, không áp dụng cho YouTube/Drive |
+| D2 | Blog (`/blog`) và trang tĩnh (`/p/:slug`, có thể gắn vào footer), trình soạn có xem trước | Nội dung là markdown tối giản hiển thị bằng bộ render an toàn, không dùng HTML thô |
+| D3 | Trang chủ cấu hình được: tiêu đề, banner có lịch hiện, lời chứng thực, bật/tắt khối, bài viết mới | Đã **xoá số liệu bịa** ở hero ("15.000 học viên", "4.9/5", "+2.5k tuần này", ảnh pravatar) và khối "4.000 công ty"; nay hero hiện số liệu thật từ DB |
+| A3 | Bộ sưu tập khoá học (riêng tư mặc định, chia sẻ bằng liên kết) | Route công khai dùng `OptionalAccessTokenGuard` để nhận ra chủ sở hữu |
+| A4 | Hồ sơ học tập công khai `/u/:userId`, **mặc định tắt**, chọn phần hiển thị | Không bao giờ lộ email/số điện thoại; tài khoản khoá hay đã xoá trả 404 |
+| A5 | Lộ trình học do admin biên soạn, kèm tiến độ và "bước hiện tại" của người học | Chỉ admin tạo; không có tiền bạc |
+| C1 | Nhắn tin học viên ↔ giảng viên (chỉ khi có quan hệ ghi danh), chặn, đếm chưa đọc, thông báo chuông | Chỉ 20 tin/10 phút mỗi người; admin cũng không đọc được thư của người khác; dùng polling, không WebSocket |
+
+**Lệch so với các mục trên trong tài liệu này:** nội dung chiến dịch email dùng markdown tối giản (bộ render `render.util.ts`, escape mọi thứ) thay cho HTML + `sanitize-html` như mô tả ở mục EM, vì đơn giản và an toàn hơn. Số route của B5 và D1 cũng khác đôi chút so với ước lượng.
+
+**Việc còn lại của chủ dự án:** push lên GitHub (repo đang công khai, cần xem lại trước khi đẩy), `/deploy-learning` (thêm `RESEND_WEBHOOK_SECRET`, `MAIL_REPLY_TO`, `MAIL_COMPANY_ADDRESS`, `VITE_CONTACT_*` vào `prod.env`), điền các chỗ `[[...]]` trong trang điều khoản/bảo mật, thông tin liên hệ thật ở footer, cấu hình Google OAuth và nút "Gửi thử" của SePay, xoay khoá Resend đã lộ trong chat.
 
 ## 9. Quy trình chung cho mỗi đợt
 1. Nhánh riêng, commit nhỏ. Schema chỉ **thêm**, kiểm `prisma migrate diff` không có `DROP` rồi mới `prisma db push`. Backup DB trước (`/deploy-learning` tự làm khi deploy backend).
