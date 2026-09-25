@@ -68,7 +68,7 @@ async function main() {
   await app.init();
 
   const rawRoutes = extractRoutes(app);
-  await app.close();
+  // Không `await app.close()`: nó treo (gateway/Redis) khiến script không bao giờ kết thúc; process.exit ở cuối đã dọn tất cả.
 
   const uniqueRoutes = Array.from(
     new Map(rawRoutes.map((r) => [`${r.method} ${r.path}`, r])).values(),
@@ -134,6 +134,7 @@ async function main() {
     );
   } finally {
     await prisma.$disconnect();
+    process.exit(0);
   }
 }
 

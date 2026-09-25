@@ -1,0 +1,223 @@
+# Toàn bộ hệ thống cho VPS: frontend(nginx, cổng nội bộ) -> backend -> postgres + redis + video worker.
+# Chạy:  cp .env.example .env  (điền giá trị)  &&  docker compose up -d --build
+# Chỉ `frontend` mở MỘT cổng, và chỉ trên 127.0.0.1 (mặc định 8081). HTTPS do nginx của VPS + certbot đảm nhiệm,
+# xem DEPLOY.md và deploy/nginx-host.conf.example. Mọi service khác chỉ nói chuyện trong mạng nội bộ của compose.
+name: elearning
+
+x-backend-build: &backend-build
+  context: ./e-learning-nest
+
+x-video-build: &video-build
+  context: ./video-worker
+
+# Giới hạn log của container (mặc định Docker không giới hạn, có thể làm đầy ổ đĩa dùng chung của VPS)
+x-logging: &default-logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "3"
+
+x-video-env: &video-env
+  REDIS_BROKER_URL: redis://:${REDIS_PASSWORD}@redis:6379/0
+  GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+  FPT_API_KEY: ${FPT_API_KEY:-}
+  DEEPGRAM_API_KEY: ${DEEPGRAM_API_KEY:-}
+  R2_ACCOUNT_ID: ${R2_ACCOUNT_ID:?Thiếu R2_ACCOUNT_ID}
+  R2_ACCESS_KEY_ID: ${R2_ACCESS_KEY_ID:?Thiếu R2_ACCESS_KEY_ID}
+  R2_SECRET_ACCESS_KEY: ${R2_SECRET_ACCESS_KEY:?Thiếu R2_SECRET_ACCESS_KEY}
+  R2_BUCKET_NAME: ${R2_BUCKET_NAME:?Thiếu R2_BUCKET_NAME}
+  R2_PUBLIC_DOMAIN: ${R2_PUBLIC_DOMAIN:?Thiếu R2_PUBLIC_DOMAIN}
+  # Worker báo kết quả về backend qua mạng nội bộ (không đi qua internet)
+  BACKEND_WEBHOOK_URL: http://backend:3000/api/webhook/video-done
+  INTERNAL_API_SECRET: ${INTERNAL_API_SECRET:?Thiếu INTERNAL_API_SECRET}
+  CELERY_CONCURRENCY: ${CELERY_CONCURRENCY:-1}
+
+services:
+  # ---------------------------------------------------------------- Database
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    logging: *default-logging
+    mem_limit: 256m
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-elearning}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Thiếu POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB:-elearning}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+    # Muốn dùng DBeaver/psql từ máy bạn: bỏ comment dòng dưới (chỉ mở cho localhost, dùng SSH tunnel để vào)
+    # ports: ["127.0.0.1:5432:5432"]
+
+  # ------------------------------------------------------------------- Redis
+  # BullMQ (hủy đơn quá hạn), cache quyền, và broker Celery của video worker.
+  # noeviction: BullMQ yêu cầu; appendonly: không mất job hẹn giờ khi restart.
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    logging: *default-logging
+    mem_limit: 128m
+    command: ["redis-server", "--requirepass", "${REDIS_PASSWORD:?Thiếu REDIS_PASSWORD}", "--appendonly", "yes", "--maxmemory-policy", "noeviction"]
+    environment:
+      REDISCLI_AUTH: ${REDIS_PASSWORD}
+    volumes:
+      - redisdata:/data
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping | grep -q PONG"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+  # ----------------------------------------------- Đồng bộ schema (chạy 1 lần)
+  # Repo chưa có thư mục migrations nên dùng `prisma db push`. Nó KHÔNG tự xóa dữ liệu:
+  # nếu thay đổi có nguy cơ mất dữ liệu, lệnh sẽ dừng và báo lỗi thay vì chạy.
+  migrate:
+    # Dùng lại image do service `backend` build (không build lần hai để tránh trùng tên image)
+    image: elearning-backend
+    pull_policy: never
+    restart: "no"
+    logging: *default-logging
+    command: ["npx", "prisma", "db", "push", "--skip-generate"]
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-elearning}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-elearning}
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # ----------------------------------------------------------------- Backend
+  backend:
+    build: *backend-build
+    image: elearning-backend
+    restart: unless-stopped
+    logging: *default-logging
+    mem_limit: 512m
+    environment:
+      NODE_ENV: production
+      NODE_OPTIONS: --max-old-space-size=384
+      PORT: 3000
+      DATABASE_URL: postgresql://${POSTGRES_USER:-elearning}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-elearning}
+      REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379
+      # Địa chỉ công khai của site (CORS, redirect OAuth). Ví dụ: https://learn.example.com
+      FRONTEND_URL: ${PUBLIC_URL:?Thiếu PUBLIC_URL}
+      GOOGLE_REDIRECT: ${PUBLIC_URL}/api/auth/google/callback
+      GOOGLE_CLIENT_REDIRECT: ${PUBLIC_URL}/google/callback
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
+      GOOGLE_SECRET_ID: ${GOOGLE_SECRET_ID:-}
+      # Xác thực
+      ACCESS_TOKEN_SECRET: ${ACCESS_TOKEN_SECRET:?Thiếu ACCESS_TOKEN_SECRET}
+      REFRESH_TOKEN_SECRET: ${REFRESH_TOKEN_SECRET:?Thiếu REFRESH_TOKEN_SECRET}
+      ACCESS_TOKEN_EXPIRES_IN: ${ACCESS_TOKEN_EXPIRES_IN:-1h}
+      REFRESH_TOKEN_EXPIRES_IN: ${REFRESH_TOKEN_EXPIRES_IN:-7d}
+      EXPIRE_OTP: ${EXPIRE_OTP:-5m}
+      API_KEY: ${API_KEY:?Thiếu API_KEY}
+      # Email qua Resend (domain gửi phải đã verify trên Resend) và ảnh
+      RESEND_API_KEY: ${RESEND_API_KEY:?Thiếu RESEND_API_KEY}
+      MAIL_FROM: ${MAIL_FROM:?Thiếu MAIL_FROM}
+      CLOUDINARY_CLOUD_NAME: ${CLOUDINARY_CLOUD_NAME:-}
+      CLOUDINARY_API_KEY: ${CLOUDINARY_API_KEY:-}
+      CLOUDINARY_API_SECRET: ${CLOUDINARY_API_SECRET:-}
+      CLOUDINARY_FOLDER_NAME: ${CLOUDINARY_FOLDER_NAME:-online-learning}
+      # Thanh toán SePay
+      PAYMENT_PROVIDER: ${PAYMENT_PROVIDER:-sepay}
+      SO_TAI_KHOAN: ${SO_TAI_KHOAN:?Thiếu SO_TAI_KHOAN}
+      NGAN_HANG: ${NGAN_HANG:?Thiếu NGAN_HANG}
+      SEPAY_API_KEY: ${SEPAY_API_KEY:?Thiếu SEPAY_API_KEY}
+      SEPAY_WEBHOOK_API_KEY: ${SEPAY_WEBHOOK_API_KEY:?Thiếu SEPAY_WEBHOOK_API_KEY}
+      ORDER_PAYMENT_TIMEOUT_MINUTES: ${ORDER_PAYMENT_TIMEOUT_MINUTES:-10}
+      # Lưu trữ video (Cloudflare R2) và video worker
+      R2_ACCOUNT_ID: ${R2_ACCOUNT_ID:?Thiếu R2_ACCOUNT_ID}
+      R2_ACCESS_KEY_ID: ${R2_ACCESS_KEY_ID:?Thiếu R2_ACCESS_KEY_ID}
+      R2_SECRET_ACCESS_KEY: ${R2_SECRET_ACCESS_KEY:?Thiếu R2_SECRET_ACCESS_KEY}
+      R2_BUCKET_NAME: ${R2_BUCKET_NAME:?Thiếu R2_BUCKET_NAME}
+      R2_PUBLIC_DOMAIN: ${R2_PUBLIC_DOMAIN:?Thiếu R2_PUBLIC_DOMAIN}
+      FASTAPI_WORKER_URL: http://video-api:8000
+      INTERNAL_API_SECRET: ${INTERNAL_API_SECRET:?Thiếu INTERNAL_API_SECRET}
+      # Tài khoản admin đầu tiên (dùng bởi initialScript/seed.ts)
+      SEED_ADMIN_EMAIL: ${SEED_ADMIN_EMAIL:-}
+      SEED_ADMIN_PASSWORD: ${SEED_ADMIN_PASSWORD:-}
+    volumes:
+      - backend_logs:/app/logs
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
+
+  # ------------------------------------------------------------ Video worker
+  # Cùng một image, tách 2 tiến trình để restart và scale riêng: API nhận việc, Celery xử lý.
+  video-api:
+    build: *video-build
+    image: elearning-video-worker
+    restart: unless-stopped
+    logging: *default-logging
+    mem_limit: 256m
+    command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+    environment: *video-env
+    volumes:
+      - video_tmp:/app/tmp
+    depends_on:
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=4).status == 200 else 1)"]
+      interval: 15s
+      timeout: 6s
+      retries: 5
+      start_period: 20s
+
+  video-worker:
+    # Dùng lại image do `video-api` build
+    image: elearning-video-worker
+    pull_policy: never
+    restart: unless-stopped
+    logging: *default-logging
+    mem_limit: 768m
+    # pool=solo: tránh deadlock của model AI (giống cấu hình cũ)
+    command: ["celery", "-A", "worker.celery_app", "worker", "--pool=solo", "--loglevel=info"]
+    environment: *video-env
+    volumes:
+      - video_tmp:/app/tmp
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  # ---------------------------------------------------------------- Frontend
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        # Mặc định "/api" (cùng domain). Đổi nếu bạn tách API sang domain khác.
+        VITE_API_BASE_URL: ${VITE_API_BASE_URL:-/api}
+    image: elearning-frontend
+    restart: unless-stopped
+    logging: *default-logging
+    mem_limit: 64m
+    ports:
+      # Chỉ localhost: nginx của VPS proxy_pass vào đây. Đổi HTTP_PORT nếu 8081 đã bị chiếm.
+      - "127.0.0.1:${HTTP_PORT:-8081}:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  pgdata:
+  redisdata:
+  backend_logs:
+  video_tmp:

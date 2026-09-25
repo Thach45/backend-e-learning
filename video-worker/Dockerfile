@@ -1,6 +1,7 @@
 FROM python:3.10-slim
 
 WORKDIR /app
+ENV PYTHONUNBUFFERED=1
 
 # Cài đặt ffmpeg và git (cần cho whisper và pipeline)
 RUN apt-get update && \

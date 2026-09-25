@@ -42,6 +42,10 @@ async function main() {
     });
   }
 
+  // Production: không được dùng mật khẩu mặc định đã công khai trong mã nguồn
+  if (process.env.NODE_ENV === 'production' && (!process.env.SEED_ADMIN_EMAIL || !process.env.SEED_ADMIN_PASSWORD)) {
+    throw new Error('Production: hãy đặt SEED_ADMIN_EMAIL và SEED_ADMIN_PASSWORD trong .env trước khi chạy seed.');
+  }
   const adminEmail = process.env.SEED_ADMIN_EMAIL || 'admin@example.com';
   const adminPassword = process.env.SEED_ADMIN_PASSWORD || 'Admin@123';
   const hashed = await bcrypt.hash(adminPassword, 10);

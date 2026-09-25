@@ -5,6 +5,8 @@ import { AppLogger } from './shared/service/logging.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  // SIGTERM (docker stop / deploy): đóng worker BullMQ êm để job đang gửi dở không bị bỏ giữa chừng
+  app.enableShutdownHooks();
   app.enableCors({
     origin: [process.env.FRONTEND_URL],
     methods: 'GET,POST,PUT,DELETE',
@@ -14,7 +16,8 @@ async function bootstrap() {
 
   const httpAdapter = app.getHttpAdapter();
   const httpServer = httpAdapter.getInstance();
-  httpServer.set('trust proxy', 'loopback');
+  // Sau nginx của VPS và nginx trong docker: tin các dải IP nội bộ để req.ip là IP thật của khách (throttle, audit log).
+  httpServer.set('trust proxy', 'loopback, linklocal, uniquelocal');
 
   if (process.env.NODE_ENV !== 'production') {
     const swaggerConfig = new DocumentBuilder()

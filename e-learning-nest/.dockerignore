@@ -1,0 +1,12 @@
+# KHÔNG đưa bí mật và file rác vào image
+.env
+.env.*
+!.env.example
+node_modules
+dist
+logs
+.git
+.DS_Store
+test
+*.md
+*.tmp.ts

@@ -1,0 +1,10 @@
+.env
+.env.*
+!.env.example
+.git
+.DS_Store
+__pycache__
+*.pyc
+venv
+.venv
+tmp
