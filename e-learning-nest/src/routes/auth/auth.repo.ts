@@ -139,7 +139,7 @@ export class AuthRepository {
     async getUserById(userId: string) {
         return this.prisma.user.findUnique({
             where: { id: userId },
-
+            include: { userRoles: { select: { role: { select: { name: true } } } } },
             omit: {
                 password: true,
                 totpSecret: true,

@@ -316,7 +316,9 @@ export class AuthService {
         if(!user){
             throw new UnauthorizedException('User not found');
         }
-        return user;
+        // Trả đủ mọi vai trò của tài khoản (JWT chỉ mang một vai trò chính) để giao diện quyết định đúng menu và trang được vào
+        const { userRoles, ...rest } = user;
+        return { ...rest, roles: userRoles.map((ur) => ur.role.name) };
 
     }
 

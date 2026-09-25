@@ -16,7 +16,7 @@ const ProtectedRoute = ({
   redirectTo = '/auth/login',
 }: ProtectedRouteProps) => {
   const location = useLocation();
-  const { isAuthenticated, user, isLoading, hasRole, hasAnyRole, jwtPayload } = useAuthStatus();
+  const { isAuthenticated, user, isLoading, jwtPayload } = useAuthStatus();
 
   // Not authenticated - check từ JWT payload (nhanh, không cần chờ API)
   if (!isAuthenticated) {
@@ -36,21 +36,27 @@ const ProtectedRoute = ({
     );
   }
 
-  // Check roles từ JWT payload trước (nhanh, không cần chờ API)
-  if (requiredRoles && requiredRoles.length > 0 && jwtPayload) {
-    const jwtRole = jwtPayload.roleName;
-    const hasRequiredRole = requireAnyRole
-      ? requiredRoles.includes(jwtRole)
-      : requiredRoles.every(role => role === jwtRole);
+  // Một tài khoản có thể có nhiều vai trò (ví dụ ADMIN + INSTRUCTOR) nhưng JWT chỉ mang một vai trò chính.
+  // Nên gộp vai trò trong JWT với toàn bộ vai trò từ API /auth/me để không chặn nhầm người có đủ quyền.
+  if (requiredRoles && requiredRoles.length > 0) {
+    const jwtRole = jwtPayload?.roleName;
+    const owned = new Set<UserRole>([...(jwtRole ? [jwtRole] : []), ...(user?.roles ?? [])]);
+    const satisfied = requireAnyRole
+      ? requiredRoles.some((r) => owned.has(r))
+      : requiredRoles.every((r) => owned.has(r));
 
-    if (!hasRequiredRole) {
-      // Redirect based on JWT role
-      let defaultRedirect = '/';
-      if (jwtRole === 'ADMIN') {
-        defaultRedirect = '/admin';
-      } else if (jwtRole === 'INSTRUCTOR') {
-        defaultRedirect = '/instructor';
-      }
+    // Vai trò chính trong JWT chưa đủ mà danh sách vai trò đầy đủ còn đang tải thì chờ, tránh báo "không có quyền" nhầm rồi nháy lại
+    if (!satisfied && isLoading) {
+      return (
+        <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950">
+          <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
+        </div>
+      );
+    }
+
+    if (!satisfied) {
+      const mainRole = jwtRole ?? user?.roles?.[0];
+      const defaultRedirect = mainRole === 'ADMIN' ? '/admin' : mainRole === 'INSTRUCTOR' ? '/instructor' : '/';
 
       return (
         <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950">
@@ -84,42 +90,6 @@ const ProtectedRoute = ({
         </div>
       </div>
     );
-  }
-
-  // Fallback: Check roles từ API nếu chưa check từ JWT (trường hợp hiếm)
-  if (requiredRoles && requiredRoles.length > 0 && !jwtPayload) {
-    const hasRequiredRole = requireAnyRole
-      ? hasAnyRole(requiredRoles)
-      : requiredRoles.every(role => hasRole(role));
-
-    if (!hasRequiredRole) {
-      // Redirect based on user's role
-      const userRole = user?.roles?.[0];
-      let defaultRedirect = '/';
-      
-      if (userRole === 'ADMIN') {
-        defaultRedirect = '/admin';
-      } else if (userRole === 'INSTRUCTOR') {
-        defaultRedirect = '/instructor';
-      }
-
-      return (
-        <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950">
-          <div className="text-center p-8 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm max-w-md">
-            <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-100 mb-2">Không có quyền truy cập</h2>
-            <p className="text-slate-600 dark:text-slate-300 mb-4">
-              Bạn không có quyền truy cập trang này.
-            </p>
-            <a
-              href={defaultRedirect}
-              className="inline-block px-6 py-2 bg-indigo-600 text-white font-semibold rounded-xl hover:bg-indigo-500 transition-colors"
-            >
-              Về trang chủ
-            </a>
-          </div>
-        </div>
-      );
-    }
   }
 
   return <>{children}</>;

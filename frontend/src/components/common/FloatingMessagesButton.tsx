@@ -3,12 +3,12 @@ import { MessageCircle } from 'lucide-react';
 import { useAuthStatus } from '../../hooks/useAuthStatus';
 import { useUnreadMessages } from '../../hooks/useUnreadMessages';
 
-/** Nút tin nhắn nổi ở góc dưới bên phải, kèm số tin chưa đọc. Chỉ hiện khi đã đăng nhập và không ở trang tin nhắn. */
+/** Nút tin nhắn nổi ở góc dưới bên phải, kèm số tin chưa đọc. Chỉ hiện khi đã đăng nhập, không ở trang tin nhắn và không phải tài khoản chỉ có quyền admin. */
 const FloatingMessagesButton = () => {
   const { isAuthenticated, hasRole } = useAuthStatus();
   const { pathname } = useLocation();
   const unread = useUnreadMessages();
-  if (!isAuthenticated || hasRole('ADMIN') || pathname.startsWith('/messages')) return null;
+  if (!isAuthenticated || (hasRole('ADMIN') && !hasRole('INSTRUCTOR') && !hasRole('CLIENT')) || pathname.startsWith('/messages')) return null;
 
   return (
     <Link
