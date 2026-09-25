@@ -1,7 +1,7 @@
 export const MAIL_QUEUE = 'mail';
 export const SEND_MAIL_JOB = 'send';
 
-export type MailKind = 'otp' | 'order-created' | 'order-paid' | 'login-alert' | 'campaign' | 'campaign-test';
+export type MailKind = 'otp' | 'order-created' | 'order-paid' | 'login-alert' | 'campaign' | 'campaign-test' | 'notice';
 
 /** Dữ liệu một job gửi mail. HTML đã render sẵn lúc thêm job để mọi lần retry gửi đúng cùng một nội dung. */
 export interface MailJobData {

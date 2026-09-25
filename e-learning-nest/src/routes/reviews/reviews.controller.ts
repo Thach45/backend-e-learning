@@ -12,6 +12,7 @@ import {
   GetReviewResponseDto,
   GetReviewsResponseDto,
   ReplyReviewBodyDto,
+  ReviewIdParamsDto,
 } from "./reviews.dto";
 
 @Controller("api")
@@ -37,11 +38,23 @@ export class ReviewsController {
   async getReviewsByCourse(
     @Param() params: GetReviewParamsDto,
     @Query() query: GetReviewsQueryDto,
+    @ActiveUser() user: any,
   ) {
-    return this.reviewsService.getReviews({
-      ...(query as any),
-      courseId: (params as any).courseId,
-    });
+    // Không trả email người viết; có kèm trạng thái "Hữu ích" của người đang xem
+    return this.reviewsService.getReviews(
+      { ...(query as any), courseId: (params as any).courseId },
+      { viewerId: user?.userId, includeEmail: false },
+    );
+  }
+
+  @Post("reviews/:reviewId/helpful")
+  async markHelpful(@Param() params: ReviewIdParamsDto, @ActiveUser() user: any) {
+    return this.reviewsService.setHelpful(params.reviewId, user.userId, true);
+  }
+
+  @Delete("reviews/:reviewId/helpful")
+  async unmarkHelpful(@Param() params: ReviewIdParamsDto, @ActiveUser() user: any) {
+    return this.reviewsService.setHelpful(params.reviewId, user.userId, false);
   }
 
   @Get("my-reviews/:courseId")

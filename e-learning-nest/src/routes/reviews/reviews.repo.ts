@@ -32,8 +32,13 @@ const reviewSelect = {
 export class ReviewsRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async getReviews(query: GetReviewsQuery) {
-    const { page, limit, courseId, userId, rating } = query;
+  /**
+   * Danh sách đánh giá. `includeEmail=false` cho endpoint công khai của khóa học (không lộ email người viết).
+   * `viewerId` để biết người đang xem đã bấm "Hữu ích" cho đánh giá nào.
+   */
+  async getReviews(query: GetReviewsQuery, opts: { viewerId?: string; includeEmail?: boolean } = {}) {
+    const { includeEmail = true, viewerId } = opts;
+    const { page, limit, courseId, userId, rating, sort, hasComment } = query;
     if (page < 1 || limit < 1) {
       throw new BadRequestException("Page and limit must be positive numbers");
     }
@@ -42,20 +47,56 @@ export class ReviewsRepository {
       ...(courseId ? { courseId } : {}),
       ...(userId ? { userId } : {}),
       ...(rating ? { rating } : {}),
+      ...(hasComment === "true" ? { AND: [{ comment: { not: null } }, { comment: { not: "" } }] } : {}),
+      ...(hasComment === "false" ? { OR: [{ comment: null }, { comment: "" }] } : {}),
     };
 
-    const [data, total] = await Promise.all([
-      this.prisma.review.findMany({
-        where,
-        skip: (page - 1) * limit,
-        take: Number(limit),
-        orderBy: { createdAt: "desc" },
-        select: reviewSelect,
-      }),
+    const orderBy: Prisma.ReviewOrderByWithRelationInput[] =
+      sort === "helpful"
+        ? [{ helpfulVotes: { _count: "desc" } }, { createdAt: "desc" }]
+        : sort === "highest"
+          ? [{ rating: "desc" }, { createdAt: "desc" }]
+          : sort === "lowest"
+            ? [{ rating: "asc" }, { createdAt: "desc" }]
+            : [{ createdAt: "desc" }];
+
+    const select = {
+      ...reviewSelect,
+      user: { select: { id: true, name: true, avatar: true, ...(includeEmail ? { email: true } : {}) } },
+      _count: { select: { helpfulVotes: true } },
+      ...(viewerId ? { helpfulVotes: { where: { userId: viewerId }, select: { userId: true } } } : {}),
+    } satisfies Prisma.ReviewSelect;
+
+    const [rows, total] = await Promise.all([
+      this.prisma.review.findMany({ where, skip: (page - 1) * limit, take: Number(limit), orderBy, select }),
       this.prisma.review.count({ where }),
     ]);
 
+    const data = rows.map((row) => {
+      const { _count, helpfulVotes, ...rest } = row as typeof row & { helpfulVotes?: { userId: string }[] };
+      return { ...rest, helpfulCount: _count.helpfulVotes, markedHelpful: !!helpfulVotes?.length };
+    });
+
     return { data, total, page, limit, totalPages: Math.ceil(total / limit) };
+  }
+
+  /** Bấm/bỏ "Hữu ích". Không tự bấm cho đánh giá của mình. Trả số lượng mới. */
+  async setHelpful(reviewId: string, userId: string, on: boolean) {
+    const review = await this.prisma.review.findUnique({ where: { id: reviewId }, select: { id: true, userId: true } });
+    if (!review) throw new NotFoundException("Không tìm thấy đánh giá");
+    if (review.userId === userId) throw new BadRequestException("Bạn không thể bấm hữu ích cho đánh giá của chính mình");
+
+    if (on) {
+      await this.prisma.reviewHelpful.upsert({
+        where: { reviewId_userId: { reviewId, userId } },
+        update: {},
+        create: { reviewId, userId },
+      });
+    } else {
+      await this.prisma.reviewHelpful.deleteMany({ where: { reviewId, userId } });
+    }
+    const helpfulCount = await this.prisma.reviewHelpful.count({ where: { reviewId } });
+    return { helpfulCount, markedHelpful: on };
   }
 
   async getReviewByCourseId(courseId: string, userId: string) {

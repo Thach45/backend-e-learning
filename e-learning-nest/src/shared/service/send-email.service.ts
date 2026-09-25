@@ -8,6 +8,7 @@ import { generateSuccessfulOrderTemplate, InvoiceCourseItem } from '../helper/ge
 import { generateOrderCreatedTemplate, OrderCourseItem } from '../helper/generate-order-created-template';
 import { generateNewLoginTemplate } from '../helper/generate-new-login-template';
 import { MAIL_QUEUE, MailJobData, SEND_MAIL_JOB } from '../mail/mail.constants';
+import { fillSubject, markdownToHtml, renderCampaignEmail } from '../mail/render.util';
 
 /**
  * Producer: render mail rồi thêm vào hàng đợi `mail` và trả về ngay (không chờ Resend).
@@ -133,6 +134,25 @@ export class SendEmailService {
     return this.enqueue(
       { kind: 'order-paid', to: recipientEmail, subject: 'Xác nhận thanh toán thành công', html: content, idempotencyKey: `order-paid-${orderId}` },
       { jobId: `order-paid-${orderId}`, attempts: 8 },
+    );
+  }
+
+  /**
+   * Thư thông báo cá nhân do hệ thống gửi (chấm bài, phản hồi hỗ trợ...). Nội dung là markdown tối giản, được escape khi render.
+   * `idempotencyKey` cố định theo sự kiện nên gọi trùng không gửi hai lần. Là thư giao dịch: không bị hạn mức chiến dịch chặn.
+   */
+  async sendNotice(input: { to: string; name?: string; subject: string; markdown: string; idempotencyKey: string }) {
+    const html = renderCampaignEmail({
+      bodyHtml: markdownToHtml(input.markdown),
+      vars: { name: input.name },
+      senderLabel: 'U Đê Mê',
+      isServiceNotice: true,
+      footerText: 'Đây là thư thông báo tự động từ U Đê Mê dành riêng cho bạn.',
+      companyAddress: process.env.MAIL_COMPANY_ADDRESS || undefined,
+    });
+    return this.enqueue(
+      { kind: 'notice', to: input.to, subject: fillSubject(input.subject, { name: input.name }), html, idempotencyKey: input.idempotencyKey },
+      { jobId: input.idempotencyKey, attempts: 6 },
     );
   }
 

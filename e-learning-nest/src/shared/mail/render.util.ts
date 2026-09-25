@@ -81,12 +81,16 @@ export interface RenderInput {
   unsubscribeUrl?: string;
   isServiceNotice: boolean;
   companyAddress?: string;
+  /** Thư thông báo cá nhân (chấm bài, phản hồi hỗ trợ...): thay dòng chân thư mặc định. */
+  footerText?: string;
 }
 
 export function renderCampaignEmail(input: RenderInput): string {
   const content = fillVariables(input.bodyHtml, input.vars);
   const address = input.companyAddress ? `<br>${escapeHtml(input.companyAddress)}` : '';
-  const footer = input.unsubscribeUrl
+  const footer = input.footerText
+    ? escapeHtml(input.footerText)
+    : input.unsubscribeUrl
     ? `Bạn nhận thư này vì có tài khoản tại U Đê Mê. <a href="${escapeHtml(input.unsubscribeUrl)}" style="color:#64748b">Ngừng nhận thư này</a>.`
     : input.isServiceNotice
       ? 'Đây là thông báo dịch vụ từ U Đê Mê gửi tới tất cả người dùng.'

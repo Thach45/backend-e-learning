@@ -51,6 +51,9 @@ import { MaintenanceGuard } from "./routes/site-settings/maintenance.guard";
 import { TagsModule } from "./routes/tags/tags.module";
 import { LearningProfileModule } from "./routes/learning-profile/learning-profile.module";
 import { EmailCampaignsModule } from "./routes/email-campaigns/email-campaigns.module";
+import { AssignmentsModule } from "./routes/assignments/assignments.module";
+import { InstructorStudentsModule } from "./routes/instructor-students/instructor-students.module";
+import { SupportModule } from "./routes/support/support.module";
 
 @Module({
   imports: [
@@ -115,6 +118,9 @@ import { EmailCampaignsModule } from "./routes/email-campaigns/email-campaigns.m
     TagsModule,
     LearningProfileModule,
     EmailCampaignsModule,
+    AssignmentsModule,
+    InstructorStudentsModule,
+    SupportModule,
   ],
   controllers: [AppController],
   providers: [

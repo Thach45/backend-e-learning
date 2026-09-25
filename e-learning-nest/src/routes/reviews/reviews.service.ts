@@ -10,8 +10,12 @@ export class ReviewsService {
     private readonly gamificationService: GamificationService,
   ) {}
 
-  async getReviews(query: GetReviewsQuery) {
-    return this.reviewsRepo.getReviews(query);
+  async getReviews(query: GetReviewsQuery, opts?: { viewerId?: string; includeEmail?: boolean }) {
+    return this.reviewsRepo.getReviews(query, opts);
+  }
+
+  async setHelpful(reviewId: string, userId: string, on: boolean) {
+    return this.reviewsRepo.setHelpful(reviewId, userId, on);
   }
 
   async getReviewByCourseId(courseId: string, userId: string) {

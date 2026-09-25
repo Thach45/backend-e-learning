@@ -1,5 +1,5 @@
 import { createHmac } from 'crypto';
-import { escapeHtml, fillSubject, fillVariables, markdownToHtml, renderCampaignEmail } from './campaign-render.util';
+import { escapeHtml, fillSubject, fillVariables, markdownToHtml, renderCampaignEmail } from '../../shared/mail/render.util';
 import { signUnsubscribeToken, verifyUnsubscribeToken } from './unsubscribe-token.util';
 import { verifyResendWebhook } from './resend-webhook.util';
 

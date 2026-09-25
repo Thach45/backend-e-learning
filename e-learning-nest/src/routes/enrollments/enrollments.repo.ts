@@ -6,6 +6,7 @@ import {
   UnprocessableEntityException,
 } from "@nestjs/common";
 import { PrismaService } from "src/shared/service/prisma.service";
+import { overallProgress } from "src/shared/helper/progress";
 import { CreateEnrollmentBody, GetEnrollmentsQuery } from "./enrollments.model";
 import { Prisma } from "@prisma/client";
 
@@ -332,6 +333,14 @@ export class EnrollmentsRepository {
       },
     });
 
+    // Số bài của từng khóa (để tính tiến độ đúng: chia cho tổng số bài, không chỉ số bài đã mở)
+    const lessonRows = await this.prisma.lesson.findMany({
+      where: { deletedAt: null, isActive: true, content: { courseId: { in: courseIds }, deletedAt: null, isActive: true } },
+      select: { content: { select: { courseId: true } } },
+    });
+    const lessonCount = new Map<string, number>();
+    for (const l of lessonRows) lessonCount.set(l.content.courseId, (lessonCount.get(l.content.courseId) ?? 0) + 1);
+
     // Calculate overall progress for each enrollment
     const data = enrollments.map((enrollment) => {
       // Get all progress records for this user in this course
@@ -339,10 +348,7 @@ export class EnrollmentsRepository {
         p => p.userId === enrollment.userId && p.courseId === enrollment.courseId
       );
       
-      // Calculate average progress
-      const avgProgress = progressRecords.length > 0
-        ? Math.round(progressRecords.reduce((sum, p) => sum + p.progressPercent, 0) / progressRecords.length)
-        : 0;
+      const avgProgress = overallProgress(progressRecords.map((p) => p.progressPercent), lessonCount.get(enrollment.courseId) ?? 0);
       
       // Get most recent lastAccessed
       const lastAccessed = progressRecords.length > 0

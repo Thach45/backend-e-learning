@@ -9,11 +9,14 @@ export const ReviewSchema = z.object({
   instructorReply: z.string().nullable().optional(),
   instructorReplyAt: z.date().nullable().optional(),
   createdAt: z.date(),
+  helpfulCount: z.number().int().optional(),
+  markedHelpful: z.boolean().optional(),
   user: z
     .object({
       id: z.string().uuid(),
       name: z.string(),
-      email: z.string().email(),
+      // Không trả email ở danh sách công khai (chỉ admin/giảng viên mới có)
+      email: z.string().email().optional(),
       avatar: z.string().nullable().optional(),
     })
     .optional(),
@@ -31,7 +34,11 @@ export const GetReviewsQuerySchema = z.object({
   courseId: z.string().uuid().optional(),
   userId: z.string().uuid().optional(),
   rating: z.coerce.number().int().min(1).max(5).optional(),
+  sort: z.enum(["newest", "helpful", "highest", "lowest"]).optional().default("newest"),
+  hasComment: z.enum(["true", "false"]).optional(),
 }).strict();
+
+export const ReviewIdParamsSchema = z.object({ reviewId: z.string().uuid() }).strict();
 
 export const GetReviewParamsSchema = z.object({
   courseId: z.string().uuid(),

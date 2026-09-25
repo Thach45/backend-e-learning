@@ -14,7 +14,7 @@ import { NotificationsService } from "../notifications/notifications.service";
 import { Actor, CampaignAudienceService } from "./campaign-audience.service";
 import { DISPATCH_JOB, EMAIL_CAMPAIGN_QUEUE, dispatchJobId } from "./email-campaigns.constants";
 import { CreateCampaignBody, ListCampaignsQuery, UpdateCampaignBody } from "./email-campaigns.model";
-import { fillSubject, markdownToHtml, renderCampaignEmail } from "./campaign-render.util";
+import { fillSubject, markdownToHtml, renderCampaignEmail } from "src/shared/mail/render.util";
 import { signUnsubscribeToken } from "./unsubscribe-token.util";
 
 const campaignSelect = {

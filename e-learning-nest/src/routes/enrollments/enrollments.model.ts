@@ -6,6 +6,9 @@ export const EnrollmentSchema = z.object({
   courseId: z.string().uuid(),
   enrolledAt: z.date(),
   completedAt: z.date().nullable().optional(),
+  // Chỉ có ở danh sách học viên của giảng viên. Thiếu khai báo này thì serializer cắt mất và cột tiến độ luôn 0%
+  progress: z.number().optional(),
+  lastAccessed: z.date().optional(),
   course: z
     .object({
       id: z.string().uuid(),
