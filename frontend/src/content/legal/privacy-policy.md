@@ -1,6 +1,4 @@
-# Chính sách bảo mật (BẢN NHÁP)
-
-> **Bản nháp chưa công bố.** Các mục `[[...]]` cần chủ dự án điền. Nội dung bám theo cách hệ thống đang hoạt động (tháng 9/2026). Cần rà soát pháp lý trước khi đăng, đặc biệt theo Nghị định 13/2023/NĐ-CP về bảo vệ dữ liệu cá nhân.
+# Chính sách bảo mật
 
 Cập nhật lần cuối: 25/09/2026
 
@@ -46,9 +44,9 @@ Thông tin công khai trên hồ sơ của bạn (họ tên, ảnh đại diện
 
 ## 5. Chúng tôi lưu dữ liệu bao lâu
 - Dữ liệu tài khoản và học tập: trong thời gian tài khoản còn hoạt động.
-- Sau khi bạn yêu cầu xoá tài khoản: chúng tôi xoá hoặc ẩn danh dữ liệu cá nhân trong `[[SỐ NGÀY XỬ LÝ YÊU CẦU]]` ngày.
-- Dữ liệu đơn hàng và giao dịch: giữ theo thời hạn pháp luật về kế toán, thuế yêu cầu `[[XÁC NHẬN THỜI HẠN]]`.
-- Nhật ký bảo mật: `[[THỜI HẠN LƯU NHẬT KÝ]]`.
+- Sau khi bạn yêu cầu xoá tài khoản: chúng tôi xoá hoặc ẩn danh dữ liệu cá nhân trong 30 ngày.
+- Dữ liệu đơn hàng và giao dịch: giữ theo thời hạn pháp luật về kế toán, thuế yêu cầu (tối đa 10 năm).
+- Nhật ký bảo mật: lưu trong thời gian cần thiết để phát hiện và xử lý sự cố an ninh.
 
 ## 6. Quyền của bạn
 Bạn có quyền: xem, chỉnh sửa, yêu cầu xoá dữ liệu của mình; rút lại sự đồng ý (ví dụ tắt gợi ý cá nhân hoá); phản đối việc xử lý; khiếu nại. Bạn có thể tự chỉnh thông tin trong **Cài đặt tài khoản**. Với các yêu cầu còn lại (ví dụ xoá tài khoản), hãy gửi email tới hoangthach.dev@gmail.com từ địa chỉ email đã đăng ký.
@@ -59,7 +57,7 @@ Bạn có quyền: xem, chỉnh sửa, yêu cầu xoá dữ liệu của mình; 
 Website dùng kết nối mã hoá HTTPS. Mật khẩu được mã hoá một chiều. Quyền truy cập dữ liệu được phân theo vai trò (học viên, giảng viên, quản trị viên) và các thao tác quản trị được ghi nhật ký. Không hệ thống nào an toàn tuyệt đối; nếu phát hiện sự cố ảnh hưởng đến dữ liệu của bạn, chúng tôi sẽ thông báo theo quy định pháp luật.
 
 ## 8. Trẻ em
-Dịch vụ dành cho người từ `[[TUỔI TỐI THIỂU]]` tuổi trở lên. Người dùng dưới độ tuổi này cần có sự đồng ý của cha mẹ hoặc người giám hộ.
+Dịch vụ dành cho người từ 16 tuổi trở lên. Người dùng dưới độ tuổi này cần có sự đồng ý của cha mẹ hoặc người giám hộ.
 
 ## 9. Thay đổi chính sách
 Khi có thay đổi quan trọng, chúng tôi sẽ thông báo trên website hoặc qua email. Ngày cập nhật ghi ở đầu trang.
