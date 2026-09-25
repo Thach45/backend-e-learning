@@ -1,6 +1,8 @@
 import { useState, useMemo, useEffect } from 'react';
-import { Search, Plus, Edit, FolderTree, X, Save, Loader2, AlertCircle } from 'lucide-react';
+import { Search, Plus, Edit, FolderTree, X, Save, Loader2, AlertCircle, Download, Upload } from 'lucide-react';
 import { useAdminCategories, useCreateAdminCategory, useUpdateAdminCategory, useAdminCategory } from '../../hooks/useAdminCategories';
+import CategoryImportModal from '../../components/admin/CategoryImportModal';
+import { csvTransferApi } from '../../api/csvTransfer';
 import ImageUpload from '../../components/common/ImageUpload';
 import type { AdminCategory, CreateCategoryBody, UpdateCategoryBody } from '../../api/admin';
 
@@ -8,6 +10,7 @@ const AdminCategoriesPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState<string | null>(null);
+  const [isImportOpen, setIsImportOpen] = useState(false);
 
   const { data: categories, isLoading, error } = useAdminCategories();
   const createMutation = useCreateAdminCategory();
@@ -32,14 +35,19 @@ const AdminCategoriesPage = () => {
           <h1 className="text-3xl font-bold text-slate-800 dark:text-slate-100">Quản lý danh mục</h1>
           <p className="text-slate-500 dark:text-slate-400 mt-1">Quản lý danh mục khóa học (hỗ trợ danh mục con)</p>
         </div>
-        <button
-          onClick={() => setIsCreateModalOpen(true)}
-          className="px-4 py-2 bg-indigo-600 text-white font-semibold rounded-xl hover:bg-indigo-500 transition-colors flex items-center gap-2"
-        >
-          <Plus size={18} />
-          Thêm danh mục
-        </button>
+        <div className="flex flex-wrap items-center gap-2">
+          <button onClick={() => csvTransferApi.downloadCategories()} className="px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-semibold flex items-center gap-2"><Download size={16} /> Xuất CSV</button>
+          <button onClick={() => setIsImportOpen(true)} className="px-3 py-2 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-semibold flex items-center gap-2"><Upload size={16} /> Nhập CSV</button>
+          <button
+            onClick={() => setIsCreateModalOpen(true)}
+            className="px-4 py-2 bg-indigo-600 text-white font-semibold rounded-xl hover:bg-indigo-500 transition-colors flex items-center gap-2"
+          >
+            <Plus size={18} />
+            Thêm danh mục
+          </button>
+        </div>
       </div>
+      {isImportOpen && <CategoryImportModal onClose={() => setIsImportOpen(false)} />}
 
       {/* Filters */}
       <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-4">
