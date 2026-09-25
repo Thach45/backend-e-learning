@@ -98,7 +98,7 @@ Vai trò: **Học viên** (CLIENT), **Giảng viên** (INSTRUCTOR), **Admin**. T
 
 - `/instructor/students`: danh sách học viên, tìm kiếm, lọc theo khoá.
 - Nút **"Chi tiết"** mở tiến độ từng bài của một học viên. Nút **"Xuất CSV"** tải danh sách (tránh lỗi công thức Excel, có ghi nhật ký vì là dữ liệu cá nhân).
-- Nút **"Nhắn tin"** mở cuộc trò chuyện với học viên đó (xem mục 19).
+- Nút **"Nhắn tin"** mở cuộc trò chuyện với học viên đó (xem mục 18).
 - **Sửa lỗi:** tiến độ trước đây luôn hiện 0% hoặc nhảy lên 100% sau một bài. Đã sửa cách tính.
 
 ---
