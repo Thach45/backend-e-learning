@@ -9,6 +9,7 @@ import {
 import { useAuthStatus } from '../hooks/useAuthStatus';
 import { useSEO } from '../hooks/useSEO';
 import { formatVND } from '../utils/format';
+import { PLACEHOLDER_IMAGE } from '../utils/placeholder';
 
 const SocialLink = ({ href, icon: Icon, label }: { href?: string | null; icon: typeof Globe; label: string }) => {
   if (!href) return null;
@@ -189,7 +190,7 @@ const InstructorProfilePage = () => {
                     >
                       <div className="aspect-video overflow-hidden bg-slate-100 dark:bg-slate-800">
                         <img
-                          src={course.thumbnail || 'https://via.placeholder.com/400x300?text=No+Image'}
+                          src={course.thumbnail || PLACEHOLDER_IMAGE}
                           alt={course.title}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                         />

@@ -22,6 +22,7 @@ const CreateCoursePage = () => {
     introVideo: '',
     isFeatured: false,
     level: 'BEGINNER' as CourseLevel,
+    language: 'vi',
     categoryId: '',
   });
 
@@ -62,6 +63,7 @@ const CreateCoursePage = () => {
         introVideo: formData.introVideo || undefined,
         isFeatured: formData.isFeatured,
         level: formData.level,
+        language: formData.language,
         categoryId: formData.categoryId || undefined,
         status: 'DRAFT',
       },
@@ -171,6 +173,26 @@ const CreateCoursePage = () => {
               <option value="BEGINNER">Cơ bản</option>
               <option value="INTERMEDIATE">Trung bình</option>
               <option value="ADVANCED">Nâng cao</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-semibold text-slate-700 dark:text-slate-200 mb-2">
+              Ngôn ngữ khoá học
+            </label>
+            <select
+              value={formData.language}
+              onChange={(e) => setFormData({ ...formData, language: e.target.value })}
+              className="w-full px-4 py-3 border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 rounded-xl focus:ring-2 focus:ring-purple-100 focus:border-purple-500 outline-none transition-all"
+            >
+              <option value="vi">Tiếng Việt</option>
+              <option value="en">Tiếng Anh</option>
+              <option value="ja">Tiếng Nhật</option>
+              <option value="ko">Tiếng Hàn</option>
+              <option value="zh">Tiếng Trung</option>
+              <option value="fr">Tiếng Pháp</option>
+              <option value="de">Tiếng Đức</option>
+              <option value="es">Tiếng Tây Ban Nha</option>
             </select>
           </div>
 

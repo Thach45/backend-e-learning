@@ -5,6 +5,7 @@ import { useMyWishlist, useRemoveFromWishlist } from '../hooks/useWishlist';
 import { useAddToCart } from '../hooks/useCart';
 import { formatVND } from '../utils/format';
 import type { WishlistItem } from '../api/wishlist';
+import { PLACEHOLDER_IMAGE } from '../utils/placeholder';
 
 const LIMIT = 12;
 
@@ -20,7 +21,7 @@ const WishlistCard = ({ item, onRemove }: { item: WishlistItem; onRemove: () => 
     <div className="group bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 hover:border-indigo-200 hover:shadow-md transition-all overflow-hidden flex flex-col">
       <Link to={`/courses/${course.id}`} className="relative aspect-video overflow-hidden bg-slate-100 dark:bg-slate-800 block">
         <img
-          src={course.thumbnail || 'https://via.placeholder.com/400x300?text=No+Image'}
+          src={course.thumbnail || PLACEHOLDER_IMAGE}
           alt={course.title}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
         />

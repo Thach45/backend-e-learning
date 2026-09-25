@@ -13,6 +13,7 @@ export const CourseSchema = z.object({
   introVideo: z.string().nullable().optional(),
   isFeatured: z.boolean(),
   level: CourseLevelEnum,
+  language: z.string().optional(),
   status: CourseStatusEnum,
   instructorId: z.string().uuid(),
   categoryId: z.string().uuid().nullable().optional(),
@@ -51,6 +52,7 @@ export const CreateCourseBodySchema = z.object({
   introVideo: z.string().optional(),
   isFeatured: z.boolean().optional(),
   level: CourseLevelEnum.default("BEGINNER"),
+  language: z.string().min(2).max(10).default("vi"),
   status: CourseStatusEnum.default("DRAFT"),
   categoryId: z.string().uuid().optional(),
 }).strict();
@@ -63,6 +65,7 @@ export const UpdateCourseBodySchema = z.object({
   introVideo: z.string().nullable().optional(),
   isFeatured: z.boolean().optional(),
   level: CourseLevelEnum.optional(),
+  language: z.string().min(2).max(10).optional(),
   categoryId: z.string().uuid().nullable().optional(),
 }).strict();
 
@@ -79,6 +82,7 @@ const InstructorSchema = z.object({
 
 // Category schema
 const CategorySchema = z.object({
+  id: z.string().uuid().optional(),
   name: z.string(),
 });
 
@@ -97,7 +101,7 @@ const LessonSchema = z.object({
   title: z.string(),
   type: z.string(), // VIDEO, TEXT, etc.
   duration: z.string().nullable().optional(), // formatted duration like "5:00"
-  isFree: z.boolean().optional(),
+  isPreview: z.boolean().optional(), // cho xem thử miễn phí
 });
 
 // Content section schema
@@ -136,8 +140,17 @@ export const GetCourseResponseSchema = z.object({
   instructor: InstructorSchema,
   category: CategorySchema.nullable().optional(),
   detail: CourseDetailSchema.nullable().optional(),
+  language: z.string(),
   content: z.array(ContentSectionSchema),
-  reviews: z.array(ReviewSchema),
+  stats: z.object({
+    videoLessons: z.number(),
+    textLessons: z.number(),
+    quizzes: z.number(),
+    materials: z.number(),
+  }),
+  ratingDistribution: z.object({
+    1: z.number(), 2: z.number(), 3: z.number(), 4: z.number(), 5: z.number(),
+  }),
   totalLessons: z.number(),
   totalDuration: z.string(), // formatted like "12h 30m"
   rating: z.number(),

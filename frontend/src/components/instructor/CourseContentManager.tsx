@@ -44,6 +44,7 @@ const CourseContentManager = ({ courseId }: CourseContentManagerProps) => {
     contentText: string;
     duration?: number;
     transcript: string;
+    isPreview?: boolean;
   }>({
     title: '',
     storageType: 'CLOUDFLARE_R2',
@@ -123,6 +124,7 @@ const CourseContentManager = ({ courseId }: CourseContentManagerProps) => {
           contentText: newLessonData.contentText || undefined,
           duration: parseInt(newLessonData.duration?.toString() || '0'),
           transcript: newLessonData.transcript || undefined,
+          isPreview: newLessonData.isPreview ?? false,
         },
       },
       {
@@ -142,6 +144,7 @@ const CourseContentManager = ({ courseId }: CourseContentManagerProps) => {
             storageUrl: '',
             contentText: '',
             transcript: '',
+            isPreview: false,
           });
           toggleChapter(chapterId);
         },
@@ -164,6 +167,7 @@ const CourseContentManager = ({ courseId }: CourseContentManagerProps) => {
           contentText: lesson.contentText,
           duration: lesson.duration,
           transcript: lesson.transcript,
+          isPreview: lesson.isPreview,
         },
       },
       {
@@ -305,6 +309,7 @@ interface ChapterItemProps {
     contentText: string;
     duration?: number;
     transcript: string;
+    isPreview?: boolean;
   };
   onNewLessonChange: (data: any) => void;
   onCreateLesson: () => void;
@@ -573,6 +578,16 @@ const LessonItem = ({
           placeholder="Bản chép lời / transcript (tùy chọn)"
         />
 
+        <label className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-200 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={!!editData.isPreview}
+            onChange={(e) => setEditData({ ...editData, isPreview: e.target.checked })}
+            className="w-4 h-4 accent-purple-600"
+          />
+          Cho học thử miễn phí (ai cũng xem được, kể cả chưa mua)
+        </label>
+
         <div className="flex gap-2">
           <button
             type="button"
@@ -609,6 +624,9 @@ const LessonItem = ({
             <FileText className="w-4 h-4 text-slate-400 dark:text-slate-500" />
           )}
           <h4 className="font-medium text-slate-800 dark:text-slate-100">{lesson.title}</h4>
+          {lesson.isPreview && (
+            <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full">Học thử</span>
+          )}
         </div>
         {lesson.duration && (
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
@@ -657,6 +675,7 @@ interface NewLessonFormProps {
     contentText: string;
     duration?: number;
     transcript: string;
+    isPreview?: boolean;
   };
   onChange: (data: any) => void;
   onSubmit: () => void;
@@ -721,6 +740,16 @@ const NewLessonForm = ({ data, onChange, onSubmit, onCancel, isSubmitting }: New
         rows={3}
         placeholder="Bản chép lời / transcript (tùy chọn)"
       />
+
+      <label className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-200 cursor-pointer">
+        <input
+          type="checkbox"
+          checked={!!data.isPreview}
+          onChange={(e) => onChange({ ...data, isPreview: e.target.checked })}
+          className="w-4 h-4 accent-purple-600"
+        />
+        Cho học thử miễn phí (ai cũng xem được, kể cả chưa mua)
+      </label>
 
       <div className="flex gap-2">
         <button

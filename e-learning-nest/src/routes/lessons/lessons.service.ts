@@ -31,5 +31,8 @@ export class LessonsService {
   async deleteLesson(id: string, courseId: string, contentId: string, instructorId: string) {
     return this.repo.deleteLesson(id, courseId, contentId, instructorId);
   }
-}
 
+  async getPreviewLesson(id: string) {
+    return this.repo.getPreviewLesson(id);
+  }
+}

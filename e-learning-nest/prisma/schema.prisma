@@ -379,6 +379,7 @@ model Course {
   introVideo             String?
   isFeatured             Boolean                 @default(false)
   level                  CourseLevel             @default(BEGINNER)
+  language               String                  @default("vi") // mã ngôn ngữ của khoá học
   status                 CourseStatus            @default(DRAFT)
   instructor             User                    @relation("InstructorCourses", fields: [instructorId], references: [id])
   instructorId           String
@@ -467,6 +468,7 @@ model Lesson {
   contentText            String?
   duration               Int? // seconds
   transcript             String? // Bản chép lời/phụ đề dạng văn bản thuần
+  isPreview              Boolean                 @default(false) // cho xem thử miễn phí khi chưa mua
   supplementaryMaterials SupplementaryMaterial[]
   comments               Comment[]
   learningProgresses     LearningProgress[]

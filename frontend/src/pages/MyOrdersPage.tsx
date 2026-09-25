@@ -4,6 +4,7 @@ import { BadgeCheck, Clock, XCircle, Receipt, ArrowRight, Image as ImageIcon, Lo
 import Breadcrumbs from '../components/common/Breadcrumbs';
 import { useMyOrders } from '../hooks/useOrders';
 import type { OrderStatus } from '../api/orders';
+import { PLACEHOLDER_IMAGE } from '../utils/placeholder';
 
 const formatVND = (amount: number) =>
   new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
@@ -127,7 +128,7 @@ const MyOrdersPage = () => {
                   {order.orderItems.slice(0, 3).map((item) => (
                     <img
                       key={item.id}
-                      src={item.course?.thumbnail || 'https://via.placeholder.com/150'}
+                      src={item.course?.thumbnail || PLACEHOLDER_IMAGE}
                       alt={item.course?.title || 'Course'}
                       className="w-12 h-12 rounded-lg border border-white shadow-sm object-cover"
                     />

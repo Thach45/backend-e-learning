@@ -24,6 +24,16 @@ export const useCourse = (id: string) => {
   });
 };
 
+// Bài học xem thử (công khai)
+export const usePreviewLesson = (lessonId: string | null) => {
+  return useQuery({
+    queryKey: ['preview-lesson', lessonId],
+    queryFn: () => coursesApi.getPreviewLesson(lessonId as string),
+    enabled: !!lessonId,
+    retry: false,
+  });
+};
+
 // Get related courses (same category, falling back to same instructor / featured)
 export const useRelatedCourses = (id: string, limit = 6) => {
   return useQuery({

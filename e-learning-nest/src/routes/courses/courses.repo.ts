@@ -12,6 +12,7 @@ const courseSelect = {
   introVideo: true,
   isFeatured: true,
   level: true,
+  language: true,
   status: true,
   instructorId: true,
   categoryId: true,
@@ -237,6 +238,7 @@ export class CoursesRepository {
                 title: true,
                 storageType: true,
                 duration: true,
+                isPreview: true,
               },
               orderBy: { createdAt: "asc" },
             },
@@ -249,7 +251,7 @@ export class CoursesRepository {
 
     // Get instructor with stats
     const instructorId = course.instructorId;
-    const [instructor, instructorStats, courseReviews, courseEnrollments, allLessons, totalWishlist] = await Promise.all([
+    const [instructor, instructorProfile, instructorStats, courseEnrollments, allLessons, totalWishlist, quizzesCount, materialsCount, ratingGroups] = await Promise.all([
       this.prisma.user.findUnique({
         where: { id: instructorId },
         select: {
@@ -258,6 +260,8 @@ export class CoursesRepository {
           avatar: true,
         },
       }),
+      // Tiểu sử giảng viên nằm ở InstructorProfile (User không có trường bio)
+      this.prisma.instructorProfile.findUnique({ where: { userId: instructorId }, select: { bio: true } }),
       // Get instructor's rating (average from all their courses' reviews)
       this.prisma.review.groupBy({
         by: ["courseId"],
@@ -269,25 +273,6 @@ export class CoursesRepository {
         },
         _avg: { rating: true },
         _count: { _all: true },
-      }),
-      // Get reviews for this course
-      this.prisma.review.findMany({
-        where: { courseId: id },
-        select: {
-          id: true,
-          rating: true,
-          comment: true,
-          createdAt: true,
-          user: {
-            select: {
-              id: true,
-              name: true,
-              avatar: true,
-            },
-          },
-        },
-        orderBy: { createdAt: "desc" },
-        take: 10, // Limit to 10 most recent reviews
       }),
       // Get enrollments count
       this.prisma.enrollment.count({ where: { courseId: id } }),
@@ -304,9 +289,17 @@ export class CoursesRepository {
         },
         select: {
           duration: true,
+          storageType: true,
         },
       }),
       this.prisma.wishlist.count({ where: { courseId: id } }),
+      // Số quiz và tài liệu đính kèm thật của khoá (thay cho số cứng ở FE)
+      this.prisma.quiz.count({
+        where: { lesson: { deletedAt: null, isActive: true, content: { courseId: id, deletedAt: null, isActive: true } } },
+      }),
+      this.prisma.supplementaryMaterial.count({ where: { courseId: id } }),
+      // Phân bố sao thật trên TOÀN BỘ đánh giá của khoá
+      this.prisma.review.groupBy({ by: ["rating"], where: { courseId: id }, _count: { _all: true } }),
     ]);
 
     // Calculate instructor stats
@@ -335,6 +328,12 @@ export class CoursesRepository {
     // Calculate course stats
     const totalLessons = allLessons.length;
     const totalDurationSeconds = allLessons.reduce((sum, lesson) => sum + (lesson.duration ?? 0), 0);
+    const isVideoType = (t: string) => ['YOUTUBE', 'CLOUDINARY', 'DIRECT_UPLOAD', 'CLOUDFLARE_R2'].includes(t);
+    const videoLessons = allLessons.filter((l) => isVideoType(l.storageType)).length;
+    const ratingDistribution: Record<1 | 2 | 3 | 4 | 5, number> = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+    for (const g of ratingGroups) {
+      if (g.rating >= 1 && g.rating <= 5) ratingDistribution[g.rating as 1 | 2 | 3 | 4 | 5] = g._count._all;
+    }
     
     // Format duration
     const formatDuration = (seconds: number): string => {
@@ -383,23 +382,10 @@ export class CoursesRepository {
       lessons: section.lessons.map((lesson) => ({
         id: lesson.id,
         title: lesson.title,
-        type: ['YOUTUBE', 'CLOUDINARY', 'DIRECT_UPLOAD'].includes(lesson.storageType) ? 'VIDEO' : 'TEXT',
+        type: ['YOUTUBE', 'CLOUDINARY', 'DIRECT_UPLOAD', 'CLOUDFLARE_R2'].includes(lesson.storageType) ? 'VIDEO' : 'TEXT',
         duration: formatLessonDuration(lesson.duration),
-        isFree: false, // Can be determined based on business logic
+        isPreview: lesson.isPreview,
       })),
-    }));
-
-    // Transform reviews
-    const reviews = courseReviews.map((review) => ({
-      id: review.id,
-      user: {
-        name: review.user.name,
-        avatar: review.user.avatar,
-      },
-      rating: review.rating,
-      comment: review.comment,
-      createdAt: this.formatRelativeTime(review.createdAt),
-      helpful: 0, // Can be added later if helpful feature is implemented
     }));
 
     return {
@@ -412,18 +398,19 @@ export class CoursesRepository {
       introVideo: course.introVideo,
       isFeatured: course.isFeatured,
       level: course.level,
+      language: course.language,
       status: course.status,
       updatedAt: formatDate(course.updatedAt),
       instructor: {
         id: instructor?.id || instructorId,
         name: instructor?.name || 'Unknown',
         avatar: instructor?.avatar,
-        bio: null, // User model doesn't have bio field
+        bio: instructorProfile?.bio ?? null,
         rating: Math.round(instructorAvgRating * 10) / 10,
         students: instructorTotalStudents,
         courses: instructorCourses,
       },
-      category: course.category ? { name: course.category.name } : null,
+      category: course.category ? { id: course.category.id, name: course.category.name } : null,
       detail: course.courseDetail ? {
         description: course.courseDetail.description,
         objectives: course.courseDetail.objectives,
@@ -432,7 +419,13 @@ export class CoursesRepository {
         targetAudience: course.courseDetail.targetAudience,
       } : null,
       content,
-      reviews,
+      stats: {
+        videoLessons,
+        textLessons: totalLessons - videoLessons,
+        quizzes: quizzesCount,
+        materials: materialsCount,
+      },
+      ratingDistribution,
       totalLessons,
       totalDuration: formatDuration(totalDurationSeconds),
       rating: courseRating,
@@ -440,26 +433,6 @@ export class CoursesRepository {
       studentsCount: courseEnrollments,
       totalWishlist: totalWishlist,
     };
-  }
-
-  private formatRelativeTime(date: Date): string {
-    const now = new Date();
-    const diffMs = now.getTime() - date.getTime();
-    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-    
-    if (diffDays === 0) return 'Hôm nay';
-    if (diffDays === 1) return '1 ngày trước';
-    if (diffDays < 7) return `${diffDays} ngày trước`;
-    if (diffDays < 30) {
-      const weeks = Math.floor(diffDays / 7);
-      return `${weeks} tuần trước`;
-    }
-    if (diffDays < 365) {
-      const months = Math.floor(diffDays / 30);
-      return `${months} tháng trước`;
-    }
-    const years = Math.floor(diffDays / 365);
-    return `${years} năm trước`;
   }
 
   async createCourse(body: CreateCourseBody, actor: { userId: string }) {
@@ -472,6 +445,7 @@ export class CoursesRepository {
         introVideo: body.introVideo,
         isFeatured: body.isFeatured ?? false,
         level: body.level as unknown as CourseLevel,
+        language: body.language ?? "vi",
         status: (body.status ?? "DRAFT") as unknown as CourseStatus,
         instructorId: actor.userId,
         categoryId: body.categoryId,
@@ -497,6 +471,7 @@ export class CoursesRepository {
         introVideo: body.introVideo ?? undefined,
         isFeatured: body.isFeatured ?? undefined,
         level: (body.level as unknown as CourseLevel) ?? undefined,
+        language: body.language ?? undefined,
         categoryId: body.categoryId ?? undefined,
         updatedBy: actor?.userId,
       },

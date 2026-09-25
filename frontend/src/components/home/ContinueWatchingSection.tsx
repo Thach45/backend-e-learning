@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { PlayCircle } from 'lucide-react';
 import { useAuthStatus } from '../../hooks/useAuthStatus';
 import { useContinueWatching } from '../../hooks/useEnrollments';
+import { PLACEHOLDER_IMAGE } from '../../utils/placeholder';
 
 const ContinueWatchingSection = () => {
   const { isAuthenticated } = useAuthStatus();
@@ -23,7 +24,7 @@ const ContinueWatchingSection = () => {
           >
             <div className="relative w-28 h-20 flex-shrink-0 rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-800">
               <img
-                src={item.courseThumbnail || 'https://via.placeholder.com/400x300?text=No+Image'}
+                src={item.courseThumbnail || PLACEHOLDER_IMAGE}
                 alt={item.courseTitle}
                 className="w-full h-full object-cover"
               />

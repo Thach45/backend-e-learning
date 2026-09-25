@@ -17,6 +17,7 @@ import { useCategories } from '../hooks/useCategories';
 import { useCourses } from '../hooks/useCourses';
 import { useSEO } from '../hooks/useSEO';
 import type { Course as CourseType, CourseListParams } from '../api/courses';
+import { PLACEHOLDER_IMAGE } from '../utils/placeholder';
 
 
 const formatVND = (amount: number) => 
@@ -68,7 +69,7 @@ const transformCourse = (course: CourseType) => {
     reviews: reviewsCount,
     price: course.salePrice || course.price,
     oldPrice: course.salePrice ? course.price : 0,
-    thumbnail: course.thumbnail || 'https://via.placeholder.com/400x300?text=No+Image',
+    thumbnail: course.thumbnail || PLACEHOLDER_IMAGE,
     tag,
     lessons: course.totalLessons || 0,
     duration: formatDuration(course.totalDuration || 0),

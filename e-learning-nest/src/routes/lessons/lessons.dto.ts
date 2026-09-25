@@ -1,5 +1,7 @@
 import { createZodDto } from "nestjs-zod";
 import {
+  PreviewLessonSchema,
+  PreviewLessonParamsSchema,
   CreateLessonBodySchema,
   UpdateLessonBodySchema,
   GetLessonsParamsSchema,
@@ -15,3 +17,6 @@ export class GetLessonParamsDto extends createZodDto(GetLessonParamsSchema) {}
 export class GetLessonResponseDto extends createZodDto(GetLessonResponseSchema) {}
 export class GetLessonsResponseDto extends createZodDto(GetLessonsResponseSchema) {}
 
+
+export class PreviewLessonResponseDto extends createZodDto(PreviewLessonSchema) {}
+export class PreviewLessonParamsDto extends createZodDto(PreviewLessonParamsSchema) {}

@@ -12,6 +12,7 @@ import { useRemoveFromWishlist } from '../hooks/useWishlist';
 import type { Enrollment } from '../api/enrollments';
 import type { WishlistItem } from '../api/wishlist';
 import AchievementsWidget from '../components/common/AchievementsWidget';
+import { PLACEHOLDER_IMAGE } from '../utils/placeholder';
 
 const formatVND = (amount: number) => 
   new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
@@ -25,7 +26,7 @@ const transformEnrollment = (enrollment: Enrollment) => {
     courseId: enrollment.courseId,
     title: enrollment.course?.title || 'Unknown Course',
     instructor: enrollment.course?.instructor?.name || 'Unknown',
-    thumbnail: enrollment.course?.thumbnail || 'https://via.placeholder.com/400x300?text=No+Image',
+    thumbnail: enrollment.course?.thumbnail || PLACEHOLDER_IMAGE,
     enrolledAt: enrollment.enrolledAt,
   };
 };
@@ -76,7 +77,7 @@ const WishlistCard = ({ item, onRemove }: { item: WishlistItem; onRemove: () => 
     <div className="flex gap-4 p-4 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 hover:border-indigo-200 transition-colors">
       <Link to={`/courses/${course.id}`} className="w-32 h-20 flex-shrink-0 rounded-lg overflow-hidden relative">
         <img 
-          src={course.thumbnail || 'https://via.placeholder.com/400x300?text=No+Image'} 
+          src={course.thumbnail || PLACEHOLDER_IMAGE} 
           alt="" 
           className="w-full h-full object-cover" 
         />

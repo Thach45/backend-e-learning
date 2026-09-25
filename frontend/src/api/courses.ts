@@ -10,6 +10,7 @@ export type Course = {
   introVideo?: string;
   isFeatured: boolean;
   level: 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED';
+  language?: string;
   status: 'DRAFT' | 'PUBLISHED' | 'ARCHIVED' | 'PENDING_PUBLISHED' | 'PENDING_DRAFT';
   instructorId: string;
   categoryId?: string;
@@ -75,6 +76,7 @@ export type GetCourseDetailResponse = {
   introVideo?: string | null;
   isFeatured: boolean;
   level: 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED';
+  language: string;
   status: 'DRAFT' | 'PUBLISHED' | 'ARCHIVED' | 'PENDING_PUBLISHED' | 'PENDING_DRAFT';
   updatedAt: string;
   instructor: {
@@ -105,26 +107,31 @@ export type GetCourseDetailResponse = {
       title: string;
       type: string;
       duration?: string | null;
-      isFree?: boolean;
+      isPreview?: boolean;
     }>;
   }>;
-  reviews: Array<{
-    id: string;
-    user: {
-      name: string;
-      avatar?: string | null;
-    };
-    rating: number;
-    comment?: string | null;
-    createdAt: string;
-    helpful?: number;
-  }>;
+  stats: {
+    videoLessons: number;
+    textLessons: number;
+    quizzes: number;
+    materials: number;
+  };
+  ratingDistribution: Record<1 | 2 | 3 | 4 | 5, number>;
   totalLessons: number;
   totalDuration: string;
   rating: number;
   reviewsCount: number;
   studentsCount: number;
   totalWishlist?: number;
+};
+
+export type PublicPreviewLesson = {
+  id: string;
+  title: string;
+  storageType: string;
+  storageUrl?: string | null;
+  contentText?: string | null;
+  duration?: number | null;
 };
 
 // Courses API functions
@@ -156,6 +163,12 @@ export const coursesApi = {
   // Delete course (Instructor/Admin)
   deleteCourse: async (id: string): Promise<void> => {
     await apiClient.delete(`/courses/${id}`);
+  },
+
+  // Bài học xem thử công khai (chỉ khi giảng viên bật isPreview)
+  getPreviewLesson: async (lessonId: string): Promise<PublicPreviewLesson> => {
+    const response = await apiClient.get(`/lessons/${lessonId}/preview`);
+    return response.data.data;
   },
 
   // Get related courses (same category, falling back to same instructor / featured)

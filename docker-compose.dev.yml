@@ -1,0 +1,8 @@
+# Chạy Postgres và Redis của compose ngay trên máy dev (backend/frontend chạy bằng npm như thường):
+#   docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d postgres redis
+# Chỉ mở cổng trên 127.0.0.1. KHÔNG dùng file này trên VPS.
+services:
+  postgres:
+    ports: ["127.0.0.1:5432:5432"]
+  redis:
+    ports: ["127.0.0.1:6379:6379"]

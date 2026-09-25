@@ -2,18 +2,29 @@ import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common"
 import { ZodSerializerDto } from "nestjs-zod";
 import { LessonsService } from "./lessons.service";
 import { ActiveUser } from "src/shared/decorator/active-user.decorator";
+import { Public } from "src/shared/decorator/auth.decorator";
 import {
   CreateLessonBodyDto,
   GetLessonParamsDto,
   GetLessonsParamsDto,
   GetLessonResponseDto,
   GetLessonsResponseDto,
+  PreviewLessonParamsDto,
+  PreviewLessonResponseDto,
   UpdateLessonBodyDto,
 } from "./lessons.dto";
 
 @Controller("api")
 export class LessonsController {
   constructor(private readonly lessonsService: LessonsService) {}
+
+  // Công khai: xem thử bài học được giảng viên bật isPreview
+  @Public()
+  @Get("lessons/:id/preview")
+  @ZodSerializerDto(PreviewLessonResponseDto)
+  async getPreviewLesson(@Param() params: PreviewLessonParamsDto) {
+    return this.lessonsService.getPreviewLesson(params.id);
+  }
 
   // Instructor-only
   @Get("instructor/courses/:courseId/contents/:contentId/lessons")

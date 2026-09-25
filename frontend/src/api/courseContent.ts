@@ -24,6 +24,7 @@ export interface Lesson {
   contentText: string | null;
   duration: number | null;
   transcript?: string | null;
+  isPreview?: boolean;
   createdAt: string;
 }
 
@@ -55,6 +56,7 @@ export interface CreateLessonBody {
   contentText?: string;
   duration?: number;
   transcript?: string;
+  isPreview?: boolean;
 }
 
 export interface UpdateLessonBody {
@@ -64,6 +66,7 @@ export interface UpdateLessonBody {
   contentText?: string | null;
   duration?: number | null;
   transcript?: string | null;
+  isPreview?: boolean;
 }
 
 // Course Content API functions

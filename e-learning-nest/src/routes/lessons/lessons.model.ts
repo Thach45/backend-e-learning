@@ -11,6 +11,7 @@ export const LessonSchema = z.object({
   contentText: z.string().nullable().optional(),
   duration: z.number().int().nonnegative().nullable().optional(),
   transcript: z.string().nullable().optional(),
+  isPreview: z.boolean().optional(),
   createdAt: z.date(),
 });
 
@@ -33,6 +34,7 @@ export const CreateLessonBodySchema = z.object({
   contentText: z.string().optional(),
   duration: z.number().int().nonnegative().optional(),
   transcript: z.string().optional(),
+  isPreview: z.boolean().optional(),
 }).strict();
 
 export const UpdateLessonBodySchema = z.object({
@@ -42,6 +44,21 @@ export const UpdateLessonBodySchema = z.object({
   contentText: z.string().nullable().optional(),
   duration: z.number().int().nonnegative().nullable().optional(),
   transcript: z.string().nullable().optional(),
+  isPreview: z.boolean().optional(),
+}).strict();
+
+// Bài học xem thử công khai: chỉ trả đủ để phát, không lộ thông tin quản trị
+export const PreviewLessonSchema = z.object({
+  id: z.string().uuid(),
+  title: z.string(),
+  storageType: StorageTypeEnum,
+  storageUrl: z.string().nullable().optional(),
+  contentText: z.string().nullable().optional(),
+  duration: z.number().int().nonnegative().nullable().optional(),
+});
+
+export const PreviewLessonParamsSchema = z.object({
+  id: z.string().uuid(),
 }).strict();
 
 export const GetLessonResponseSchema = LessonSchema;

@@ -2,6 +2,7 @@ import { Trash2, CreditCard, ShieldCheck, Loader2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Breadcrumbs from '../components/common/Breadcrumbs';
 import { useGetCart, useRemoveFromCart } from '../hooks/useCart';
+import { PLACEHOLDER_IMAGE } from '../utils/placeholder';
 
 const formatVND = (amount: number) =>
   new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
@@ -86,7 +87,7 @@ const CartPage = () => {
                   className="flex gap-4 p-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm hover:shadow-md transition-shadow"
                 >
                   <img
-                    src={course.thumbnail || 'https://via.placeholder.com/400x300?text=No+Image'}
+                    src={course.thumbnail || PLACEHOLDER_IMAGE}
                     alt={course.title}
                     className="w-28 h-20 object-cover rounded-xl border border-slate-100 dark:border-slate-800"
                   />

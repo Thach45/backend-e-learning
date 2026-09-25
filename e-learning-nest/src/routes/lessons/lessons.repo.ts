@@ -16,6 +16,7 @@ const lessonSelect = {
   contentText: true,
   duration: true,
   transcript: true,
+  isPreview: true,
   createdAt: true,
 } as const;
 
@@ -151,6 +152,22 @@ export class LessonsRepository {
     return lesson;
   }
 
+  /** Bài học thử: chỉ trả khi bài được bật isPreview và khoá đã PUBLISHED. */
+  async getPreviewLesson(id: string) {
+    const lesson = await this.prisma.lesson.findFirst({
+      where: {
+        id,
+        isPreview: true,
+        deletedAt: null,
+        isActive: true,
+        content: { deletedAt: null, isActive: true, course: { deletedAt: null, isActive: true, status: "PUBLISHED" } },
+      },
+      select: { id: true, title: true, storageType: true, storageUrl: true, contentText: true, duration: true },
+    });
+    if (!lesson) throw new NotFoundException("Bài học thử không tồn tại");
+    return lesson;
+  }
+
   async createLesson(body: CreateLessonBody, instructorId: string) {
     // Validate course exists and belongs to instructor
     const content = await this.prisma.courseContent.findFirst({
@@ -190,6 +207,7 @@ export class LessonsRepository {
         contentText: body.contentText,
         duration: body.duration,
         transcript: body.transcript,
+        isPreview: body.isPreview ?? false,
       },
       select: lessonSelect,
     });
@@ -265,6 +283,7 @@ export class LessonsRepository {
         contentText: body.contentText ?? undefined,
         duration: body.duration ?? undefined,
         transcript: body.transcript ?? undefined,
+        isPreview: body.isPreview ?? undefined,
       },
       select: lessonSelect,
     });

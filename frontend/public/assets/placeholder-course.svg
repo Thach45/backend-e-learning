@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-label="Chưa có ảnh">
+  <rect width="400" height="300" fill="#e2e8f0"/>
+  <g fill="none" stroke="#94a3b8" stroke-width="10" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="140" y="100" width="120" height="86" rx="10"/>
+    <path d="M182 128l34 15-34 15z" fill="#94a3b8"/>
+  </g>
+  <text x="200" y="232" text-anchor="middle" font-family="system-ui,sans-serif" font-size="18" fill="#64748b">Chưa có ảnh</text>
+</svg>

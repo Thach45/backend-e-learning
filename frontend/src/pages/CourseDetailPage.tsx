@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { 
   Star, 
@@ -19,9 +19,11 @@ import {
   Heart,
   Edit3,
   X,
-  Loader2
+  Loader2,
+  Lock
 } from 'lucide-react';
-import { useCourse, useRelatedCourses } from '../hooks/useCourses';
+import { useCourse, useRelatedCourses, usePreviewLesson } from '../hooks/useCourses';
+import MediaPreviewModal, { guessStorageType } from '../components/course/MediaPreviewModal';
 import { useSEO } from '../hooks/useSEO';
 import { useAddToCart } from '../hooks/useCart';
 import { useReviewsByCourse, useMyReview, useCreateReview } from '../hooks/useReviews';
@@ -29,14 +31,20 @@ import { useAuthStatus } from '../hooks/useAuthStatus';
 import ReportButton from '../components/common/ReportButton';
 import type { CreateReviewBody } from '../api/reviews';
 import { useAddToWishlist, useCheckWishlist, useRemoveFromWishlist } from '../hooks/useWishlist';
+import { PLACEHOLDER_IMAGE } from '../utils/placeholder';
 
 // --- HELPER FUNCTIONS ---
+const LANGUAGE_LABELS: Record<string, string> = {
+  vi: 'Tiếng Việt', en: 'Tiếng Anh', ja: 'Tiếng Nhật', ko: 'Tiếng Hàn', zh: 'Tiếng Trung',
+  fr: 'Tiếng Pháp', de: 'Tiếng Đức', es: 'Tiếng Tây Ban Nha',
+};
+
 const formatVND = (amount: number) => 
   new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
 
 // --- SUB-COMPONENTS ---
 
-const AccordionItem = ({ section, defaultOpen = false }: { section: { id: string; title: string; lessons: Array<{ id: string; title: string; type: string; duration?: string | null; isFree?: boolean }> }; defaultOpen?: boolean }) => {
+const AccordionItem = ({ section, defaultOpen = false, onPreview }: { section: { id: string; title: string; lessons: Array<{ id: string; title: string; type: string; duration?: string | null; isPreview?: boolean }> }; defaultOpen?: boolean; onPreview: (lessonId: string) => void }) => {
   const [isOpen, setIsOpen] = useState(defaultOpen);
 
   return (
@@ -55,15 +63,23 @@ const AccordionItem = ({ section, defaultOpen = false }: { section: { id: string
       {isOpen && (
         <div className="bg-white dark:bg-slate-900 divide-y divide-slate-100 dark:divide-slate-800">
           {section.lessons.map((lesson) => (
-            <div key={lesson.id} className="p-3 pl-4 md:pl-11 flex items-center justify-between group hover:bg-indigo-50 transition-colors cursor-pointer">
+            <div
+              key={lesson.id}
+              onClick={() => (lesson.isPreview ? onPreview(lesson.id) : toast.info('Hãy mua khóa học để xem bài này.'))}
+              className="p-3 pl-4 md:pl-11 flex items-center justify-between group hover:bg-indigo-50 transition-colors cursor-pointer"
+            >
               <div className="flex items-center gap-3 overflow-hidden">
-                <PlayCircle size={16} className={`text-slate-400 dark:text-slate-500 flex-shrink-0 group-hover:text-indigo-600 ${lesson.isFree ? 'fill-indigo-100 text-indigo-600' : ''}`} />
-                <span className={`text-sm truncate group-hover:text-indigo-700 ${lesson.isFree ? 'text-slate-900 dark:text-slate-50 font-medium' : 'text-slate-600 dark:text-slate-300'}`}>
+                {lesson.isPreview ? (
+                  <PlayCircle size={16} className="flex-shrink-0 fill-indigo-100 text-indigo-600" />
+                ) : (
+                  <Lock size={14} className="flex-shrink-0 text-slate-400 dark:text-slate-500" />
+                )}
+                <span className={`text-sm truncate group-hover:text-indigo-700 ${lesson.isPreview ? 'text-slate-900 dark:text-slate-50 font-medium' : 'text-slate-600 dark:text-slate-300'}`}>
                     {lesson.title}
                 </span>
               </div>
               <div className="flex items-center gap-2 md:gap-4 flex-shrink-0 ml-2">
-                {lesson.isFree && <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full hidden sm:inline-block">Học thử</span>}
+                {lesson.isPreview && <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full hidden sm:inline-block">Học thử</span>}
                 <span className="text-xs text-slate-400 dark:text-slate-500">{lesson.duration}</span>
               </div>
             </div>
@@ -114,6 +130,12 @@ const CourseDetailPage = () => {
   const { data: relatedCoursesData } = useRelatedCourses(courseId, 4);
 
   const { user: currentUser } = useAuthStatus();
+  const navigate = useNavigate();
+
+  // Xem thử: video giới thiệu khoá hoặc một bài học thử
+  const [previewLessonId, setPreviewLessonId] = useState<string | null>(null);
+  const [showIntro, setShowIntro] = useState(false);
+  const previewQuery = usePreviewLesson(previewLessonId);
 
   // Reviews
   const [reviewsPage, setReviewsPage] = useState(1);
@@ -140,6 +162,25 @@ const CourseDetailPage = () => {
   const handleAddToCart = (courseId: string) => {
     addToCartMutation.mutate(courseId);
   };
+  const handleBuyNow = (id: string) => {
+    // Chỉ thêm vào giỏ rồi mở giỏ hàng (checkout mua toàn bộ giỏ nên không đi thẳng)
+    addToCartMutation.mutate(id, { onSuccess: () => navigate('/cart') });
+  };
+
+  const handleShare = async () => {
+    const url = window.location.href;
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: courseData?.title, url });
+        return;
+      }
+      await navigator.clipboard.writeText(url);
+      toast.success('Đã sao chép liên kết khóa học.');
+    } catch {
+      // người dùng đóng hộp thoại chia sẻ: không cần báo lỗi
+    }
+  };
+
   const handleToggleWishlist = () => {
     if (isInWishlist) {
       removeFromWishlistMutation.mutate(courseId);
@@ -172,32 +213,6 @@ const CourseDetailPage = () => {
     );
   };
 
-  // Calculate rating distribution from reviews
-  const calculateRatingDistribution = () => {
-    if (!reviewsData?.data) return { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
-    
-    const distribution = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
-    reviewsData.data.forEach(review => {
-      if (review.rating >= 1 && review.rating <= 5) {
-        distribution[review.rating as keyof typeof distribution]++;
-      }
-    });
-    
-    const total = reviewsData.total || reviewsData.data.length;
-    return {
-      distribution,
-      percentages: {
-        5: total > 0 ? Math.round((distribution[5] / total) * 100) : 0,
-        4: total > 0 ? Math.round((distribution[4] / total) * 100) : 0,
-        3: total > 0 ? Math.round((distribution[3] / total) * 100) : 0,
-        2: total > 0 ? Math.round((distribution[2] / total) * 100) : 0,
-        1: total > 0 ? Math.round((distribution[1] / total) * 100) : 0,
-      },
-    };
-  };
-
-  const ratingStats = calculateRatingDistribution();
-
   if (isLoading) {
     return (
       <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex items-center justify-center">
@@ -225,6 +240,23 @@ const CourseDetailPage = () => {
   // Use API data directly (already in correct format)
   const course = courseData;
 
+  // Phân bố sao thật do backend tính trên toàn bộ đánh giá của khóa
+  const totalRatings = Object.values(course.ratingDistribution).reduce((sum, n) => sum + n, 0);
+  const percentageOf = (star: number) =>
+    totalRatings > 0 ? Math.round((course.ratingDistribution[star as 1 | 2 | 3 | 4 | 5] / totalRatings) * 100) : 0;
+  const languageLabel = LANGUAGE_LABELS[course.language] || course.language;
+  const firstPreviewLessonId = course.content.flatMap((sec) => sec.lessons).find((l) => l.isPreview)?.id ?? null;
+  const canPlayIntro = !!course.introVideo || !!firstPreviewLessonId;
+  const openIntro = () => {
+    if (course.introVideo) setShowIntro(true);
+    else if (firstPreviewLessonId) setPreviewLessonId(firstPreviewLessonId);
+  };
+  const previewSource = showIntro
+    ? { title: `Giới thiệu: ${course.title}`, storageType: guessStorageType(course.introVideo || ''), url: course.introVideo }
+    : previewQuery.data
+      ? { title: previewQuery.data.title, storageType: previewQuery.data.storageType, url: previewQuery.data.storageUrl, text: previewQuery.data.contentText }
+      : null;
+
   // Transform related courses
   const relatedCourses = (relatedCoursesData || [])
     .map(c => {
@@ -246,7 +278,7 @@ const CourseDetailPage = () => {
         reviews: reviewsCount,
         price: c.salePrice || c.price,
         originalPrice: c.salePrice ? c.price : undefined,
-        thumbnail: c.thumbnail || 'https://via.placeholder.com/400x300?text=No+Image',
+        thumbnail: c.thumbnail || PLACEHOLDER_IMAGE,
         tag,
       };
     });
@@ -282,7 +314,13 @@ const CourseDetailPage = () => {
                     <span className="font-bold">{course.rating}</span>
                     <div className="flex"><Star size={14} fill="currentColor"/></div>
                  </div>
-                 <span className="text-slate-300 underline decoration-slate-600 underline-offset-4 cursor-pointer hover:text-white hover:decoration-white">({course.reviewsCount} đánh giá)</span>
+                 <button
+                   type="button"
+                   onClick={() => document.getElementById('reviews')?.scrollIntoView({ behavior: 'smooth' })}
+                   className="text-slate-300 underline decoration-slate-600 underline-offset-4 hover:text-white hover:decoration-white"
+                 >
+                   ({course.reviewsCount} đánh giá)
+                 </button>
                  <span className="text-slate-400 dark:text-slate-500 hidden sm:inline">•</span>
                  <span className="text-slate-300">{course.studentsCount.toLocaleString()} học viên</span>
               </div>
@@ -296,7 +334,7 @@ const CourseDetailPage = () => {
                     <AlertCircle size={14} /> Cập nhật lần cuối {course.updatedAt}
                  </div>
                  <div className="flex items-center gap-1 text-xs text-slate-400 dark:text-slate-500">
-                    <Globe size={14} /> Tiếng Việt
+                    <Globe size={14} /> {languageLabel}
                  </div>
               </div>
            </div>
@@ -333,7 +371,7 @@ const CourseDetailPage = () => {
                 </div>
                 <div>
                    {course.content.map((sec, i) => (
-                      <AccordionItem key={sec.id} section={sec} defaultOpen={i === 0} />
+                      <AccordionItem key={sec.id} section={sec} defaultOpen={i === 0} onPreview={setPreviewLessonId} />
                    ))}
                 </div>
              </section>
@@ -377,7 +415,7 @@ const CourseDetailPage = () => {
              </section>
 
              {/* REVIEWS SECTION */}
-             <section>
+             <section id="reviews">
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-50 flex items-center gap-2 tracking-tight">
                       Đánh giá từ học viên <span className="text-sm font-normal text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-full">{reviewsData?.total || course.reviewsCount || 0}</span>
@@ -505,7 +543,7 @@ const CourseDetailPage = () => {
                 )}
                 
                 {/* Rating Summary */}
-                {reviewsData && reviewsData.total > 0 && (
+                {totalRatings > 0 && (
                   <div className="flex items-center gap-8 mb-8 bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800">
                     <div className="text-center">
                       <div className="text-5xl font-bold text-slate-900 dark:text-slate-50 mb-1">{course.rating}</div>
@@ -519,7 +557,7 @@ const CourseDetailPage = () => {
                     
                     <div className="flex-1 space-y-2">
                       {[5, 4, 3, 2, 1].map(star => {
-                        const percentage = ratingStats.percentages?.[star as keyof typeof ratingStats.percentages] || 0;
+                        const percentage = percentageOf(star);
                         return (
                           <div key={star} className="flex items-center gap-3 text-xs text-slate-500 dark:text-slate-400">
                             <span className="w-2">{star}</span>
@@ -612,14 +650,21 @@ const CourseDetailPage = () => {
           <div className="lg:col-span-1 relative order-1 lg:order-2">
              <div className="sticky top-24 space-y-6">
                 <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl shadow-indigo-900/10 overflow-hidden lg:-mt-48 relative z-20">
-                   <div className="relative aspect-video group cursor-pointer bg-slate-900">
-                      <img src={course.thumbnail || 'https://via.placeholder.com/400x300?text=No+Image'} alt="" className="w-full h-full object-cover opacity-80" />
-                      <div className="absolute inset-0 flex items-center justify-center">
-                         <div className="w-16 h-16 bg-white dark:bg-slate-900 rounded-full flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                            <PlayCircle size={32} className="text-indigo-600 fill-indigo-600 ml-1" />
-                         </div>
-                      </div>
-                      <div className="absolute bottom-4 left-0 right-0 text-center text-white text-sm font-medium">Xem giới thiệu</div>
+                   <div
+                     className={`relative aspect-video group bg-slate-900 ${canPlayIntro ? 'cursor-pointer' : ''}`}
+                     onClick={canPlayIntro ? openIntro : undefined}
+                   >
+                      <img src={course.thumbnail || PLACEHOLDER_IMAGE} alt="" className="w-full h-full object-cover opacity-80" />
+                      {canPlayIntro && (
+                        <>
+                          <div className="absolute inset-0 flex items-center justify-center">
+                             <div className="w-16 h-16 bg-white dark:bg-slate-900 rounded-full flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                                <PlayCircle size={32} className="text-indigo-600 fill-indigo-600 ml-1" />
+                             </div>
+                          </div>
+                          <div className="absolute bottom-4 left-0 right-0 text-center text-white text-sm font-medium">Xem giới thiệu</div>
+                        </>
+                      )}
                    </div>
 
                    <div className="p-6">
@@ -636,7 +681,11 @@ const CourseDetailPage = () => {
                       </div>
 
                       <div className="space-y-3 mb-6">
-                         <button className="w-full py-3.5 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-200 active:scale-[0.98]">
+                         <button
+                            onClick={() => handleBuyNow(course.id)}
+                            disabled={addToCartMutation.isPending}
+                            className="w-full py-3.5 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-200 active:scale-[0.98] disabled:opacity-50"
+                         >
                             Mua ngay
                          </button>
                          <div className="flex gap-3">
@@ -670,29 +719,36 @@ const CourseDetailPage = () => {
                                     ? 'bg-red-600 text-white' 
                                     : 'bg-indigo-600 text-white'
                                 }`}>
-                                  {course.totalWishlist > 99 ? '9999+' : course.totalWishlist}
+                                  {course.totalWishlist > 99 ? '99+' : course.totalWishlist}
                                 </span>
                               )}
                             </button>
                          </div>
                       </div>
 
-                      <div className="text-center text-xs text-slate-500 dark:text-slate-400 mb-6">Hoàn tiền trong 30 ngày nếu không hài lòng</div>
-
                       <div className="space-y-4">
                          <h4 className="font-bold text-slate-900 dark:text-slate-50 text-sm">Khóa học này bao gồm:</h4>
                          <ul className="space-y-3 text-sm text-slate-600 dark:text-slate-300">
-                            <li className="flex items-center gap-3"><MonitorPlay size={18} className="text-slate-400 dark:text-slate-500"/> {course.totalDuration} video bài giảng</li>
-                            <li className="flex items-center gap-3"><FileText size={18} className="text-slate-400 dark:text-slate-500"/> 3 bài viết chuyên sâu</li>
-                            <li className="flex items-center gap-3"><Code size={18} className="text-slate-400 dark:text-slate-500"/> 15 bài tập Coding</li>
+                            <li className="flex items-center gap-3"><MonitorPlay size={18} className="text-slate-400 dark:text-slate-500"/> {course.totalDuration} video bài giảng ({course.stats.videoLessons} bài)</li>
+                            {course.stats.textLessons > 0 && (
+                              <li className="flex items-center gap-3"><FileText size={18} className="text-slate-400 dark:text-slate-500"/> {course.stats.textLessons} bài viết</li>
+                            )}
+                            {course.stats.quizzes > 0 && (
+                              <li className="flex items-center gap-3"><Code size={18} className="text-slate-400 dark:text-slate-500"/> {course.stats.quizzes} bài kiểm tra</li>
+                            )}
+                            {course.stats.materials > 0 && (
+                              <li className="flex items-center gap-3"><Award size={18} className="text-slate-400 dark:text-slate-500"/> {course.stats.materials} tài liệu đính kèm</li>
+                            )}
                             <li className="flex items-center gap-3"><Clock size={18} className="text-slate-400 dark:text-slate-500"/> Truy cập trọn đời</li>
-                            <li className="flex items-center gap-3"><Globe size={18} className="text-slate-400 dark:text-slate-500"/> Học trên Mobile và TV</li>
-                            <li className="flex items-center gap-3"><Award size={18} className="text-slate-400 dark:text-slate-500"/> Cấp chứng chỉ hoàn thành</li>
+                            <li className="flex items-center gap-3"><Globe size={18} className="text-slate-400 dark:text-slate-500"/> Học trên mọi thiết bị</li>
                          </ul>
                       </div>
                    </div>
                    
-                   <div className="border-t border-slate-100 dark:border-slate-800 p-4 flex justify-between items-center text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-indigo-600 cursor-pointer transition-colors bg-slate-50 dark:bg-slate-950">
+                   <div
+                     onClick={handleShare}
+                     className="border-t border-slate-100 dark:border-slate-800 p-4 flex justify-between items-center text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-indigo-600 cursor-pointer transition-colors bg-slate-50 dark:bg-slate-950"
+                   >
                       <span>Chia sẻ khóa học</span>
                       <Share2 size={18} />
                    </div>
@@ -717,6 +773,13 @@ const CourseDetailPage = () => {
         )}
 
       </div>
+      <MediaPreviewModal
+        open={showIntro || !!previewLessonId}
+        onClose={() => { setShowIntro(false); setPreviewLessonId(null); }}
+        isLoading={!showIntro && previewQuery.isLoading}
+        error={!showIntro && previewQuery.isError ? 'Không thể tải bài học thử.' : null}
+        source={previewSource}
+      />
     </div>
   );
 };

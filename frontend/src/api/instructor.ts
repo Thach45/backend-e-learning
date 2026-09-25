@@ -99,6 +99,7 @@ export type CreateCourseBody = {
   introVideo?: string;
   isFeatured?: boolean;
   level?: 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED';
+  language?: string;
   status?: 'DRAFT' | 'PUBLISHED' | 'ARCHIVED' | 'PENDING_PUBLISHED' | 'PENDING_DRAFT';
   categoryId?: string;
 };
@@ -111,6 +112,7 @@ export type UpdateCourseBody = {
   introVideo?: string | null;
   isFeatured?: boolean;
   level?: 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED';
+  language?: string;
   categoryId?: string | null;
 };
 
