@@ -1,7 +1,9 @@
 import { Mail, Phone, MapPin } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import SocialLinks from './SocialLinks';
+import { useQuery } from '@tanstack/react-query';
 import { useCategories } from '../../hooks/useCategories';
+import { postsApi } from '../../api/posts';
 
 // Thông tin liên hệ lấy từ biến môi trường lúc build (VITE_CONTACT_*). Chưa cấu hình thì ẩn dòng đó, không hiện dữ liệu mẫu.
 const CONTACT_EMAIL = (import.meta.env.VITE_CONTACT_EMAIL as string | undefined)?.trim();
@@ -10,6 +12,7 @@ const CONTACT_ADDRESS = (import.meta.env.VITE_CONTACT_ADDRESS as string | undefi
 
 const FooterSection = () => {
   const { data: categories } = useCategories();
+  const { data: footerPages } = useQuery({ queryKey: ['footer-pages'], queryFn: postsApi.footerPages, staleTime: 5 * 60_000, retry: false });
   const topCategories = (categories ?? []).slice(0, 6);
   const hasContact = !!(CONTACT_EMAIL || CONTACT_PHONE || CONTACT_ADDRESS);
 
@@ -46,6 +49,8 @@ const FooterSection = () => {
         <div className="footer-section">
           <h4>Hỗ trợ & Điều khoản</h4>
           <Link to="/help">Trung tâm trợ giúp</Link>
+          <Link to="/blog">Blog</Link>
+          {footerPages?.map((p) => <Link key={p.slug} to={`/p/${p.slug}`}>{p.title}</Link>)}
           <Link to="/terms">Điều khoản sử dụng</Link>
           <Link to="/privacy">Chính sách bảo mật</Link>
           {hasContact && (

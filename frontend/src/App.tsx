@@ -64,6 +64,10 @@ import AdminSupportPage from './pages/admin/AdminSupportPage';
 import AdminTicketPage from './pages/admin/AdminTicketPage';
 import AdminFaqPage from './pages/admin/AdminFaqPage';
 import AdminSystemPage from './pages/admin/AdminSystemPage';
+import AdminPostsPage from './pages/admin/AdminPostsPage';
+import AdminPostEditorPage from './pages/admin/AdminPostEditorPage';
+import BlogListPage from './pages/BlogListPage';
+import ContentPostPage from './pages/ContentPostPage';
 import CourseAssignmentsPage from './pages/instructor/CourseAssignmentsPage';
 import AssignmentSubmissionsPage from './pages/instructor/AssignmentSubmissionsPage';
 import MyAssignmentsPage from './pages/MyAssignmentsPage';
@@ -141,6 +145,9 @@ const AppContent = () => {
           <Route path="community" element={<CommunityPage />} />
           <Route path="unsubscribe" element={<UnsubscribePage />} />
           <Route path="help" element={<HelpCenterPage />} />
+          <Route path="blog" element={<BlogListPage />} />
+          <Route path="blog/:slug" element={<ContentPostPage kind="BLOG" />} />
+          <Route path="p/:slug" element={<ContentPostPage kind="PAGE" />} />
           <Route path="privacy" element={<PrivacyPage />} />
           <Route path="terms" element={<TermsPage />} />
           <Route path="instructors/:id" element={<InstructorProfilePage />} />
@@ -313,6 +320,8 @@ const AppContent = () => {
           <Route path="support/:id" element={<AdminTicketPage />} />
           <Route path="faq" element={<AdminFaqPage />} />
           <Route path="system" element={<AdminSystemPage />} />
+          <Route path="posts" element={<AdminPostsPage />} />
+          <Route path="posts/:id" element={<AdminPostEditorPage />} />
         </Route>
         {/* Instructor routes - require INSTRUCTOR role */}
         <Route

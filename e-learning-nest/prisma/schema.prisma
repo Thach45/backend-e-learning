@@ -181,6 +181,7 @@ model User {
   commentReactions     CommentReaction[]
   badges               UserBadge[]
   auditLogs            AuditLog[]
+  posts                Post[]
   lessonNotes          LessonNote[]
   lessonQuestions      LessonQuestion[]
   lessonAnswers        LessonAnswer[]
@@ -1392,4 +1393,37 @@ model LessonSubtitle {
   lesson    Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
 
   @@unique([lessonId, language])
+}
+
+// ===== Blog và trang tĩnh (CMS) =====
+
+enum PostKind {
+  BLOG
+  PAGE
+}
+
+enum PostStatus {
+  DRAFT
+  PUBLISHED
+}
+
+model Post {
+  id           String     @id @default(uuid())
+  kind         PostKind   @default(BLOG)
+  slug         String
+  title        String     @db.VarChar(200)
+  excerpt      String?    @db.VarChar(300)
+  coverUrl     String?
+  body         String     @db.Text // markdown tối giản, chỉ hiển thị bằng bộ render an toàn phía giao diện
+  status       PostStatus @default(DRAFT)
+  publishedAt  DateTime?
+  showInFooter Boolean    @default(false) // chỉ có nghĩa với kind = PAGE
+  views        Int        @default(0)
+  authorId     String
+  author       User       @relation(fields: [authorId], references: [id])
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  @@unique([kind, slug])
+  @@index([kind, status, publishedAt])
 }

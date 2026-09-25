@@ -82,6 +82,12 @@ const HomeHeader = ({ cartCount = 0 }: HeaderProps) => {
             >
               Cộng đồng
             </a>
+            <Link
+              to="/blog"
+              className="px-4 py-2 text-sm font-semibold text-slate-500 dark:text-slate-400 hover:text-indigo-600 hover:bg-slate-50 dark:bg-slate-950 rounded-full transition-colors"
+            >
+              Blog
+            </Link>
           </nav>
 
           <div className="hidden lg:flex flex-1 max-w-md relative group">
@@ -284,7 +290,7 @@ const HomeHeader = ({ cartCount = 0 }: HeaderProps) => {
               <Receipt size={14} className="text-indigo-600" />
               <span>Đơn hàng đã mua</span>
             </a>
-            <a href="#" className="hover:text-indigo-600">Trợ giúp</a>
+            <Link to="/help" className="hover:text-indigo-600">Trợ giúp</Link>
           </div>
         </div>
       </div>
@@ -326,6 +332,9 @@ const HomeHeader = ({ cartCount = 0 }: HeaderProps) => {
               >
                 Cộng đồng
               </a>
+              <Link to="/blog" className="p-2 font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:bg-slate-950 rounded-lg">
+                Blog
+              </Link>
             </div>
             {isAuthenticated && user ? (
               <div className="pt-4 border-t border-slate-100 dark:border-slate-800">
