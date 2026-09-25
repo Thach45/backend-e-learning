@@ -558,6 +558,7 @@ export class EnrollmentsRepository {
         storageUrl: true,
         contentText: true,
         duration: true,
+        transcript: true,
         content: {
           select: {
             courseId: true,
@@ -618,6 +619,7 @@ export class EnrollmentsRepository {
       storageUrl: lesson.storageUrl,
       contentText: lesson.contentText,
       duration: lesson.duration,
+      transcript: lesson.transcript,
       description: courseDetail?.description || null,
       resources: resources.map((res) => ({
         name: res.title,
@@ -625,6 +627,86 @@ export class EnrollmentsRepository {
         type: res.materialType || "FILE",
       })),
     };
+  }
+
+  async getContinueWatching(userId: string, limit = 6) {
+    // Lấy các bản ghi tiến độ gần nhất, dedupe theo course (giữ bản ghi mới nhất mỗi course)
+    const recentProgress = await this.prisma.learningProgress.findMany({
+      where: { userId, progressPercent: { lt: 100 } },
+      orderBy: { lastAccessed: "desc" },
+      take: limit * 5,
+      select: {
+        courseId: true,
+        lessonId: true,
+        progressPercent: true,
+        lastAccessed: true,
+        course: { select: { id: true, title: true, thumbnail: true } },
+        lesson: { select: { id: true, title: true } },
+      },
+    });
+
+    const seenCourses = new Set<string>();
+    const result: Array<{
+      courseId: string;
+      courseTitle: string;
+      courseThumbnail: string | null;
+      lessonId: string;
+      lessonTitle: string;
+      progressPercent: number;
+      lastAccessed: Date;
+    }> = [];
+
+    for (const p of recentProgress) {
+      if (seenCourses.has(p.courseId)) continue;
+      seenCourses.add(p.courseId);
+      result.push({
+        courseId: p.courseId,
+        courseTitle: p.course.title,
+        courseThumbnail: p.course.thumbnail,
+        lessonId: p.lessonId,
+        lessonTitle: p.lesson.title,
+        progressPercent: p.progressPercent,
+        lastAccessed: p.lastAccessed,
+      });
+      if (result.length >= limit) break;
+    }
+
+    return { data: result };
+  }
+
+  async updateLessonProgress(courseId: string, lessonId: string, userId: string, progressPercent: number) {
+    const enrollment = await this.prisma.enrollment.findUnique({
+      where: { userId_courseId: { userId, courseId } },
+      select: { id: true },
+    });
+    if (!enrollment) {
+      throw new NotFoundException("You are not enrolled in this course");
+    }
+
+    const lesson = await this.prisma.lesson.findFirst({
+      where: { id: lessonId, content: { courseId } },
+      select: { id: true },
+    });
+    if (!lesson) {
+      throw new NotFoundException(`Lesson with ID ${lessonId} not found in this course`);
+    }
+
+    const existing = await this.prisma.learningProgress.findUnique({
+      where: { userId_courseId_lessonId: { userId, courseId, lessonId } },
+      select: { progressPercent: true },
+    });
+
+    // Không cho tiến độ lùi lại khi user tua video về trước
+    const nextPercent = Math.max(existing?.progressPercent ?? 0, progressPercent);
+
+    const updated = await this.prisma.learningProgress.upsert({
+      where: { userId_courseId_lessonId: { userId, courseId, lessonId } },
+      update: { progressPercent: nextPercent, lastAccessed: new Date() },
+      create: { userId, courseId, lessonId, progressPercent: nextPercent },
+      select: { courseId: true, lessonId: true, progressPercent: true, lastAccessed: true },
+    });
+
+    return updated;
   }
 }
 

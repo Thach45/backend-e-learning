@@ -32,6 +32,15 @@ import { InstructorModule } from "./routes/instructor/instructor.module";
 import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
 import { UserThrottlerGuard } from "./shared/guards/throttler.guard";
 import { RealtimeModule } from "./realtime/core/realtime.module";
+import { NotificationsModule } from "./routes/notifications/notifications.module";
+import { HealthModule } from "./routes/health/health.module";
+import { InstructorsModule } from "./routes/instructors/instructors.module";
+import { GamificationModule } from "./routes/gamification/gamification.module";
+import { AuditLogModule } from "./routes/audit-log/audit-log.module";
+import { LessonNotesModule } from "./routes/lesson-notes/lesson-notes.module";
+import { LessonQuestionsModule } from "./routes/lesson-questions/lesson-questions.module";
+import { QuizzesModule } from "./routes/quizzes/quizzes.module";
+import { CourseSurveyModule } from "./routes/course-survey/course-survey.module";
 
 @Module({
   imports: [
@@ -63,6 +72,15 @@ import { RealtimeModule } from "./realtime/core/realtime.module";
     DashboardModule,
     InstructorModule,
     RealtimeModule,
+    NotificationsModule,
+    HealthModule,
+    InstructorsModule,
+    GamificationModule,
+    AuditLogModule,
+    LessonNotesModule,
+    LessonQuestionsModule,
+    QuizzesModule,
+    CourseSurveyModule,
   ],
   controllers: [AppController],
   providers: [

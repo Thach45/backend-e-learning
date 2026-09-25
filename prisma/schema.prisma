@@ -1,8 +1,8 @@
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
   binaryTargets = ["native", "linux-musl-arm64-openssl-3.0.x"]
-
 }
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -68,57 +68,61 @@ enum ROLES {
   CLIENT
   INSTRUCTOR
 }
+
 enum NotificationType {
-  SYSTEM           // Thông báo hệ thống chung
-  COURSE_ENROLL    // Đăng ký khóa học thành công
-  NEW_COMMENT      // Có bình luận mới trong bài học
-  NEW_REPLY        // Có trả lời mới cho bình luận
-  ORDER_STATUS     // Cập nhật trạng thái đơn hàng
+  SYSTEM // Thông báo hệ thống chung
+  COURSE_ENROLL // Đăng ký khóa học thành công
+  NEW_COMMENT // Có bình luận mới trong bài học
+  NEW_REPLY // Có trả lời mới cho bình luận
+  ORDER_STATUS // Cập nhật trạng thái đơn hàng
   LEARNING_PROGRESS // Hoàn thành bài học/khóa
+  NEW_QUESTION // Có câu hỏi mới trong bài học
+  NEW_ANSWER // Có câu trả lời mới cho câu hỏi
 }
+
 enum NotificationStatus {
   UNREAD
   READ
 }
+
 // Core models for authentication and RBAC
 model Role {
-  id             String           @id @default(uuid())
-  name           ROLES           @unique
-  description    String?
-  isActive       Boolean          @default(true)
-  createdAt      DateTime         @default(now())
-  updatedAt      DateTime         @updatedAt
-  deletedAt      DateTime?
-  createdById    String?
-  updatedById    String?
+  id          String    @id @default(uuid())
+  name        ROLES     @unique
+  description String?
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+  createdById String?
+  updatedById String?
 
   // RBAC
   rolePermissions RolePermission[]
   userRoles       UserRole[]
-
 }
 
 model User {
-  id            String        @id @default(uuid())
-  email         String        @unique
-  password      String
-  name          String
-  phoneNumber   String
-  avatar        String?
-  totpSecret    String?
-  status        UserStatus    @default(ACTIVE)
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
-  deletedAt     DateTime?
-  createdById   String?
-  updatedById   String?
+  id          String     @id @default(uuid())
+  email       String     @unique
+  password    String
+  name        String
+  phoneNumber String
+  avatar      String?
+  totpSecret  String?
+  status      UserStatus @default(ACTIVE)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  deletedAt   DateTime?
+  createdById String?
+  updatedById String?
 
-  devices            Device[]
-  refreshTokens      RefreshToken[]
-  userRoles          UserRole[]
+  devices       Device[]
+  refreshTokens RefreshToken[]
+  userRoles     UserRole[]
 
   // E-learning
-  instructorCourses  Course[]     @relation("InstructorCourses")
+  instructorCourses  Course[]           @relation("InstructorCourses")
   enrollments        Enrollment[]
   reviews            Review[]
   comments           Comment[]
@@ -128,23 +132,115 @@ model User {
   cart               Cart?
 
   // Community/Documents
-  uploadedMaterials  SupplementaryMaterial[] @relation("UserUploads")
-  documentLikes      UserDocumentLike[]
-  documentDownloads  UserDocumentDownload[]
-  documentViews      UserDocumentView[]
-  notifications      Notification[]
+  uploadedMaterials SupplementaryMaterial[] @relation("UserUploads")
+  documentLikes     UserDocumentLike[]
+  documentDownloads UserDocumentDownload[]
+  documentViews     UserDocumentView[]
+  notifications     Notification[]
+
+  instructorProfile    InstructorProfile?
+  instructorFollowers  InstructorFollow[]     @relation("InstructorFollowers")
+  followingInstructors InstructorFollow[]     @relation("FollowerUsers")
+  commentReactions     CommentReaction[]
+  badges               UserBadge[]
+  auditLogs            AuditLog[]
+  lessonNotes          LessonNote[]
+  lessonQuestions      LessonQuestion[]
+  lessonAnswers        LessonAnswer[]
+  quizAttempts         QuizAttempt[]
+  surveyResponses      CourseSurveyResponse[]
+}
+
+enum BadgeCode {
+  FIRST_COURSE_COMPLETED
+  FIVE_COURSES_COMPLETED
+  STREAK_7_DAYS
+  STREAK_30_DAYS
+  FIRST_REVIEW
+}
+
+model Badge {
+  id          String    @id @default(uuid())
+  code        BadgeCode @unique
+  name        String
+  description String
+  icon        String?
+  createdAt   DateTime  @default(now())
+
+  users UserBadge[]
+}
+
+model UserBadge {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  badgeId   String
+  badge     Badge    @relation(fields: [badgeId], references: [id], onDelete: Cascade)
+  awardedAt DateTime @default(now())
+
+  @@unique([userId, badgeId])
+  @@index([userId])
+}
+
+model AuditLog {
+  id         String   @id @default(uuid())
+  actorId    String?
+  actor      User?    @relation(fields: [actorId], references: [id], onDelete: SetNull)
+  action     String
+  targetType String?
+  targetId   String?
+  metadata   Json?
+  ipAddress  String?
+  createdAt  DateTime @default(now())
+
+  @@index([actorId])
+  @@index([action])
+  @@index([targetType, targetId])
+  @@index([createdAt])
+}
+
+model InstructorProfile {
+  id                String   @id @default(uuid())
+  userId            String   @unique
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title             String?
+  bio               String?
+  expertise         String[] @default([])
+  yearsOfExperience Int?
+  websiteUrl        String?
+  linkedinUrl       String?
+  githubUrl         String?
+  youtubeUrl        String?
+  facebookUrl       String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model InstructorFollow {
+  id           String   @id @default(uuid())
+  instructorId String
+  instructor   User     @relation("InstructorFollowers", fields: [instructorId], references: [id], onDelete: Cascade)
+  followerId   String
+  follower     User     @relation("FollowerUsers", fields: [followerId], references: [id], onDelete: Cascade)
+  createdAt    DateTime @default(now())
+
+  @@unique([instructorId, followerId])
+  @@index([instructorId])
+  @@index([followerId])
 }
 
 model Device {
-  id          String    @id @default(uuid())
-  userId      String
-  userAgent   String
-  ipAddress   String
+  id           String   @id @default(uuid())
+  userId       String
+  userAgent    String
+  ipAddress    String
   lastActiveAt DateTime
-  isActive    Boolean
+  isActive     Boolean
 
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  tokens      RefreshToken[]
+  user   User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokens RefreshToken[]
 }
 
 model RefreshToken {
@@ -153,8 +249,8 @@ model RefreshToken {
   deviceId  String
   expiresAt DateTime
 
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  device    Device   @relation(fields: [deviceId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  device Device @relation(fields: [deviceId], references: [id], onDelete: Cascade)
 }
 
 model VerificationCode {
@@ -162,7 +258,7 @@ model VerificationCode {
   code      String
   type      VerificationType
   expiresAt DateTime
-  createdAt DateTime @default(now())
+  createdAt DateTime         @default(now())
 
   @@id([email, type, code])
   @@index([email, type])
@@ -181,20 +277,20 @@ model Permission {
   createdBy   String?
   updatedBy   String?
 
-  roles       RolePermission[]
+  roles RolePermission[]
 
   @@unique([path, method], map: "path_method")
 }
 
 model RolePermission {
-  id           String      @id @default(uuid())
+  id           String   @id @default(uuid())
   roleId       String
   permissionId String
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
-  role         Role        @relation(fields: [roleId], references: [id], onDelete: Cascade)
-  permission   Permission  @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+  role       Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
 
   @@unique([roleId, permissionId], map: "roleId_permissionId")
 }
@@ -206,8 +302,8 @@ model UserRole {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  role      Role     @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
 
   @@unique([userId, roleId], map: "userId_roleId")
 }
@@ -219,12 +315,12 @@ model Category {
   name      String
   imageUrl  String?
   parentId  String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
   deletedAt DateTime?
   createdBy String?
   updatedBy String?
-  isActive  Boolean @default(true)
+  isActive  Boolean    @default(true)
   parent    Category?  @relation("CategoryParent", fields: [parentId], references: [id])
   children  Category[] @relation("CategoryParent")
   courses   Course[]
@@ -233,79 +329,82 @@ model Category {
 }
 
 model Course {
-  id           String      @id @default(uuid())
-  title        String
-  
-  courseDetail CourseDetail?
-  price        Float       @default(0)
-  salePrice    Float?
-  thumbnail    String?
-  introVideo   String?
-  isFeatured   Boolean    @default(false)
-  level        CourseLevel @default(BEGINNER)
-  status       CourseStatus @default(DRAFT)
-  instructor   User        @relation("InstructorCourses", fields: [instructorId], references: [id])
-  instructorId String
-  category     Category?   @relation(fields: [categoryId], references: [id])
-  categoryId   String?
-  courseContents CourseContent[]
+  id    String @id @default(uuid())
+  title String
+
+  courseDetail           CourseDetail?
+  price                  Float                   @default(0)
+  salePrice              Float?
+  thumbnail              String?
+  introVideo             String?
+  isFeatured             Boolean                 @default(false)
+  level                  CourseLevel             @default(BEGINNER)
+  status                 CourseStatus            @default(DRAFT)
+  instructor             User                    @relation("InstructorCourses", fields: [instructorId], references: [id])
+  instructorId           String
+  category               Category?               @relation(fields: [categoryId], references: [id])
+  categoryId             String?
+  courseContents         CourseContent[]
   supplementaryMaterials SupplementaryMaterial[]
-  enrollments  Enrollment[]
-  reviews      Review[]
-  wishlists    Wishlist[]
-  orderItems   OrderItem[]
-  notifications Notification[]
-  learningProgresses LearningProgress[]
-  cartItems    CartItem[]
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
-  deletedAt    DateTime?
-  createdBy    String?
-  updatedBy    String?
-  isActive     Boolean    @default(true)
+  enrollments            Enrollment[]
+  reviews                Review[]
+  wishlists              Wishlist[]
+  orderItems             OrderItem[]
+  notifications          Notification[]
+  learningProgresses     LearningProgress[]
+  cartItems              CartItem[]
+  surveyResponses        CourseSurveyResponse[]
+  createdAt              DateTime                @default(now())
+  updatedAt              DateTime                @updatedAt
+  deletedAt              DateTime?
+  createdBy              String?
+  updatedBy              String?
+  isActive               Boolean                 @default(true)
+
   @@index([title])
   @@index([price])
   @@index([level])
   @@index([status])
   @@index([isFeatured])
   @@index([instructorId]) // Rất quan trọng (FK)
-  @@index([categoryId])   // Rất quan trọng (FK)
-  @@index([createdAt])    // Rất quan trọng (để sort "mới nhất")
-
+  @@index([categoryId]) // Rất quan trọng (FK)
+  @@index([createdAt]) // Rất quan trọng (để sort "mới nhất")
 }
+
 model CourseDetail {
-  id         String   @id @default(uuid())
-  courseId   String   @unique
-  course     Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  description  String?
-  content      String?
-  objectives   String?
-  requirements String?
+  id             String   @id @default(uuid())
+  courseId       String   @unique
+  course         Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  description    String?
+  content        String?
+  objectives     String?
+  requirements   String?
   targetAudience String?
-  benefits String?
+  benefits       String?
   relatedCourses String[]
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
   @@index([courseId])
 }
 
 model CourseContent {
-  id         String        @id @default(uuid())
-  course     Course        @relation(fields: [courseId], references: [id])
+  id         String          @id @default(uuid())
+  course     Course          @relation(fields: [courseId], references: [id])
   courseId   String
   parentId   String?
-  parent     CourseContent? @relation("ContentParent", fields: [parentId], references: [id])
+  parent     CourseContent?  @relation("ContentParent", fields: [parentId], references: [id])
   children   CourseContent[] @relation("ContentParent")
-  title      String 
-  orderIndex Int           @default(0)
+  title      String
+  orderIndex Int             @default(0)
   lessons    Lesson[]
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
-  deletedAt    DateTime?
-  createdBy    String?
-  updatedBy    String?
-  isActive     Boolean    @default(true)
+  createdAt  DateTime        @default(now())
+  updatedAt  DateTime        @updatedAt
+  deletedAt  DateTime?
+  createdBy  String?
+  updatedBy  String?
+  isActive   Boolean         @default(true)
+
   @@index([courseId])
   @@index([parentId])
   @@index([orderIndex])
@@ -319,24 +418,29 @@ model CourseContent {
 }
 
 model Lesson {
-  id           String        @id @default(uuid())
-  content      CourseContent @relation(fields: [contentId], references: [id])
-  contentId    String
-  title        String
-  storageType  StorageType
-  storageUrl   String?
-  contentText  String?
-  duration     Int?     // seconds
+  id                     String                  @id @default(uuid())
+  content                CourseContent           @relation(fields: [contentId], references: [id])
+  contentId              String
+  title                  String
+  storageType            StorageType
+  storageUrl             String?
+  contentText            String?
+  duration               Int? // seconds
+  transcript             String? // Bản chép lời/phụ đề dạng văn bản thuần
   supplementaryMaterials SupplementaryMaterial[]
-  comments     Comment[]
-  learningProgresses LearningProgress[]
-  notifications Notification[]
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime?     @updatedAt
-  deletedAt    DateTime?
-  createdBy    String?
-  updatedBy    String?
-  isActive     Boolean    @default(true)
+  comments               Comment[]
+  learningProgresses     LearningProgress[]
+  notifications          Notification[]
+  notes                  LessonNote[]
+  questions              LessonQuestion[]
+  quiz                   Quiz?
+  createdAt              DateTime                @default(now())
+  updatedAt              DateTime?               @updatedAt
+  deletedAt              DateTime?
+  createdBy              String?
+  updatedBy              String?
+  isActive               Boolean                 @default(true)
+
   @@index([contentId])
   @@index([title])
   @@index([storageType])
@@ -344,54 +448,55 @@ model Lesson {
 }
 
 model SupplementaryMaterial {
-  id          String      @id @default(uuid())
-  title       String
-  lesson      Lesson?     @relation(fields: [lessonId], references: [id])
-  lessonId    String?
-  course      Course?     @relation(fields: [courseId], references: [id])
-  courseId    String?
-  materialType MaterialType
-  url         String
-  uploadedAt  DateTime    @default(now())
+  id             String          @id @default(uuid())
+  title          String
+  lesson         Lesson?         @relation(fields: [lessonId], references: [id])
+  lessonId       String?
+  course         Course?         @relation(fields: [courseId], references: [id])
+  courseId       String?
+  materialType   MaterialType
+  url            String
+  uploadedAt     DateTime        @default(now())
   materialDetail MaterialDetail?
-  
+
   // Community/Documents
-  uploader          User?                  @relation("UserUploads", fields: [uploaderId], references: [id])
-  uploaderId        String?
-  category          DocumentCategory?       @relation(fields: [categoryId], references: [id])
-  categoryId        String?
-  likes             UserDocumentLike[]
-  downloads         UserDocumentDownload[]
-  views             UserDocumentView[]
-  
+  uploader   User?                  @relation("UserUploads", fields: [uploaderId], references: [id])
+  uploaderId String?
+  category   DocumentCategory?      @relation(fields: [categoryId], references: [id])
+  categoryId String?
+  likes      UserDocumentLike[]
+  downloads  UserDocumentDownload[]
+  views      UserDocumentView[]
+
   @@index([uploaderId])
   @@index([categoryId])
   @@index([uploadedAt])
 }
+
 model MaterialDetail {
-  id         String   @id @default(uuid())
-  materialId String   @unique
-  schoolName String?  // Optional: chỉ cần cho Community documents, không bắt buộc cho course/lesson materials
-  totalDownload Int @default(0)
-  totalView Int @default(0)
-  totalLike Int @default(0)
-  material   SupplementaryMaterial @relation(fields: [materialId], references: [id])
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  deletedAt  DateTime?
-  createdBy  String?
-  updatedBy  String?
-  isActive   Boolean @default(true)
-  
+  id            String                @id @default(uuid())
+  materialId    String                @unique
+  schoolName    String? // Optional: chỉ cần cho Community documents, không bắt buộc cho course/lesson materials
+  totalDownload Int                   @default(0)
+  totalView     Int                   @default(0)
+  totalLike     Int                   @default(0)
+  material      SupplementaryMaterial @relation(fields: [materialId], references: [id])
+  createdAt     DateTime              @default(now())
+  updatedAt     DateTime              @updatedAt
+  deletedAt     DateTime?
+  createdBy     String?
+  updatedBy     String?
+  isActive      Boolean               @default(true)
+
   // Community/Documents fields (all optional)
-  pages        Int?      // Số trang - chỉ cần cho Community documents
-  thumbnail    String?    // Ảnh preview - chỉ cần cho Community documents
-  subject      String?    // Môn học - chỉ cần cho Community documents
-  isVerified   Boolean    @default(false) // Badge uy tín - chỉ cần cho Community documents
-  
+  pages      Int? // Số trang - chỉ cần cho Community documents
+  thumbnail  String? // Ảnh preview - chỉ cần cho Community documents
+  subject    String? // Môn học - chỉ cần cho Community documents
+  isVerified Boolean @default(false) // Badge uy tín - chỉ cần cho Community documents
+
   // Relation to DocumentTag (many-to-many)
   documentTags DocumentTagOnMaterial[]
-  
+
   @@index([materialId])
   @@index([schoolName])
   @@index([totalDownload])
@@ -406,7 +511,6 @@ model MaterialDetail {
   @@index([pages])
   @@index([subject])
   @@index([isVerified])
-  
 }
 
 // Document Tag - Từ khóa nổi bật cho tài liệu cộng đồng
@@ -415,15 +519,15 @@ model DocumentTag {
   name        String   @unique
   slug        String   @unique
   description String?
-  color       String?  // Màu hiển thị (hex color)
+  color       String? // Màu hiển thị (hex color)
   isActive    Boolean  @default(true)
   sortOrder   Int      @default(0)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  
+
   // Relation to MaterialDetail (many-to-many)
-  materials   DocumentTagOnMaterial[]
-  
+  materials DocumentTagOnMaterial[]
+
   @@index([name])
   @@index([slug])
   @@index([isActive])
@@ -432,123 +536,146 @@ model DocumentTag {
 
 // Junction table for DocumentTag <-> MaterialDetail
 model DocumentTagOnMaterial {
-  id             String         @id @default(uuid())
-  materialDetail MaterialDetail @relation(fields: [materialDetailId], references: [id], onDelete: Cascade)
+  id               String         @id @default(uuid())
+  materialDetail   MaterialDetail @relation(fields: [materialDetailId], references: [id], onDelete: Cascade)
   materialDetailId String
-  documentTag    DocumentTag    @relation(fields: [documentTagId], references: [id], onDelete: Cascade)
-  documentTagId  String
-  createdAt      DateTime       @default(now())
-  
+  documentTag      DocumentTag    @relation(fields: [documentTagId], references: [id], onDelete: Cascade)
+  documentTagId    String
+  createdAt        DateTime       @default(now())
+
   @@unique([materialDetailId, documentTagId])
   @@index([materialDetailId])
   @@index([documentTagId])
 }
 
 model Enrollment {
-  id         String   @id @default(uuid())
-  user       User     @relation(fields: [userId], references: [id])
-  userId     String
-  course     Course   @relation(fields: [courseId], references: [id])
-  courseId   String
-  enrolledAt DateTime @default(now())
+  id          String    @id @default(uuid())
+  user        User      @relation(fields: [userId], references: [id])
+  userId      String
+  course      Course    @relation(fields: [courseId], references: [id])
+  courseId    String
+  enrolledAt  DateTime  @default(now())
   completedAt DateTime?
-  
+
   @@unique([userId, courseId])
 }
 
 model LearningProgress {
-  id         String   @id @default(uuid())
-  user       User     @relation(fields: [userId], references: [id])
-  userId     String
-  course     Course   @relation(fields: [courseId], references: [id])
-  courseId   String
-  lesson     Lesson   @relation(fields: [lessonId], references: [id])
-  lessonId   String
-  progressPercent Int @default(0)
-  lastAccessed DateTime @default(now())
+  id              String   @id @default(uuid())
+  user            User     @relation(fields: [userId], references: [id])
+  userId          String
+  course          Course   @relation(fields: [courseId], references: [id])
+  courseId        String
+  lesson          Lesson   @relation(fields: [lessonId], references: [id])
+  lessonId        String
+  progressPercent Int      @default(0)
+  lastAccessed    DateTime @default(now())
 
   @@unique([userId, courseId, lessonId])
 }
 
 model Review {
-  id         String   @id @default(uuid())
-  user       User     @relation(fields: [userId], references: [id])
-  userId     String
-  course     Course   @relation(fields: [courseId], references: [id])
-  courseId   String
-  rating     Int
-  comment    String?
-  createdAt  DateTime @default(now())
+  id                String    @id @default(uuid())
+  user              User      @relation(fields: [userId], references: [id])
+  userId            String
+  course            Course    @relation(fields: [courseId], references: [id])
+  courseId          String
+  rating            Int
+  comment           String?
+  instructorReply   String?
+  instructorReplyAt DateTime?
+  createdAt         DateTime  @default(now())
 
   @@unique([userId, courseId])
 }
 
 model Comment {
-  id         String   @id @default(uuid())
-  user       User     @relation(fields: [userId], references: [id])
-  userId     String
-  lesson     Lesson   @relation(fields: [lessonId], references: [id])
-  lessonId   String
-  content    String
-  parentId   String?  // Thêm field này
-  parent     Comment? @relation("CommentReplies", fields: [parentId], references: [id])
-  replies    Comment[] @relation("CommentReplies") // Thêm relation
+  id            String            @id @default(uuid())
+  user          User              @relation(fields: [userId], references: [id])
+  userId        String
+  lesson        Lesson            @relation(fields: [lessonId], references: [id])
+  lessonId      String
+  content       String
+  parentId      String? // Thêm field này
+  parent        Comment?          @relation("CommentReplies", fields: [parentId], references: [id])
+  replies       Comment[]         @relation("CommentReplies") // Thêm relation
   notifications Notification[]
-  createdAt  DateTime @default(now())
+  reactions     CommentReaction[]
+  createdAt     DateTime          @default(now())
+}
+
+enum ReactionType {
+  LIKE
+  LOVE
+  HELPFUL
+}
+
+model CommentReaction {
+  id        String       @id @default(uuid())
+  commentId String
+  comment   Comment      @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      ReactionType @default(LIKE)
+  createdAt DateTime     @default(now())
+
+  @@unique([commentId, userId])
+  @@index([commentId])
+  @@index([userId])
 }
 
 model Order {
-  id         String   @id @default(uuid())
-  user       User     @relation(fields: [userId], references: [id])
-  userId     String
-  totalAmount Float
-  status     OrderStatus @default(PENDING)
-  orderItems OrderItem[]
+  id            String         @id @default(uuid())
+  user          User           @relation(fields: [userId], references: [id])
+  userId        String
+  totalAmount   Float
+  status        OrderStatus    @default(PENDING)
+  orderItems    OrderItem[]
   notifications Notification[]
-  createdAt  DateTime @default(now())
+  createdAt     DateTime       @default(now())
 }
 
 model OrderItem {
-  id         String   @id @default(uuid())
-  order      Order    @relation(fields: [orderId], references: [id])
-  orderId    String
-  course     Course   @relation(fields: [courseId], references: [id])
-  courseId   String
-  price      Float
+  id       String @id @default(uuid())
+  order    Order  @relation(fields: [orderId], references: [id])
+  orderId  String
+  course   Course @relation(fields: [courseId], references: [id])
+  courseId String
+  price    Float
 }
 
 model Wishlist {
-  id         String   @id @default(uuid())
-  user       User     @relation(fields: [userId], references: [id])
-  userId     String
-  course     Course   @relation(fields: [courseId], references: [id])
-  courseId   String
-  createdAt  DateTime @default(now())
+  id        String   @id @default(uuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  course    Course   @relation(fields: [courseId], references: [id])
+  courseId  String
+  createdAt DateTime @default(now())
 
   @@unique([userId, courseId])
 }
 
 model Cart {
-  id         String    @id @default(uuid())
-  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId     String    @unique
-  cartItems  CartItem[]
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
-  expiresAt  DateTime? // Tự động xóa sau 30 ngày không hoạt động
+  id        String     @id @default(uuid())
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String     @unique
+  cartItems CartItem[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  expiresAt DateTime? // Tự động xóa sau 30 ngày không hoạt động
 
   @@index([userId])
   @@index([expiresAt])
 }
 
 model CartItem {
-  id         String   @id @default(uuid())
-  cart       Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
-  cartId     String
-  course     Course   @relation(fields: [courseId], references: [id])
-  courseId   String
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id        String   @id @default(uuid())
+  cart      Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  cartId    String
+  course    Course   @relation(fields: [courseId], references: [id])
+  courseId  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@unique([cartId, courseId])
   @@index([cartId])
@@ -558,30 +685,30 @@ model CartItem {
 // Community/Documents Models
 
 model DocumentCategory {
-  id          String   @id @default(uuid())
+  id          String                  @id @default(uuid())
   name        String
   description String?
-  slug        String?  @unique
+  slug        String?                 @unique
   icon        String?
-  isActive    Boolean  @default(true)
+  isActive    Boolean                 @default(true)
   documents   SupplementaryMaterial[]
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime                @default(now())
+  updatedAt   DateTime                @updatedAt
   deletedAt   DateTime?
-  
+
   @@index([name])
   @@index([slug])
   @@index([isActive])
 }
 
 model UserDocumentLike {
-  id         String   @id @default(uuid())
+  id         String                @id @default(uuid())
   userId     String
   materialId String
-  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user       User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
   material   SupplementaryMaterial @relation(fields: [materialId], references: [id], onDelete: Cascade)
-  createdAt  DateTime @default(now())
-  
+  createdAt  DateTime              @default(now())
+
   @@unique([userId, materialId])
   @@index([userId])
   @@index([materialId])
@@ -589,14 +716,14 @@ model UserDocumentLike {
 }
 
 model UserDocumentDownload {
-  id         String   @id @default(uuid())
-  userId     String?
-  materialId String
-  user       User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  material   SupplementaryMaterial @relation(fields: [materialId], references: [id], onDelete: Cascade)
-  downloadedAt DateTime @default(now())
-  ipAddress  String?  // Track anonymous downloads
-  
+  id           String                @id @default(uuid())
+  userId       String?
+  materialId   String
+  user         User?                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  material     SupplementaryMaterial @relation(fields: [materialId], references: [id], onDelete: Cascade)
+  downloadedAt DateTime              @default(now())
+  ipAddress    String? // Track anonymous downloads
+
   @@index([materialId])
   @@index([userId])
   @@index([downloadedAt])
@@ -604,15 +731,15 @@ model UserDocumentDownload {
 }
 
 model UserDocumentView {
-  id         String   @id @default(uuid())
+  id         String                @id @default(uuid())
   userId     String?
   materialId String
-  user       User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user       User?                 @relation(fields: [userId], references: [id], onDelete: Cascade)
   material   SupplementaryMaterial @relation(fields: [materialId], references: [id], onDelete: Cascade)
-  viewedAt   DateTime @default(now())
-  ipAddress  String?  // Track anonymous views
-  duration   Int?     // Thời gian xem (seconds)
-  
+  viewedAt   DateTime              @default(now())
+  ipAddress  String? // Track anonymous views
+  duration   Int? // Thời gian xem (seconds)
+
   @@index([materialId])
   @@index([userId])
   @@index([viewedAt])
@@ -620,26 +747,153 @@ model UserDocumentView {
 }
 
 model Notification {
-  id          String              @id @default(uuid())
-  user        User                @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId      String
-  type        NotificationType
-  title       String
-  message     String
-  data        Json?               // payload thêm: { courseId, lessonId, ... }
-  course      Course?             @relation(fields: [courseId], references: [id])
-  courseId    String?
-  lesson      Lesson?             @relation(fields: [lessonId], references: [id])
-  lessonId    String?
-  order       Order?              @relation(fields: [orderId], references: [id])
-  orderId     String?
-  comment     Comment?            @relation(fields: [commentId], references: [id])
-  commentId   String?
-  status      NotificationStatus  @default(UNREAD)
-  readAt      DateTime?
-  createdAt   DateTime            @default(now())
-  updatedAt   DateTime            @updatedAt
-  deletedAt   DateTime?
+  id        String             @id @default(uuid())
+  user      User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  type      NotificationType
+  title     String
+  message   String
+  data      Json? // payload thêm: { courseId, lessonId, ... }
+  course    Course?            @relation(fields: [courseId], references: [id])
+  courseId  String?
+  lesson    Lesson?            @relation(fields: [lessonId], references: [id])
+  lessonId  String?
+  order     Order?             @relation(fields: [orderId], references: [id])
+  orderId   String?
+  comment   Comment?           @relation(fields: [commentId], references: [id])
+  commentId String?
+  status    NotificationStatus @default(UNREAD)
+  readAt    DateTime?
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @updatedAt
+  deletedAt DateTime?
+
   @@index([userId, status])
   @@index([userId, createdAt])
+}
+
+// ===== Phase 3 =====
+
+model LessonNote {
+  id               String   @id @default(uuid())
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId           String
+  lesson           Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  lessonId         String
+  content          String
+  timestampSeconds Int      @default(0)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@index([userId, lessonId])
+  @@index([lessonId])
+}
+
+model LessonQuestion {
+  id         String         @id @default(uuid())
+  user       User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     String
+  lesson     Lesson         @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  lessonId   String
+  title      String
+  content    String
+  isResolved Boolean        @default(false)
+  answers    LessonAnswer[]
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @updatedAt
+
+  @@index([lessonId])
+  @@index([userId])
+}
+
+model LessonAnswer {
+  id                 String         @id @default(uuid())
+  question           LessonQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  questionId         String
+  user               User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId             String
+  content            String
+  isInstructorAnswer Boolean        @default(false)
+  createdAt          DateTime       @default(now())
+
+  @@index([questionId])
+}
+
+model Quiz {
+  id           String         @id @default(uuid())
+  lesson       Lesson         @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  lessonId     String         @unique
+  title        String
+  passingScore Int            @default(70) // % câu đúng tối thiểu để đạt
+  questions    QuizQuestion[]
+  attempts     QuizAttempt[]
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+}
+
+model QuizQuestion {
+  id         String       @id @default(uuid())
+  quiz       Quiz         @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  quizId     String
+  text       String
+  orderIndex Int          @default(0)
+  options    QuizOption[]
+  answers    QuizAnswer[]
+
+  @@index([quizId])
+}
+
+model QuizOption {
+  id         String       @id @default(uuid())
+  question   QuizQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  questionId String
+  text       String
+  isCorrect  Boolean      @default(false)
+  answers    QuizAnswer[]
+
+  @@index([questionId])
+}
+
+model QuizAttempt {
+  id           String       @id @default(uuid())
+  quiz         Quiz         @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  quizId       String
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId       String
+  scorePercent Int
+  passed       Boolean
+  answers      QuizAnswer[]
+  submittedAt  DateTime     @default(now())
+
+  @@index([quizId, userId])
+  @@index([userId])
+}
+
+model QuizAnswer {
+  id         String       @id @default(uuid())
+  attempt    QuizAttempt  @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  attemptId  String
+  question   QuizQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  questionId String
+  option     QuizOption   @relation(fields: [optionId], references: [id], onDelete: Cascade)
+  optionId   String
+
+  @@unique([attemptId, questionId])
+  @@index([attemptId])
+}
+
+model CourseSurveyResponse {
+  id                 String   @id @default(uuid())
+  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId             String
+  course             Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  courseId           String
+  difficultyRating   Int // 1-5
+  satisfactionRating Int // 1-5
+  wouldRecommend     Boolean
+  feedback           String?
+  createdAt          DateTime @default(now())
+
+  @@unique([userId, courseId])
+  @@index([courseId])
 }

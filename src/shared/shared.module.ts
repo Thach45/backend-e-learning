@@ -12,6 +12,7 @@ import { PermissionGuard } from './guards/permission.guard';
 import { RedisService } from './service/redis.service';
 import { AppLogger } from './service/logging.service';
 import { R2Service } from './service/r2.service';
+import { AuditLogService } from './service/audit-log.service';
 
 const sharedServices = [
     PrismaService,
@@ -25,7 +26,8 @@ const sharedServices = [
     PermissionGuard,
     AppLogger,
     RedisService,
-    R2Service
+    R2Service,
+    AuditLogService,
 ];
 @Global()
 @Module({

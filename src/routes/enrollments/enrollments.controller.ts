@@ -14,6 +14,9 @@ import {
   GetCourseContentsResponseDto,
   GetLessonDetailResponseDto,
   GetLessonParamsDto,
+  GetContinueWatchingResponseDto,
+  UpdateLessonProgressBodyDto,
+  LessonProgressResponseDto,
 } from "./enrollments.dto";
 
 @Controller("api")
@@ -42,6 +45,12 @@ export class EnrollmentsController {
     return this.enrollmentsService.getEnrollmentStats(user.userId);
   }
 
+  @Get("my-enrollments/continue-watching")
+  @ZodSerializerDto(GetContinueWatchingResponseDto)
+  async getContinueWatching(@ActiveUser() user: any) {
+    return this.enrollmentsService.getContinueWatching(user.userId);
+  }
+
   @Get("my-enrollments/:courseId")
   @ZodSerializerDto(GetEnrollmentResponseDto)
   async getMyEnrollmentByCourseId(@Param() params: GetEnrollmentParamsDto, @ActiveUser() user: any) {
@@ -67,6 +76,21 @@ export class EnrollmentsController {
       (params as any).courseId,
       (params as any).lessonId,
       user.userId,
+    );
+  }
+
+  @Put("my-enrollments/:courseId/lessons/:lessonId/progress")
+  @ZodSerializerDto(LessonProgressResponseDto)
+  async updateLessonProgress(
+    @Param() params: GetLessonParamsDto,
+    @Body() body: UpdateLessonProgressBodyDto,
+    @ActiveUser() user: any,
+  ) {
+    return this.enrollmentsService.updateLessonProgress(
+      (params as any).courseId,
+      (params as any).lessonId,
+      user.userId,
+      body.progressPercent,
     );
   }
 

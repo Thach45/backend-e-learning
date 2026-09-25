@@ -2,7 +2,9 @@ import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/
 import { ZodSerializerDto } from 'nestjs-zod';
 import { UsersService } from './users.service';
 import { ActiveUser } from 'src/shared/decorator/active-user.decorator';
-import { 
+import { GetIp } from 'src/shared/decorator/get-ip.decorator';
+import { AuditLogService } from 'src/shared/service/audit-log.service';
+import {
   CreateUserBodyDto,
   GetUserParamsDto,
   GetUsersQueryDto,
@@ -14,7 +16,10 @@ import {
 
 @Controller('api')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly auditLogService: AuditLogService,
+  ) {}
 
   // Admin routes
   @Get('admin/users')
@@ -47,8 +52,16 @@ export class UsersController {
 
   @Delete('admin/users/:id')
   @ZodSerializerDto(GetUserResponseDto)
-  async deleteUser(@Param() params: GetUserParamsDto) {
-    return this.usersService.deleteUser((params as any).id);
+  async deleteUser(@Param() params: GetUserParamsDto, @ActiveUser() user: any, @GetIp() ip: string) {
+    const result = await this.usersService.deleteUser((params as any).id);
+    await this.auditLogService.log({
+      actorId: user.userId,
+      action: 'user.delete',
+      targetType: 'User',
+      targetId: (params as any).id,
+      ipAddress: ip,
+    });
+    return result;
   }
 
   @Put('admin/users/:id/status')
@@ -57,7 +70,17 @@ export class UsersController {
     @Param() params: GetUserParamsDto,
     @Body() body: UpdateUserStatusBodyDto,
     @ActiveUser() user: any,
+    @GetIp() ip: string,
   ) {
-    return this.usersService.updateUserStatus((params as any).id, body as any, user);
+    const result = await this.usersService.updateUserStatus((params as any).id, body as any, user);
+    await this.auditLogService.log({
+      actorId: user.userId,
+      action: 'user.status_change',
+      targetType: 'User',
+      targetId: (params as any).id,
+      metadata: { status: (body as any).status },
+      ipAddress: ip,
+    });
+    return result;
   }
 }

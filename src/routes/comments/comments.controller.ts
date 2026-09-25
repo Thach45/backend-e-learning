@@ -10,6 +10,8 @@ import {
   GetCommentByIdParamsDto,
   GetCommentResponseDto,
   GetCommentsResponseDto,
+  ToggleReactionBodyDto,
+  ToggleReactionResponseDto,
 } from "./comments.dto";
 
 @Controller("api")
@@ -35,20 +37,33 @@ export class CommentsController {
   async getCommentsByLesson(
     @Param() params: GetCommentsParamsDto,
     @Query() query: GetCommentsQueryDto,
+    @ActiveUser() user: any,
   ) {
     return this.commentsService.getCommentsByLesson(
       (params as any).lessonId,
       query as any,
+      user?.userId,
     );
   }
 
   @Get("lessons/:lessonId/comments/:commentId")
   @ZodSerializerDto(GetCommentResponseDto)
-  async getCommentById(@Param() params: GetCommentByIdParamsDto) {
+  async getCommentById(@Param() params: GetCommentByIdParamsDto, @ActiveUser() user: any) {
     return this.commentsService.getCommentById(
       (params as any).commentId,
       (params as any).lessonId,
+      user?.userId,
     );
+  }
+
+  @Post("comments/:commentId/reactions")
+  @ZodSerializerDto(ToggleReactionResponseDto)
+  async toggleReaction(
+    @Param("commentId") commentId: string,
+    @Body() body: ToggleReactionBodyDto,
+    @ActiveUser() user: any,
+  ) {
+    return this.commentsService.toggleReaction(commentId, user.userId, body.type);
   }
 
   @Put("lessons/:lessonId/comments/:commentId")

@@ -1,6 +1,6 @@
 import { Injectable, BadRequestException, ConflictException, NotFoundException } from "@nestjs/common";
 import { PrismaService } from "src/shared/service/prisma.service";
-import { CreateReviewBody, GetReviewsQuery, UpdateReviewBody } from "./reviews.model";
+import { CreateReviewBody, GetReviewsQuery, ReplyReviewBody, UpdateReviewBody } from "./reviews.model";
 import { Prisma } from "@prisma/client";
 
 const reviewSelect = {
@@ -9,6 +9,8 @@ const reviewSelect = {
   courseId: true,
   rating: true,
   comment: true,
+  instructorReply: true,
+  instructorReplyAt: true,
   createdAt: true,
   user: {
     select: {
@@ -243,6 +245,25 @@ export class ReviewsRepository {
     }
 
     return this.getReviews({ ...query, courseId });
+  }
+
+  async replyToReview(reviewId: string, courseId: string, instructorId: string, body: ReplyReviewBody) {
+    const existing = await this.prisma.review.findFirst({
+      where: { id: reviewId, courseId },
+      select: { id: true, course: { select: { instructorId: true } } },
+    });
+    if (!existing) {
+      throw new NotFoundException(`Review with ID ${reviewId} not found`);
+    }
+    if (existing.course.instructorId !== instructorId) {
+      throw new BadRequestException("You can only reply to reviews for your own courses");
+    }
+
+    return this.prisma.review.update({
+      where: { id: reviewId },
+      data: { instructorReply: body.reply, instructorReplyAt: new Date() },
+      select: reviewSelect,
+    });
   }
 }
 

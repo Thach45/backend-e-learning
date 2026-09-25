@@ -1,10 +1,14 @@
 import { Injectable } from "@nestjs/common";
 import { ReviewsRepository } from "./reviews.repo";
-import { CreateReviewBody, GetReviewsQuery, UpdateReviewBody } from "./reviews.model";
+import { CreateReviewBody, GetReviewsQuery, ReplyReviewBody, UpdateReviewBody } from "./reviews.model";
+import { GamificationService } from "src/routes/gamification/gamification.service";
 
 @Injectable()
 export class ReviewsService {
-  constructor(private readonly reviewsRepo: ReviewsRepository) {}
+  constructor(
+    private readonly reviewsRepo: ReviewsRepository,
+    private readonly gamificationService: GamificationService,
+  ) {}
 
   async getReviews(query: GetReviewsQuery) {
     return this.reviewsRepo.getReviews(query);
@@ -15,11 +19,15 @@ export class ReviewsService {
   }
 
   async createReview(body: CreateReviewBody, userId: string) {
-    return this.reviewsRepo.createReview(body, userId);
+    const result = await this.reviewsRepo.createReview(body, userId);
+    await this.gamificationService.checkReviewBadge(userId);
+    return result;
   }
 
   async createOrUpdateReview(body: CreateReviewBody, userId: string) {
-    return this.reviewsRepo.createOrUpdateReview(body, userId);
+    const result = await this.reviewsRepo.createOrUpdateReview(body, userId);
+    await this.gamificationService.checkReviewBadge(userId);
+    return result;
   }
 
   async updateReview(reviewId: string, courseId: string, body: UpdateReviewBody, instructorId?: string) {
@@ -32,6 +40,10 @@ export class ReviewsService {
 
   async getReviewsByCourse(courseId: string, instructorId: string, query: GetReviewsQuery) {
     return this.reviewsRepo.getReviewsByCourse(courseId, instructorId, query);
+  }
+
+  async replyToReview(reviewId: string, courseId: string, instructorId: string, body: ReplyReviewBody) {
+    return this.reviewsRepo.replyToReview(reviewId, courseId, instructorId, body);
   }
 }
 

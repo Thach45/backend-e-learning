@@ -15,6 +15,7 @@ const lessonSelect = {
   storageUrl: true,
   contentText: true,
   duration: true,
+  transcript: true,
   createdAt: true,
 } as const;
 
@@ -188,6 +189,7 @@ export class LessonsRepository {
         storageUrl: normalizedStorageUrl,
         contentText: body.contentText,
         duration: body.duration,
+        transcript: body.transcript,
       },
       select: lessonSelect,
     });
@@ -262,6 +264,7 @@ export class LessonsRepository {
         storageUrl: normalizedStorageUrl,
         contentText: body.contentText ?? undefined,
         duration: body.duration ?? undefined,
+        transcript: body.transcript ?? undefined,
       },
       select: lessonSelect,
     });

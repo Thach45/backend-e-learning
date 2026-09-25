@@ -137,6 +137,65 @@ export const GoogleLinkSchema = z.object({
 })
 export type GoogleLinkType = z.infer<typeof GoogleLinkSchema>
 
+export const GoogleExchangeBodySchema = z.object({
+  code: z.string().min(1),
+}).strict()
+export type GoogleExchangeBodyType = z.infer<typeof GoogleExchangeBodySchema>
+
+export const ChangePasswordBodySchema = z.object({
+  currentPassword: z.string().min(6).max(100),
+  newPassword: z.string().min(6).max(100),
+  confirmNewPassword: z.string().min(6).max(100),
+}).strict().superRefine((data, ctx) => {
+  if (data.newPassword !== data.confirmNewPassword) {
+    ctx.addIssue({
+      code: 'custom',
+      message: 'New password and confirm password do not match',
+      path: ['confirmNewPassword'],
+    })
+  }
+  if (data.newPassword === data.currentPassword) {
+    ctx.addIssue({
+      code: 'custom',
+      message: 'New password must be different from current password',
+      path: ['newPassword'],
+    })
+  }
+})
+export type ChangePasswordBodyType = z.infer<typeof ChangePasswordBodySchema>
+
+export const UpdateProfileBodySchema = z.object({
+  name: z.string().min(1).max(100).optional(),
+  phoneNumber: z.string().min(9).max(15).optional(),
+  avatar: z.string().nullable().optional(),
+}).strict()
+export type UpdateProfileBodyType = z.infer<typeof UpdateProfileBodySchema>
+
+export const MessageResponseSchema = z.object({
+  message: z.string(),
+})
+export type MessageResponseType = z.infer<typeof MessageResponseSchema>
+
+export const DeviceSchema = z.object({
+  id: z.string(),
+  userAgent: z.string(),
+  ipAddress: z.string(),
+  lastActiveAt: z.date(),
+  isActive: z.boolean(),
+  isCurrent: z.boolean(),
+})
+export type DeviceType = z.infer<typeof DeviceSchema>
+
+export const GetDevicesResponseSchema = z.object({
+  data: z.array(DeviceSchema),
+})
+export type GetDevicesResponseType = z.infer<typeof GetDevicesResponseSchema>
+
+export const DeviceParamsSchema = z.object({
+  id: z.string(),
+}).strict()
+export type DeviceParamsType = z.infer<typeof DeviceParamsSchema>
+
 export const ForgotPasswordSchema = z.object({
   email: z.string().email(),
   code: z.string().length(6),

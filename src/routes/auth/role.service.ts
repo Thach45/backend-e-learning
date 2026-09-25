@@ -10,7 +10,6 @@ export class RoleService {
     async getClientRole() {
         if(this.clientRole) return this.clientRole;
         try {
-            console.log("Getting client role");
             const clientRole = await this.prisma.role.findFirstOrThrow({
                 where: {
                     name: ROLES.CLIENT

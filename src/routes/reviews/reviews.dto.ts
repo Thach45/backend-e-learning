@@ -7,6 +7,7 @@ import {
   GetReviewByIdParamsSchema,
   GetReviewResponseSchema,
   GetReviewsResponseSchema,
+  ReplyReviewBodySchema,
 } from "./reviews.model";
 
 export class CreateReviewBodyDto extends createZodDto(CreateReviewBodySchema) {}
@@ -16,4 +17,5 @@ export class GetReviewParamsDto extends createZodDto(GetReviewParamsSchema) {}
 export class GetReviewByIdParamsDto extends createZodDto(GetReviewByIdParamsSchema) {}
 export class GetReviewResponseDto extends createZodDto(GetReviewResponseSchema) {}
 export class GetReviewsResponseDto extends createZodDto(GetReviewsResponseSchema) {}
+export class ReplyReviewBodyDto extends createZodDto(ReplyReviewBodySchema) {}
 

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, ForbiddenException, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/shared/service/prisma.service';
 import { OrderStatus } from '@prisma/client';
 import type {
@@ -8,6 +8,11 @@ import type {
   EnrolledStudent,
   GetEnrolledStudentsQuery,
   GetEnrolledStudentsResponse,
+  UpdateInstructorProfileBody,
+  InstructorProfileResponse,
+  CourseDropoffAnalytics,
+  CoursePreviewContents,
+  PreviewLessonDetail,
 } from './instructor.model';
 
 @Injectable()
@@ -324,6 +329,191 @@ export class InstructorRepo {
       page,
       limit,
       totalPages: Math.ceil(totalItems / limit),
+    };
+  }
+
+  async upsertProfile(instructorId: string, body: UpdateInstructorProfileBody): Promise<InstructorProfileResponse> {
+    const data = {
+      title: body.title,
+      bio: body.bio,
+      expertise: body.expertise,
+      yearsOfExperience: body.yearsOfExperience,
+      websiteUrl: body.websiteUrl || null,
+      linkedinUrl: body.linkedinUrl || null,
+      githubUrl: body.githubUrl || null,
+      youtubeUrl: body.youtubeUrl || null,
+      facebookUrl: body.facebookUrl || null,
+    };
+
+    return this.prisma.instructorProfile.upsert({
+      where: { userId: instructorId },
+      update: data,
+      create: { userId: instructorId, ...data },
+    });
+  }
+
+  private async ensureOwnsCourse(courseId: string, instructorId: string) {
+    const course = await this.prisma.course.findFirst({
+      where: { id: courseId, deletedAt: null },
+      select: { id: true, title: true, thumbnail: true, instructorId: true },
+    });
+    if (!course) {
+      throw new NotFoundException(`Course with ID ${courseId} not found`);
+    }
+    if (course.instructorId !== instructorId) {
+      throw new ForbiddenException('You can only access your own courses');
+    }
+    return course;
+  }
+
+  async getCourseDropoffAnalytics(instructorId: string, courseId: string): Promise<CourseDropoffAnalytics> {
+    await this.ensureOwnsCourse(courseId, instructorId);
+
+    const totalEnrollments = await this.prisma.enrollment.count({ where: { courseId } });
+
+    const sections = await this.prisma.courseContent.findMany({
+      where: { courseId, deletedAt: null, isActive: true },
+      select: {
+        orderIndex: true,
+        lessons: {
+          where: { deletedAt: null, isActive: true },
+          select: { id: true, title: true },
+          orderBy: { createdAt: 'asc' },
+        },
+      },
+      orderBy: { orderIndex: 'asc' },
+    });
+
+    const orderedLessons = sections.flatMap((s) => s.lessons);
+
+    const lessonStats = await Promise.all(
+      orderedLessons.map(async (lesson) => {
+        const [reached, completed] = await Promise.all([
+          this.prisma.learningProgress.count({ where: { lessonId: lesson.id } }),
+          this.prisma.learningProgress.count({ where: { lessonId: lesson.id, progressPercent: 100 } }),
+        ]);
+        return { lessonId: lesson.id, lessonTitle: lesson.title, reached, completed };
+      }),
+    );
+
+    const lessons = lessonStats.map((stat, index) => {
+      const nextReached = lessonStats[index + 1]?.reached ?? null;
+      const dropoffRate = nextReached !== null && stat.reached > 0
+        ? Math.max(0, Math.round(((stat.reached - nextReached) / stat.reached) * 100 * 100) / 100)
+        : 0;
+
+      return {
+        lessonId: stat.lessonId,
+        lessonTitle: stat.lessonTitle,
+        reached: stat.reached,
+        completed: stat.completed,
+        reachRate: totalEnrollments > 0 ? Math.round((stat.reached / totalEnrollments) * 100 * 100) / 100 : 0,
+        completionRate: totalEnrollments > 0 ? Math.round((stat.completed / totalEnrollments) * 100 * 100) / 100 : 0,
+        dropoffRate,
+      };
+    });
+
+    return { courseId, totalEnrollments, lessons };
+  }
+
+  private formatLessonDuration(seconds: number | null): string {
+    if (!seconds) return '0:00';
+    const minutes = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${minutes}:${secs.toString().padStart(2, '0')}`;
+  }
+
+  private resolveLessonType(storageType: string): 'VIDEO' | 'TEXT' {
+    const videoStorageTypes = new Set(['YOUTUBE', 'GOOGLE_DRIVE', 'CLOUDINARY', 'DIRECT_UPLOAD', 'CLOUDFLARE_R2']);
+    return videoStorageTypes.has(storageType) ? 'VIDEO' : 'TEXT';
+  }
+
+  private calculateSectionDuration(lessons: Array<{ duration: number | null }>): string {
+    const totalSeconds = lessons.reduce((sum, lesson) => sum + (lesson.duration ?? 0), 0);
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    if (hours > 0) return `${hours}h ${minutes}p`;
+    return `${minutes}p`;
+  }
+
+  async getCoursePreviewContents(instructorId: string, courseId: string): Promise<CoursePreviewContents> {
+    const course = await this.ensureOwnsCourse(courseId, instructorId);
+
+    const courseContents = await this.prisma.courseContent.findMany({
+      where: { courseId, deletedAt: null, isActive: true, parentId: null },
+      select: {
+        id: true,
+        title: true,
+        orderIndex: true,
+        lessons: {
+          where: { deletedAt: null },
+          select: { id: true, title: true, storageType: true, duration: true },
+          orderBy: { createdAt: 'asc' },
+        },
+      },
+      orderBy: { orderIndex: 'asc' },
+    });
+
+    const contents = courseContents.map((section) => ({
+      id: section.id,
+      title: section.title,
+      orderIndex: section.orderIndex,
+      duration: this.calculateSectionDuration(section.lessons),
+      lessons: section.lessons.map((lesson) => ({
+        id: lesson.id,
+        title: lesson.title,
+        type: this.resolveLessonType(lesson.storageType as string),
+        duration: this.formatLessonDuration(lesson.duration),
+        isLocked: false,
+      })),
+    }));
+
+    return {
+      courseId: course.id,
+      courseTitle: course.title,
+      thumbnailUrl: course.thumbnail,
+      contents,
+    };
+  }
+
+  async getPreviewLessonDetail(instructorId: string, courseId: string, lessonId: string): Promise<PreviewLessonDetail> {
+    await this.ensureOwnsCourse(courseId, instructorId);
+
+    const lesson = await this.prisma.lesson.findFirst({
+      where: { id: lessonId, deletedAt: null, isActive: true, content: { courseId, deletedAt: null, isActive: true } },
+      select: {
+        id: true,
+        title: true,
+        storageType: true,
+        storageUrl: true,
+        contentText: true,
+        transcript: true,
+        duration: true,
+      },
+    });
+    if (!lesson) {
+      throw new NotFoundException(`Lesson with ID ${lessonId} not found`);
+    }
+
+    const [resources, courseDetail] = await Promise.all([
+      this.prisma.supplementaryMaterial.findMany({
+        where: { lessonId },
+        select: { title: true, url: true, materialType: true },
+      }),
+      this.prisma.courseDetail.findUnique({ where: { courseId }, select: { description: true } }),
+    ]);
+
+    return {
+      id: lesson.id,
+      title: lesson.title,
+      type: this.resolveLessonType(lesson.storageType as string),
+      storageType: lesson.storageType,
+      storageUrl: lesson.storageUrl,
+      contentText: lesson.contentText,
+      transcript: lesson.transcript,
+      duration: lesson.duration,
+      description: courseDetail?.description || null,
+      resources: resources.map((res) => ({ name: res.title, url: res.url, type: res.materialType || 'FILE' })),
     };
   }
 }

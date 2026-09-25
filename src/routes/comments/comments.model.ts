@@ -1,5 +1,14 @@
 import { z } from "zod";
 
+export const ReactionTypeEnum = z.enum(["LIKE", "LOVE", "HELPFUL"]);
+export type ReactionTypeValue = z.infer<typeof ReactionTypeEnum>;
+
+export const ReactionCountsSchema = z.object({
+  LIKE: z.number(),
+  LOVE: z.number(),
+  HELPFUL: z.number(),
+});
+
 // Comment Schema (base, không include nested để tránh circular)
 export const CommentSchema = z.object({
   id: z.string().uuid(),
@@ -24,6 +33,8 @@ export const CommentSchema = z.object({
     .optional(),
   parent: z.any().optional(), // Will be populated with CommentSchema when needed
   replies: z.array(z.any()).optional(), // Will be populated with CommentSchema[] when needed
+  reactionCounts: ReactionCountsSchema.optional(),
+  myReaction: ReactionTypeEnum.nullable().optional(),
 });
 
 // Query schemas
@@ -65,6 +76,15 @@ export const GetCommentsResponseSchema = z.object({
   totalPages: z.number(),
 }).strict();
 
+export const ToggleReactionBodySchema = z.object({
+  type: ReactionTypeEnum,
+}).strict();
+
+export const ToggleReactionResponseSchema = z.object({
+  reactionCounts: ReactionCountsSchema,
+  myReaction: ReactionTypeEnum.nullable(),
+}).strict();
+
 // Types
 export type Comment = z.infer<typeof CommentSchema>;
 export type GetCommentsQuery = z.infer<typeof GetCommentsQuerySchema>;
@@ -74,4 +94,6 @@ export type CreateCommentBody = z.infer<typeof CreateCommentBodySchema> & { less
 export type UpdateCommentBody = z.infer<typeof UpdateCommentBodySchema>;
 export type GetCommentResponse = z.infer<typeof GetCommentResponseSchema>;
 export type GetCommentsResponse = z.infer<typeof GetCommentsResponseSchema>;
+export type ToggleReactionBody = z.infer<typeof ToggleReactionBodySchema>;
+export type ToggleReactionResponse = z.infer<typeof ToggleReactionResponseSchema>;
 

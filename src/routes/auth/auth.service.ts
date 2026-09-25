@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException, UnprocessableEntityException } from '@nestjs/common';
+import { Injectable, Logger, UnauthorizedException, UnprocessableEntityException } from '@nestjs/common';
 import { HashingService } from 'src/shared/service/hashing.service';
 import { PrismaService } from 'src/shared/service/prisma.service';
 
@@ -7,7 +7,7 @@ import { Prisma, VerificationType } from '@prisma/client';
 import { TokenExpiredError } from '@nestjs/jwt';
 
 import { RoleService } from './role.service';
-import { ForgotPasswordType, LoginBodyType, LogoutType, RefreshTokenType, RegisterBodyType, SendOtpType } from './auth.model';
+import { ChangePasswordBodyType, ForgotPasswordType, LoginBodyType, LogoutType, RefreshTokenType, RegisterBodyType, SendOtpType, UpdateProfileBodyType } from './auth.model';
 import { AuthRepository } from './auth.repo';
 import { SharedUserRepo } from 'src/shared/repositories/shared-user.repo';
 import { generateOtp } from 'src/shared/helper/generate-otp';
@@ -20,6 +20,8 @@ import { SendEmailService } from 'src/shared/service/send-email.service';
 
 @Injectable()
 export class AuthService {
+    private readonly logger = new Logger(AuthService.name);
+
     constructor(
         private readonly hashingService: HashingService, 
         private readonly prisma: PrismaService,
@@ -87,7 +89,6 @@ export class AuthService {
             }
             const code = generateOtp();
             const expireOtp = ms(process.env.EXPIRE_OTP as unknown as number);
-            console.log(expireOtp);
             const otp = await this.authRepository.createOtp({
                 email: body.email,
                 type: body.type,
@@ -139,6 +140,18 @@ export class AuthService {
                 primaryRole?.id || "",
                 primaryRole?.name || ""
             );
+
+            // Không chặn luồng login nếu gửi email thất bại
+            this.sendEmailService.sendNewLoginAlert({
+                recipientEmail: user.email,
+                userName: user.name,
+                loginTime: new Date().toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' }),
+                userAgent: body.userAgent,
+                ipAddress: body.ipAddress,
+            }).catch((error) => {
+                this.logger.error(`Failed to send new login alert email: ${error}`);
+            });
+
             return {
                 accessToken,
                 refreshToken
@@ -146,8 +159,8 @@ export class AuthService {
         } catch (error) {
             throw error;
         }
-        
-        
+
+
     }
 
     async generateTokens(userId: string, deviceId: string, roleId: string, roleName: string) {
@@ -209,8 +222,8 @@ export class AuthService {
        
             
         } catch (error) {
-            console.error('Refresh token error:', error);
-            
+            this.logger.error(`Refresh token error: ${error}`);
+
             if (error instanceof TokenExpiredError) {
                 throw new UnauthorizedException('Refresh token has expired');
             }
@@ -233,7 +246,7 @@ export class AuthService {
             }
 
             // For any other unexpected errors
-            console.error('Unexpected error during refresh token:', error);
+            this.logger.error(`Unexpected error during refresh token: ${error}`);
             throw new UnauthorizedException('Something went wrong while processing refresh token');
         }
         
@@ -300,12 +313,53 @@ export class AuthService {
     }
     async me(userId: string) {
         const user = await this.authRepository.getUserById(userId);
-        console.log(user);
         if(!user){
             throw new UnauthorizedException('User not found');
         }
         return user;
-        
+
+    }
+
+    async changePassword(userId: string, body: ChangePasswordBodyType) {
+        const user = await this.authRepository.getUserPasswordById(userId);
+        if (!user) {
+            throw new UnauthorizedException('User not found');
+        }
+        const isCurrentPasswordValid = await this.hashingService.comparePassword(body.currentPassword, user.password);
+        if (!isCurrentPasswordValid) {
+            throw new UnprocessableEntityException({
+                field: 'currentPassword',
+                message: 'Current password is incorrect',
+            });
+        }
+        const hashedPassword = await this.hashingService.hashPassword(body.newPassword);
+        await this.authRepository.updateUser(userId, { password: hashedPassword });
+        return {
+            message: 'Password changed successfully',
+        };
+    }
+
+    async updateProfile(userId: string, body: UpdateProfileBodyType) {
+        await this.authRepository.updateUser(userId, body);
+        return this.me(userId);
+    }
+
+    async listDevices(userId: string, currentDeviceId?: string) {
+        const devices = await this.authRepository.listActiveDevices(userId);
+        return {
+            data: devices.map((device) => ({
+                ...device,
+                isCurrent: device.id === currentDeviceId,
+            })),
+        };
+    }
+
+    async revokeDevice(deviceId: string, userId: string) {
+        const revoked = await this.authRepository.revokeDevice(deviceId, userId);
+        if (!revoked) {
+            throw new UnauthorizedException('Device not found');
+        }
+        return { message: 'Device revoked successfully' };
     }
 }
 

@@ -17,7 +17,7 @@ type UpdateDeviceType = {
     lastActiveAt: Date;
     isActive: boolean;
 };
-type UpdateUserType = Pick<User, "password">;
+type UpdateUserType = Partial<Pick<User, "password" | "name" | "phoneNumber" | "avatar">>;
 type CreateOtpType = Pick<VerificationCode, "email" | "type" | "code" | "expiresAt">;
 
 @Injectable()
@@ -139,12 +139,38 @@ export class AuthRepository {
     async getUserById(userId: string) {
         return this.prisma.user.findUnique({
             where: { id: userId },
-           
+
             omit: {
                 password: true,
                 totpSecret: true,
             }
         });
-        
+
+    }
+    async getUserPasswordById(userId: string) {
+        return this.prisma.user.findUnique({
+            where: { id: userId },
+            select: { id: true, password: true },
+        });
+    }
+    async listActiveDevices(userId: string) {
+        return this.prisma.device.findMany({
+            where: { userId, isActive: true },
+            orderBy: { lastActiveAt: 'desc' },
+        });
+    }
+    async revokeDevice(deviceId: string, userId: string) {
+        const device = await this.prisma.device.findFirst({
+            where: { id: deviceId, userId },
+            select: { id: true },
+        });
+        if (!device) {
+            return null;
+        }
+        await this.prisma.refreshToken.deleteMany({ where: { deviceId } });
+        return this.prisma.device.update({
+            where: { id: deviceId },
+            data: { isActive: false },
+        });
     }
 }

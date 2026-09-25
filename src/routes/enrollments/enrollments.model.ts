@@ -104,6 +104,7 @@ export const LessonDetailSchema = z.object({
   storageUrl: z.string().nullable().optional(),
   contentText: z.string().nullable().optional(),
   duration: z.number().nullable().optional(),
+  transcript: z.string().nullable().optional(),
   description: z.string().nullable().optional(),
   resources: z.array(
     z.object({
@@ -133,4 +134,37 @@ export type GetEnrollmentStatsResponse = z.infer<typeof GetEnrollmentStatsRespon
 export type GetCourseContentsResponse = z.infer<typeof GetCourseContentsResponseSchema>;
 export type GetLessonDetailResponse = z.infer<typeof LessonDetailSchema>;
 export type GetLessonParams = z.infer<typeof GetLessonParamsSchema>;
+
+// Continue watching
+export const ContinueWatchingItemSchema = z.object({
+  courseId: z.string().uuid(),
+  courseTitle: z.string(),
+  courseThumbnail: z.string().nullable().optional(),
+  lessonId: z.string().uuid(),
+  lessonTitle: z.string(),
+  progressPercent: z.number(),
+  lastAccessed: z.date(),
+});
+
+export const GetContinueWatchingResponseSchema = z.object({
+  data: z.array(ContinueWatchingItemSchema),
+});
+
+export type ContinueWatchingItem = z.infer<typeof ContinueWatchingItemSchema>;
+export type GetContinueWatchingResponse = z.infer<typeof GetContinueWatchingResponseSchema>;
+
+// Lesson progress tracking
+export const UpdateLessonProgressBodySchema = z.object({
+  progressPercent: z.coerce.number().int().min(0).max(100),
+}).strict();
+
+export const LessonProgressResponseSchema = z.object({
+  courseId: z.string().uuid(),
+  lessonId: z.string().uuid(),
+  progressPercent: z.number(),
+  lastAccessed: z.date(),
+});
+
+export type UpdateLessonProgressBody = z.infer<typeof UpdateLessonProgressBodySchema>;
+export type LessonProgressResponse = z.infer<typeof LessonProgressResponseSchema>;
 
