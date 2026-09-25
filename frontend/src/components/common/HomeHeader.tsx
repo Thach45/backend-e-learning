@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { Search, Menu, X, ShoppingCart, ChevronDown, Receipt, LogOut, User, Settings, BookOpen, Heart, ClipboardList, LifeBuoy, Bookmark, MessageSquare } from 'lucide-react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useUnreadMessages } from '../../hooks/useUnreadMessages';
 import { useAuthStatus } from '../../hooks/useAuthStatus';
 import { useLogout } from '../../hooks/useAuth';
@@ -18,6 +18,14 @@ const HomeHeader = ({ cartCount = 0 }: HeaderProps) => {
   const userMenuRef = useRef<HTMLDivElement>(null);
   const { user, isAuthenticated } = useAuthStatus();
   const unreadMessages = useUnreadMessages();
+  const navigate = useNavigate();
+  const [headerSearch, setHeaderSearch] = useState('');
+  const submitHeaderSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    const q = headerSearch.trim();
+    navigate(q ? `/courses?search=${encodeURIComponent(q)}` : '/courses');
+    setIsMobileMenuOpen(false);
+  };
   const logoutMutation = useLogout();
 
   // Check if current route matches
@@ -98,14 +106,16 @@ const HomeHeader = ({ cartCount = 0 }: HeaderProps) => {
             </Link>
           </nav>
 
-          <div className="hidden lg:flex flex-1 max-w-md relative group">
+          <form onSubmit={submitHeaderSearch} role="search" className="hidden lg:flex flex-1 max-w-md relative group">
             <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 group-focus-within:text-indigo-500 transition-colors" />
             <input
               type="text"
+              value={headerSearch}
+              onChange={(e) => setHeaderSearch(e.target.value)}
               placeholder="Tìm kiếm khóa học..."
               className="w-full pl-10 pr-4 py-2.5 bg-slate-100 dark:bg-slate-800 border-none rounded-full text-sm font-medium focus:ring-2 focus:ring-indigo-100 focus:bg-white dark:bg-slate-900 transition-all outline-none placeholder:text-slate-400 dark:text-slate-500"
             />
-          </div>
+          </form>
 
           <div className="hidden md:flex items-center gap-4 flex-shrink-0">
             {isAuthenticated && (
@@ -321,11 +331,15 @@ const HomeHeader = ({ cartCount = 0 }: HeaderProps) => {
       {isMobileMenuOpen && (
         <div className="md:hidden border-t border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 absolute w-full left-0 shadow-xl z-50">
           <div className="p-4 space-y-4">
-            <input
-              type="text"
-              placeholder="Tìm kiếm..."
-              className="w-full px-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-lg text-sm outline-none"
-            />
+            <form onSubmit={submitHeaderSearch} role="search">
+              <input
+                type="text"
+                value={headerSearch}
+                onChange={(e) => setHeaderSearch(e.target.value)}
+                placeholder="Tìm kiếm..."
+                className="w-full px-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-lg text-sm outline-none"
+              />
+            </form>
             <div className="flex flex-col gap-2">
               <Link 
                 to="/courses" 

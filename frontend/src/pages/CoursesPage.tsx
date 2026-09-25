@@ -1,5 +1,5 @@
-import { useState, useMemo, type ReactNode } from 'react';
-import { Link } from 'react-router-dom';
+import { useState, useMemo, useEffect, type ReactNode } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
 import { 
   Search, 
   ChevronDown, 
@@ -152,17 +152,36 @@ const CourseListPage = () => {
     description: 'Duyệt qua danh sách khóa học đa dạng, từ lập trình, thiết kế đến kỹ năng mềm, phù hợp mọi trình độ.',
   });
 
-  // Cho phép mở thẳng từ link (footer, breadcrumb): /courses?categoryId=<id>
-  const [selectedCategoryIds, setSelectedCategoryIds] = useState<string[]>(() => {
-    const fromUrl = new URLSearchParams(window.location.search).get('categoryId');
-    return fromUrl ? [fromUrl] : [];
-  });
+  // Toàn bộ bộ lọc nằm trên URL (?search=&categoryId=a,b&level=&sort=&page=) nên tải lại trang hay gửi link vẫn giữ nguyên kết quả.
+  const [searchParams, setSearchParams] = useSearchParams();
+  const LEVEL_VALUES = ['BEGINNER', 'INTERMEDIATE', 'ADVANCED'] as const;
+  const SORT_VALUES = ['popular', 'newest', 'price-low', 'price-high'] as const;
+  const searchQuery = searchParams.get('search')?.trim() ?? '';
+  const selectedCategoryIds = useMemo(() => (searchParams.get('categoryId') ?? '').split(',').filter(Boolean), [searchParams]);
+  const levelParam = searchParams.get('level') as CourseListParams['level'];
+  const selectedLevel: CourseListParams['level'] | null = (LEVEL_VALUES as readonly string[]).includes(levelParam ?? '') ? levelParam : null;
+  const sortParam = searchParams.get('sort') ?? 'popular';
+  const sortBy = (SORT_VALUES as readonly string[]).includes(sortParam) ? sortParam : 'popular';
+  const page = Math.max(1, Number.parseInt(searchParams.get('page') ?? '1', 10) || 1);
+
+  /** Cập nhật URL: giá trị rỗng hoặc mặc định thì bỏ khỏi URL; đổi bộ lọc (không phải trang) thì về trang 1. */
+  const updateParams = (patch: Record<string, string | null>) => {
+    const next = new URLSearchParams(searchParams);
+    for (const [k, v] of Object.entries(patch)) {
+      if (v === null || v === '' || (k === 'sort' && v === 'popular') || (k === 'page' && v === '1')) next.delete(k);
+      else next.set(k, v);
+    }
+    if (!('page' in patch)) next.delete('page');
+    setSearchParams(next);
+  };
+  const setPage = (p: number) => updateParams({ page: String(p) });
+
+  // Ô nhập chỉ là bản nháp: chỉ khi bấm nút tìm hoặc Enter mới ghi lên URL và gọi API (không gọi theo từng phím gõ)
+  const [searchDraft, setSearchDraft] = useState(searchQuery);
+  useEffect(() => setSearchDraft(searchQuery), [searchQuery]);
+
   const [expandedCategoryIds, setExpandedCategoryIds] = useState<string[]>([]);
-  const [selectedLevel, setSelectedLevel] = useState<CourseListParams['level'] | null>(null);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [sortBy, setSortBy] = useState<string>('popular');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-  const [page, setPage] = useState(1);
   const limit = 12;
 
   // Fetch categories
@@ -244,12 +263,10 @@ const CourseListPage = () => {
   }, [coursesData, selectedCategoryIds, sortBy]);
 
   const toggleCategory = (categoryId: string) => {
-    if (selectedCategoryIds.includes(categoryId)) {
-      setSelectedCategoryIds(selectedCategoryIds.filter(id => id !== categoryId));
-    } else {
-      setSelectedCategoryIds([...selectedCategoryIds, categoryId]);
-    }
-    setPage(1); // Reset to first page when filter changes
+    const next = selectedCategoryIds.includes(categoryId)
+      ? selectedCategoryIds.filter(id => id !== categoryId)
+      : [...selectedCategoryIds, categoryId];
+    updateParams({ categoryId: next.join(',') });
   };
 
   const toggleExpandCategory = (categoryId: string) => {
@@ -316,13 +333,12 @@ const CourseListPage = () => {
   };
 
   const handleLevelChange = (level: CourseListParams['level'] | null) => {
-    setSelectedLevel(level);
-    setPage(1);
+    updateParams({ level: level ?? null });
   };
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    setPage(1);
+    updateParams({ search: searchDraft.trim() });
   };
   
   
@@ -346,8 +362,8 @@ const CourseListPage = () => {
                             <form onSubmit={handleSearch} className="relative">
                                 <input
                                     type="text"
-                                    value={searchQuery}
-                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    value={searchDraft}
+                                    onChange={(e) => setSearchDraft(e.target.value)}
                                     placeholder="Tìm khóa học..."
                                     className="w-full px-4 py-2.5 border border-slate-200 dark:border-slate-800 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-300"
                                 />
@@ -418,7 +434,7 @@ const CourseListPage = () => {
                         <div className="relative group">
                             <select 
                                 value={sortBy}
-                                onChange={(e) => setSortBy(e.target.value)}
+                                onChange={(e) => updateParams({ sort: e.target.value })}
                                 className="appearance-none bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-200 text-sm rounded-xl pl-4 pr-10 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-100 font-medium cursor-pointer hover:border-slate-300 dark:border-slate-700 transition-colors"
                             >
                                 <option value="popular">Phổ biến nhất</option>
@@ -473,7 +489,7 @@ const CourseListPage = () => {
                             <div className="mt-16 flex justify-center">
                                 <div className="flex items-center gap-2 bg-white dark:bg-slate-900 p-2 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm">
                                     <button 
-                                        onClick={() => setPage(p => Math.max(1, p - 1))}
+                                        onClick={() => setPage(Math.max(1, page - 1))}
                                         disabled={page === 1}
                                         className="w-10 h-10 rounded-xl border border-transparent flex items-center justify-center text-slate-400 dark:text-slate-500 hover:bg-slate-50 dark:bg-slate-950 hover:text-slate-600 dark:text-slate-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                                     >
@@ -512,7 +528,7 @@ const CourseListPage = () => {
                                     )}
                                     
                                     <button 
-                                        onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                                        onClick={() => setPage(Math.min(totalPages, page + 1))}
                                         disabled={page === totalPages}
                                         className="w-10 h-10 rounded-xl border border-transparent flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:bg-slate-950 hover:text-indigo-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                                     >
