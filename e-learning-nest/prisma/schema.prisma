@@ -184,6 +184,7 @@ model User {
   posts                Post[]
   collections          Collection[]
   publicProfile        PublicProfile?
+  learningPaths        LearningPath[]
   lessonNotes          LessonNote[]
   lessonQuestions      LessonQuestion[]
   lessonAnswers        LessonAnswer[]
@@ -405,6 +406,7 @@ model Course {
   reviews                Review[]
   wishlists              Wishlist[]
   collectionCourses      CollectionCourse[]
+  pathCourses            LearningPathCourse[]
   orderItems             OrderItem[]
   notifications          Notification[]
   learningProgresses     LearningProgress[]
@@ -1515,4 +1517,34 @@ model PublicProfile {
   showCourses Boolean  @default(true) // khoá đã hoàn thành
   showBadges  Boolean  @default(true)
   updatedAt   DateTime @updatedAt
+}
+
+// ===== Lộ trình học: chuỗi khoá học có thứ tự do admin biên soạn =====
+
+model LearningPath {
+  id          String               @id @default(uuid())
+  slug        String               @unique
+  title       String               @db.VarChar(150)
+  description String?              @db.VarChar(1000)
+  coverUrl    String?
+  isPublished Boolean              @default(false)
+  createdById String
+  createdBy   User                 @relation(fields: [createdById], references: [id])
+  createdAt   DateTime             @default(now())
+  updatedAt   DateTime             @updatedAt
+  courses     LearningPathCourse[]
+
+  @@index([isPublished])
+}
+
+model LearningPathCourse {
+  pathId   String
+  courseId String
+  position Int
+  note     String?      @db.VarChar(200) // vì sao khoá này ở bước này
+  path     LearningPath @relation(fields: [pathId], references: [id], onDelete: Cascade)
+  course   Course       @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@id([pathId, courseId])
+  @@index([pathId, position])
 }

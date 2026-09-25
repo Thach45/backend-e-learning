@@ -70,6 +70,9 @@ import AdminPostEditorPage from './pages/admin/AdminPostEditorPage';
 import BlogListPage from './pages/BlogListPage';
 import MyCollectionsPage from './pages/MyCollectionsPage';
 import PublicProfilePage from './pages/PublicProfilePage';
+import PathsListPage from './pages/PathsListPage';
+import PathDetailPage from './pages/PathDetailPage';
+import AdminPathsPage from './pages/admin/AdminPathsPage';
 import CollectionDetailPage from './pages/CollectionDetailPage';
 import ContentPostPage from './pages/ContentPostPage';
 import CourseAssignmentsPage from './pages/instructor/CourseAssignmentsPage';
@@ -154,6 +157,8 @@ const AppContent = () => {
           <Route path="p/:slug" element={<ContentPostPage kind="PAGE" />} />
           <Route path="collections/:id" element={<CollectionDetailPage />} />
           <Route path="u/:userId" element={<PublicProfilePage />} />
+          <Route path="paths" element={<PathsListPage />} />
+          <Route path="paths/:slug" element={<PathDetailPage />} />
           <Route path="privacy" element={<PrivacyPage />} />
           <Route path="terms" element={<TermsPage />} />
           <Route path="instructors/:id" element={<InstructorProfilePage />} />
@@ -328,6 +333,7 @@ const AppContent = () => {
           <Route path="faq" element={<AdminFaqPage />} />
           <Route path="system" element={<AdminSystemPage />} />
           <Route path="home" element={<AdminHomePage />} />
+          <Route path="paths" element={<AdminPathsPage />} />
           <Route path="posts" element={<AdminPostsPage />} />
           <Route path="posts/:id" element={<AdminPostEditorPage />} />
         </Route>

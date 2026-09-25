@@ -83,6 +83,12 @@ const HomeHeader = ({ cartCount = 0 }: HeaderProps) => {
               Cộng đồng
             </a>
             <Link
+              to="/paths"
+              className="px-4 py-2 text-sm font-semibold text-slate-500 dark:text-slate-400 hover:text-indigo-600 hover:bg-slate-50 dark:bg-slate-950 rounded-full transition-colors"
+            >
+              Lộ trình
+            </Link>
+            <Link
               to="/blog"
               className="px-4 py-2 text-sm font-semibold text-slate-500 dark:text-slate-400 hover:text-indigo-600 hover:bg-slate-50 dark:bg-slate-950 rounded-full transition-colors"
             >
@@ -340,6 +346,9 @@ const HomeHeader = ({ cartCount = 0 }: HeaderProps) => {
               >
                 Cộng đồng
               </a>
+              <Link to="/paths" className="p-2 font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:bg-slate-950 rounded-lg">
+                Lộ trình
+              </Link>
               <Link to="/blog" className="p-2 font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:bg-slate-950 rounded-lg">
                 Blog
               </Link>

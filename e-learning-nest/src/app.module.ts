@@ -61,6 +61,7 @@ import { PostsModule } from "./routes/posts/posts.module";
 import { HomeConfigModule } from "./routes/home-config/home-config.module";
 import { CollectionsModule } from "./routes/collections/collections.module";
 import { PublicProfileModule } from "./routes/public-profile/public-profile.module";
+import { LearningPathsModule } from "./routes/learning-paths/learning-paths.module";
 
 @Module({
   imports: [
@@ -135,6 +136,7 @@ import { PublicProfileModule } from "./routes/public-profile/public-profile.modu
     HomeConfigModule,
     CollectionsModule,
     PublicProfileModule,
+    LearningPathsModule,
   ],
   controllers: [AppController],
   providers: [
