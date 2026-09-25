@@ -1,4 +1,5 @@
 import { Global, Module } from '@nestjs/common';
+import { BullModule } from '@nestjs/bullmq';
 import { PrismaService } from './service/prisma.service';
 import { HashingService } from './service/hashing.service';
 import { TokenService } from './service/token.service';
@@ -13,6 +14,8 @@ import { RedisService } from './service/redis.service';
 import { AppLogger } from './service/logging.service';
 import { R2Service } from './service/r2.service';
 import { AuditLogService } from './service/audit-log.service';
+import { MAIL_QUEUE } from './mail/mail.constants';
+import { MailProcessor } from './mail/mail.processor';
 
 const sharedServices = [
     PrismaService,
@@ -31,8 +34,9 @@ const sharedServices = [
 ];
 @Global()
 @Module({
-    providers: sharedServices,
+    // MailProcessor chỉ cần đăng ký (worker tự chạy), không cần export
+    providers: [...sharedServices, MailProcessor],
     exports: sharedServices,
-    imports: [JwtModule],
+    imports: [JwtModule, BullModule.registerQueue({ name: MAIL_QUEUE })],
 })
 export class SharedModule {}

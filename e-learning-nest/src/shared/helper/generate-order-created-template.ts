@@ -11,7 +11,7 @@ export const generateOrderCreatedTemplate = (
   courses: OrderCourseItem[],
   totalAmount: number,
   paymentPageUrl: string,
-  companyName: string = "U Đê Mi",
+  companyName: string = "U Đê Mê",
   companyAddress: string = "123 Nguyen Van Linh, Q9, TP.HCM"
 ) => {
   const formatVND = (amount: number) =>
