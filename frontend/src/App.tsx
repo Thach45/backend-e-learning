@@ -54,6 +54,8 @@ import AdminModerationPage from './pages/admin/AdminModerationPage';
 import AdminCouponsPage from './pages/admin/AdminCouponsPage';
 import AdminAnalyticsPage from './pages/admin/AdminAnalyticsPage';
 import AdminSettingsPage from './pages/admin/AdminSettingsPage';
+import AdminTagsPage from './pages/admin/AdminTagsPage';
+import OnboardingWizard from './components/profile/OnboardingWizard';
 import PrivacyPage from './pages/PrivacyPage';
 import TermsPage from './pages/TermsPage';
 import MaintenanceLayout from './components/common/MaintenanceLayout';
@@ -65,7 +67,7 @@ const AppContent = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { data: siteSettings, refetch } = usePublicSiteSettings();
-  const { hasRole } = useAuthStatus();
+  const { hasRole, isAuthenticated } = useAuthStatus();
   // Đặt khi backend vừa trả 503 MAINTENANCE nhưng cấu hình công khai chưa kịp làm mới
   const [forcedMaintenance, setForcedMaintenance] = useState<{ message?: string | null; until?: string | null } | null>(null);
 
@@ -112,6 +114,8 @@ const AppContent = () => {
         <Link to="/admin/settings" className="underline font-semibold">Tắt bảo trì</Link>
       </div>
     )}
+    {/* Hướng dẫn hồ sơ học tập cho người dùng đã đăng nhập (không hiện cho admin, trang đăng nhập và trang chính sách) */}
+    {isAuthenticated && !isAdmin && !isAuthRoute && !['/privacy', '/terms'].includes(location.pathname) && <OnboardingWizard />}
     <Routes>
         <Route path="/" element={<MainLayout />}>
           <Route index element={<HomePage />} />
@@ -243,6 +247,7 @@ const AppContent = () => {
           <Route path="coupons" element={<AdminCouponsPage />} />
           <Route path="analytics" element={<AdminAnalyticsPage />} />
           <Route path="settings" element={<AdminSettingsPage />} />
+          <Route path="tags" element={<AdminTagsPage />} />
         </Route>
         {/* Instructor routes - require INSTRUCTOR role */}
         <Route

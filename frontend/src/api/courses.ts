@@ -77,6 +77,7 @@ export type GetCourseDetailResponse = {
   isFeatured: boolean;
   level: 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED';
   language: string;
+  tags: Array<{ id: string; name: string; slug: string }>;
   status: 'DRAFT' | 'PUBLISHED' | 'ARCHIVED' | 'PENDING_PUBLISHED' | 'PENDING_DRAFT';
   updatedAt: string;
   instructor: {

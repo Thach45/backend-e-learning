@@ -48,6 +48,8 @@ import { QuizzesModule } from "./routes/quizzes/quizzes.module";
 import { CourseSurveyModule } from "./routes/course-survey/course-survey.module";
 import { SiteSettingsModule } from "./routes/site-settings/site-settings.module";
 import { MaintenanceGuard } from "./routes/site-settings/maintenance.guard";
+import { TagsModule } from "./routes/tags/tags.module";
+import { LearningProfileModule } from "./routes/learning-profile/learning-profile.module";
 
 @Module({
   imports: [
@@ -109,6 +111,8 @@ import { MaintenanceGuard } from "./routes/site-settings/maintenance.guard";
     CouponsModule,
     AdminAnalyticsModule,
     SiteSettingsModule,
+    TagsModule,
+    LearningProfileModule,
   ],
   controllers: [AppController],
   providers: [

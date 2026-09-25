@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { User, Lock, Monitor, LogOut } from 'lucide-react';
+import { User, Lock, Monitor, LogOut, GraduationCap } from 'lucide-react';
+import LearningProfileForm from '../components/profile/LearningProfileForm';
 import { useAuthStatus } from '../hooks/useAuthStatus';
 import { useChangePassword, useUpdateProfile, useMyDevices, useRevokeDevice } from '../hooks/useAuth';
 
@@ -204,6 +205,15 @@ const AccountSettingsPage = () => {
           ) : (
             <p className="text-sm text-slate-500 dark:text-slate-400">Không có thiết bị nào đang hoạt động.</p>
           )}
+        </section>
+
+        {/* Hồ sơ học tập */}
+        <section className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6">
+          <h2 className="text-lg font-bold text-slate-900 dark:text-slate-50 flex items-center gap-2 mb-1">
+            <GraduationCap size={20} className="text-indigo-600" /> Hồ sơ học tập
+          </h2>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mb-6">Giúp chúng tôi gợi ý khóa học phù hợp với mục tiêu và trình độ của bạn. Tất cả đều tuỳ chọn.</p>
+          <LearningProfileForm />
         </section>
       </main>
     </div>

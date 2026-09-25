@@ -141,6 +141,7 @@ export const GetCourseResponseSchema = z.object({
   category: CategorySchema.nullable().optional(),
   detail: CourseDetailSchema.nullable().optional(),
   language: z.string(),
+  tags: z.array(z.object({ id: z.string().uuid(), name: z.string(), slug: z.string() })),
   content: z.array(ContentSectionSchema),
   stats: z.object({
     videoLessons: z.number(),

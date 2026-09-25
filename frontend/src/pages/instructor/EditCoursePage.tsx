@@ -5,6 +5,9 @@ import { useInstructorCourse, useUpdateInstructorCourse } from '../../hooks/useI
 import { useAdminCategories } from '../../hooks/useAdminCategories';
 import { useCourseDetail, useCreateCourseDetail, useUpdateCourseDetail } from '../../hooks/useCourseDetail';
 import ImageUpload from '../../components/common/ImageUpload';
+import TagPicker from '../../components/profile/TagPicker';
+import { useSetCourseTags } from '../../hooks/useTags';
+import { useCourse } from '../../hooks/useCourses';
 import type { CourseLevel } from '../../api/instructor';
 
 const EditCoursePage = () => {
@@ -15,6 +18,13 @@ const EditCoursePage = () => {
   const { data: course, isLoading: courseLoading, error: courseError } = useInstructorCourse(id || '');
   const { data: courseDetail, isLoading: detailLoading } = useCourseDetail(id || '');
   const updateMutation = useUpdateInstructorCourse();
+  // Thẻ kỹ năng của khóa (lấy từ chi tiết công khai vì API instructor không trả thẻ)
+  const { data: publicCourse } = useCourse(id || '');
+  const setCourseTags = useSetCourseTags();
+  const [tagIds, setTagIds] = useState<string[]>([]);
+  useEffect(() => {
+    if (publicCourse) setTagIds(publicCourse.tags.map((t) => t.id));
+  }, [publicCourse]);
   const createDetailMutation = useCreateCourseDetail();
   const updateDetailMutation = useUpdateCourseDetail();
   const { data: categories, isLoading: categoriesLoading } = useAdminCategories();
@@ -393,6 +403,27 @@ const EditCoursePage = () => {
               </select>
             )}
           </div>
+        </div>
+
+        {/* Thẻ kỹ năng */}
+        <div>
+          <label className="block text-sm font-semibold text-slate-700 dark:text-slate-200 mb-2">
+            Thẻ kỹ năng <span className="text-slate-400 dark:text-slate-500 text-xs">(tối đa 8, giúp gợi ý khóa học đúng người)</span>
+          </label>
+          <TagPicker
+            selectedIds={tagIds}
+            onChange={setTagIds}
+            max={8}
+            selectedTags={(publicCourse?.tags ?? []).map((t) => ({ ...t, type: 'SKILL' as const, categoryId: null }))}
+          />
+          <button
+            type="button"
+            onClick={() => id && setCourseTags.mutate({ courseId: id, tagIds })}
+            disabled={setCourseTags.isPending}
+            className="mt-3 px-4 py-2 rounded-xl border border-purple-300 text-purple-700 text-sm font-semibold hover:bg-purple-50 disabled:opacity-50"
+          >
+            {setCourseTags.isPending ? 'Đang lưu thẻ...' : 'Lưu thẻ kỹ năng'}
+          </button>
         </div>
 
         {/* Thumbnail */}

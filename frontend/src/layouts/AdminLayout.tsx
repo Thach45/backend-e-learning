@@ -17,7 +17,8 @@ import {
   ScrollText,
   Flag,
   Ticket,
-  BarChart3
+  BarChart3,
+  Tags
 } from 'lucide-react';
 import ThemeToggle from '../components/common/ThemeToggle';
 import { usePendingReportCount } from '../hooks/useModeration';
@@ -41,6 +42,7 @@ const AdminLayout = () => {
     { icon: BarChart3, label: 'Báo cáo & thống kê', path: '/admin/analytics' },
     { icon: Shield, label: 'Phân quyền', path: '/admin/permissions' },
     { icon: ScrollText, label: 'Nhật ký', path: '/admin/audit-logs' },
+    { icon: Tags, label: 'Thẻ kỹ năng', path: '/admin/tags' },
     { icon: Settings, label: 'Cài đặt', path: '/admin/settings' },
   ];
 

@@ -1,7 +1,7 @@
 import HeroSection from '../components/home/HeroSection';
 import CategoriesSection, { type Category } from '../components/home/CategoriesSection';
 import FeaturedCoursesSection, { type Course } from '../components/home/FeaturedCoursesSection';
-import NewsletterSection from '../components/home/NewsletterSection';
+import RecommendedCoursesSection from '../components/home/RecommendedCoursesSection';
 import ContinueWatchingSection from '../components/home/ContinueWatchingSection';
 import { useCategories } from '../hooks/useCategories';
 import { useCourses } from '../hooks/useCourses';
@@ -95,6 +95,7 @@ const HomePage = () => {
         {/* <PurchaseFlowSection /> */}
         {/* <TrustedCompaniesSection /> */}
         <ContinueWatchingSection />
+        <RecommendedCoursesSection />
 
         {/* Categories Section */}
         {categoriesLoading ? (
@@ -127,8 +128,6 @@ const HomePage = () => {
             <p className="text-slate-500 dark:text-slate-400">Chưa có khóa học nổi bật nào.</p>
           </div>
         )}
-
-        <NewsletterSection />
       </main>
     </div>
   );

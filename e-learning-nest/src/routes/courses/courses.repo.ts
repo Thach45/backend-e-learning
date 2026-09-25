@@ -218,6 +218,7 @@ export class CoursesRepository {
             targetAudience: true,
           },
         },
+        tags: { select: { tag: { select: { id: true, name: true, slug: true } } } },
         courseContents: {
           where: { 
             deletedAt: null,
@@ -399,6 +400,7 @@ export class CoursesRepository {
       isFeatured: course.isFeatured,
       level: course.level,
       language: course.language,
+      tags: course.tags.map((t) => t.tag),
       status: course.status,
       updatedAt: formatDate(course.updatedAt),
       instructor: {

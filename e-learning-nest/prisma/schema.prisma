@@ -189,6 +189,8 @@ model User {
   reportsFiled         ContentReport[]        @relation("ReportsFiled")
   reportsHandled       ContentReport[]        @relation("ReportsHandled")
   couponRedemptions    CouponRedemption[]
+  learningProfile      UserLearningProfile?
+  interests            UserInterest[]
 }
 
 enum BadgeCode {
@@ -395,6 +397,7 @@ model Course {
   learningProgresses     LearningProgress[]
   cartItems              CartItem[]
   surveyResponses        CourseSurveyResponse[]
+  tags                   CourseTag[]
   createdAt              DateTime                @default(now())
   updatedAt              DateTime                @updatedAt
   deletedAt              DateTime?
@@ -1055,4 +1058,95 @@ model SiteSetting {
   maintenanceUntil   DateTime? // dự kiến mở lại, chỉ để hiển thị
   updatedById        String?
   updatedAt          DateTime  @updatedAt
+}
+
+
+// ===== Hồ sơ học tập (onboarding) + thẻ kỹ năng dùng chung cho người dùng và khoá học =====
+
+enum LearningGoal {
+  CAREER_CHANGE
+  UPSKILL_CURRENT_JOB
+  SCHOOL_EXAM
+  HOBBY
+  START_BUSINESS
+  OTHER
+}
+
+enum Occupation {
+  STUDENT
+  EMPLOYEE
+  FREELANCER
+  BUSINESS_OWNER
+  UNEMPLOYED
+  OTHER
+}
+
+enum TagType {
+  SKILL
+  TOPIC
+  TOOL
+}
+
+enum InterestSource {
+  ONBOARDING
+  MANUAL
+  BEHAVIOR
+}
+
+model UserLearningProfile {
+  id                     String        @id @default(uuid())
+  userId                 String        @unique
+  user                   User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  goal                   LearningGoal?
+  goalNote               String?       @db.VarChar(300) // văn bản tự do: nguyên liệu tốt cho embedding sau này
+  currentLevel           CourseLevel? // cùng enum với Course.level để so trực tiếp
+  occupation             Occupation?
+  industry               String?       @db.VarChar(100)
+  yearsOfExperience      Int?
+  weeklyHours            Int?
+  preferredLanguage      String        @default("vi")
+  allowPersonalization   Boolean       @default(false)
+  onboardingCompletedAt  DateTime?
+  onboardingSkippedCount Int           @default(0)
+  createdAt              DateTime      @default(now())
+  updatedAt              DateTime      @updatedAt
+}
+
+model Tag {
+  id         String         @id @default(uuid())
+  name       String         @unique
+  slug       String         @unique
+  type       TagType        @default(SKILL)
+  categoryId String?
+  isActive   Boolean        @default(true)
+  courses    CourseTag[]
+  users      UserInterest[]
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @updatedAt
+
+  @@index([type])
+  @@index([categoryId])
+}
+
+model CourseTag {
+  courseId String
+  tagId    String
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  tag      Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([courseId, tagId])
+  @@index([tagId])
+}
+
+model UserInterest {
+  userId    String
+  tagId     String
+  weight    Float          @default(1)
+  source    InterestSource @default(ONBOARDING)
+  createdAt DateTime       @default(now())
+  user      User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tag       Tag            @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([userId, tagId])
+  @@index([tagId])
 }
