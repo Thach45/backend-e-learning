@@ -54,6 +54,7 @@ import { EmailCampaignsModule } from "./routes/email-campaigns/email-campaigns.m
 import { AssignmentsModule } from "./routes/assignments/assignments.module";
 import { InstructorStudentsModule } from "./routes/instructor-students/instructor-students.module";
 import { SupportModule } from "./routes/support/support.module";
+import { QueueMonitorModule } from "./routes/queue-monitor/queue-monitor.module";
 
 @Module({
   imports: [
@@ -121,6 +122,7 @@ import { SupportModule } from "./routes/support/support.module";
     AssignmentsModule,
     InstructorStudentsModule,
     SupportModule,
+    QueueMonitorModule,
   ],
   controllers: [AppController],
   providers: [

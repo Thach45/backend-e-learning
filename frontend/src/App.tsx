@@ -63,6 +63,7 @@ import UnsubscribePage from './pages/UnsubscribePage';
 import AdminSupportPage from './pages/admin/AdminSupportPage';
 import AdminTicketPage from './pages/admin/AdminTicketPage';
 import AdminFaqPage from './pages/admin/AdminFaqPage';
+import AdminSystemPage from './pages/admin/AdminSystemPage';
 import CourseAssignmentsPage from './pages/instructor/CourseAssignmentsPage';
 import AssignmentSubmissionsPage from './pages/instructor/AssignmentSubmissionsPage';
 import MyAssignmentsPage from './pages/MyAssignmentsPage';
@@ -311,6 +312,7 @@ const AppContent = () => {
           <Route path="support" element={<AdminSupportPage />} />
           <Route path="support/:id" element={<AdminTicketPage />} />
           <Route path="faq" element={<AdminFaqPage />} />
+          <Route path="system" element={<AdminSystemPage />} />
         </Route>
         {/* Instructor routes - require INSTRUCTOR role */}
         <Route
