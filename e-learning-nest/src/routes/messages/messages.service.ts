@@ -1,6 +1,7 @@
 import { BadRequestException, ForbiddenException, HttpException, HttpStatus, Injectable, Logger, NotFoundException } from "@nestjs/common";
 import { PrismaService } from "src/shared/service/prisma.service";
 import { NotificationsService } from "../notifications/notifications.service";
+import { WebsocketChannel } from "src/realtime/core/channels/websocket-channel";
 
 export const RATE_LIMIT_MESSAGES = 20;
 export const RATE_LIMIT_WINDOW_MS = 10 * 60_000;
@@ -12,7 +13,17 @@ export class MessagesService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly notifications: NotificationsService,
+    private readonly realtime: WebsocketChannel,
   ) {}
+
+  /** Báo realtime cho các bên trong cuộc trò chuyện để giao diện tự làm mới (không kèm nội dung tin). Lỗi socket không được làm hỏng việc gửi tin. */
+  private async push(type: "message.new" | "message.read", userIds: string[], conversationId: string) {
+    try {
+      await Promise.all(userIds.map((userId) => this.realtime.sendToUser(userId, { type, userId, payload: { conversationId } })));
+    } catch (e) {
+      this.logger.warn(`Không đẩy được realtime ${type}: ${e}`);
+    }
+  }
 
   /** Có quan hệ giảng dạy: `studentId` đã ghi danh ít nhất một khoá còn hiệu lực của `instructorId`. */
   private async isTeaching(instructorId: string, studentId: string) {
@@ -106,6 +117,7 @@ export class MessagesService {
       this.prisma.message.create({ data: { conversationId, senderId, body }, select: { id: true, senderId: true, body: true, createdAt: true, readAt: true } }),
       this.prisma.conversation.update({ where: { id: conversationId }, data: { lastMessageAt: new Date() } }),
     ]);
+    await this.push("message.new", [recipientId, senderId], conversationId);
     if (alreadyUnread === 0) {
       try {
         const sender = await this.prisma.user.findUnique({ where: { id: senderId }, select: { name: true } });
@@ -128,6 +140,10 @@ export class MessagesService {
   async markRead(conversationId: string, userId: string) {
     await this.participant(conversationId, userId);
     const res = await this.prisma.message.updateMany({ where: { conversationId, senderId: { not: userId }, readAt: null }, data: { readAt: new Date() } });
+    if (res.count > 0) {
+      const convo = await this.participant(conversationId, userId);
+      await this.push("message.read", [convo.studentId, convo.instructorId], conversationId);
+    }
     return { read: res.count };
   }
 

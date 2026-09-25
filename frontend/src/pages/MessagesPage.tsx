@@ -19,9 +19,9 @@ const MessagesPage = () => {
   const toParam = params.get('to');
   const bottom = useRef<HTMLDivElement>(null);
 
-  const convos = useQuery({ queryKey: ['messages', 'list'], queryFn: messagesApi.list, refetchInterval: 10_000 });
+  const convos = useQuery({ queryKey: ['messages', 'list'], queryFn: messagesApi.list, refetchInterval: 30_000 });
   const contacts = useQuery({ queryKey: ['messages', 'contacts'], queryFn: () => messagesApi.contacts(), enabled: picking || !!toParam });
-  const thread = useQuery({ queryKey: ['messages', 'thread', selected], queryFn: () => messagesApi.messages(selected as string), enabled: !!selected, refetchInterval: 5_000 });
+  const thread = useQuery({ queryKey: ['messages', 'thread', selected], queryFn: () => messagesApi.messages(selected as string), enabled: !!selected, refetchInterval: 15_000 });
   const current = convos.data?.find((c) => c.id === selected);
   // ?to=<userId>: đi tới cuộc trò chuyện sẵn có hoặc mở khung soạn tin mới
   const existingWithTo = toParam ? convos.data?.find((c) => c.other.id === toParam) : undefined;
