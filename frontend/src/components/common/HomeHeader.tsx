@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
-import { Search, Menu, X, ShoppingCart, ChevronDown, Receipt, LogOut, User, Settings, BookOpen, Heart, ClipboardList, LifeBuoy, Bookmark } from 'lucide-react';
+import { Search, Menu, X, ShoppingCart, ChevronDown, Receipt, LogOut, User, Settings, BookOpen, Heart, ClipboardList, LifeBuoy, Bookmark, MessageSquare } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
+import { useUnreadMessages } from '../../hooks/useUnreadMessages';
 import { useAuthStatus } from '../../hooks/useAuthStatus';
 import { useLogout } from '../../hooks/useAuth';
 import NotificationBell from './NotificationBell';
@@ -16,6 +17,7 @@ const HomeHeader = ({ cartCount = 0 }: HeaderProps) => {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
   const { user, isAuthenticated } = useAuthStatus();
+  const unreadMessages = useUnreadMessages();
   const logoutMutation = useLogout();
 
   // Check if current route matches
@@ -106,6 +108,13 @@ const HomeHeader = ({ cartCount = 0 }: HeaderProps) => {
           </div>
 
           <div className="hidden md:flex items-center gap-4 flex-shrink-0">
+            {isAuthenticated && (
+              <Link to="/messages" aria-label="Tin nhắn" className="relative p-2 text-slate-400 dark:text-slate-500 hover:text-indigo-600 transition-colors">
+                <MessageSquare size={20} />
+                {unreadMessages > 0 && <span className="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-1 rounded-full bg-indigo-600 text-white text-[10px] font-bold flex items-center justify-center">{unreadMessages > 9 ? '9+' : unreadMessages}</span>}
+              </Link>
+            )}
+
             {isAuthenticated && (
               <Link
                 to="/wishlist"

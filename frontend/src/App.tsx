@@ -71,6 +71,7 @@ import BlogListPage from './pages/BlogListPage';
 import MyCollectionsPage from './pages/MyCollectionsPage';
 import PublicProfilePage from './pages/PublicProfilePage';
 import PathsListPage from './pages/PathsListPage';
+import MessagesPage from './pages/MessagesPage';
 import PathDetailPage from './pages/PathDetailPage';
 import AdminPathsPage from './pages/admin/AdminPathsPage';
 import CollectionDetailPage from './pages/CollectionDetailPage';
@@ -165,6 +166,7 @@ const AppContent = () => {
           
           {/* Protected routes - require authentication */}
           <Route path="collections" element={<ProtectedRoute><MyCollectionsPage /></ProtectedRoute>} />
+          <Route path="messages" element={<ProtectedRoute><MessagesPage /></ProtectedRoute>} />
           <Route
             path="my-assignments"
             element={

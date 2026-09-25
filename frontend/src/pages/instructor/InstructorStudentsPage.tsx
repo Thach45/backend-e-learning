@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Search, Mail, Calendar, Loader2, ChevronLeft, ChevronRight, Download } from 'lucide-react';
 import StudentProgressModal from '../../components/instructor/StudentProgressModal';
 import { useExportStudentsCsv } from '../../hooks/useInstructorStudents';
@@ -184,6 +185,7 @@ const InstructorStudentsPage = () => {
                         </td>
                         <td className="px-6 py-4 text-right">
                           <button onClick={() => setDetail({ courseId: student.courseId, userId: student.userId })} className="text-sm font-semibold text-purple-700 hover:underline">Chi tiết</button>
+                          <Link to={`/messages?to=${student.userId}`} className="ml-4 text-sm font-semibold text-purple-700 hover:underline">Nhắn tin</Link>
                         </td>
                       </tr>
                     )})}

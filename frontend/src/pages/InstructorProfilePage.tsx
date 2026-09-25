@@ -26,6 +26,16 @@ const SocialLink = ({ href, icon: Icon, label }: { href?: string | null; icon: t
   );
 };
 
+const MessageButton = ({ instructorId }: { instructorId: string }) => {
+  const { isAuthenticated, user } = useAuthStatus();
+  if (!isAuthenticated || user?.id === instructorId) return null;
+  return (
+    <Link to={`/messages?to=${instructorId}`} className="inline-flex items-center gap-2 px-5 py-2.5 bg-white/10 text-white font-semibold rounded-xl hover:bg-white/20 transition-colors text-sm border border-white/30">
+      Nhắn tin
+    </Link>
+  );
+};
+
 const FollowButton = ({ instructorId }: { instructorId: string }) => {
   const { isAuthenticated } = useAuthStatus();
   const { data: followStatus } = useInstructorFollowStatus(instructorId);
@@ -121,6 +131,7 @@ const InstructorProfilePage = () => {
           </div>
           <div className="sm:ml-auto">
             <FollowButton instructorId={profile.id} />
+            <MessageButton instructorId={profile.id} />
           </div>
         </div>
       </div>

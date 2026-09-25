@@ -185,6 +185,9 @@ model User {
   collections          Collection[]
   publicProfile        PublicProfile?
   learningPaths        LearningPath[]
+  studentConversations Conversation[] @relation("ConversationStudent")
+  instructorConversations Conversation[] @relation("ConversationInstructor")
+  sentMessages         Message[]
   lessonNotes          LessonNote[]
   lessonQuestions      LessonQuestion[]
   lessonAnswers        LessonAnswer[]
@@ -1547,4 +1550,36 @@ model LearningPathCourse {
 
   @@id([pathId, courseId])
   @@index([pathId, position])
+}
+
+// ===== Nhắn tin trực tiếp giữa học viên và giảng viên (chỉ khi có quan hệ ghi danh) =====
+
+model Conversation {
+  id           String    @id @default(uuid())
+  studentId    String
+  instructorId String
+  student      User      @relation("ConversationStudent", fields: [studentId], references: [id], onDelete: Cascade)
+  instructor   User      @relation("ConversationInstructor", fields: [instructorId], references: [id], onDelete: Cascade)
+  lastMessageAt DateTime @default(now())
+  blockedById  String? // một bên chặn thì không ai gửi thêm được; chỉ người chặn mới bỏ chặn được
+  createdAt    DateTime  @default(now())
+  messages     Message[]
+
+  @@unique([studentId, instructorId])
+  @@index([studentId, lastMessageAt])
+  @@index([instructorId, lastMessageAt])
+}
+
+model Message {
+  id             String       @id @default(uuid())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  senderId       String
+  sender         User         @relation(fields: [senderId], references: [id], onDelete: Cascade)
+  body           String       @db.VarChar(2000)
+  createdAt      DateTime     @default(now())
+  readAt         DateTime?
+
+  @@index([conversationId, createdAt])
+  @@index([senderId, createdAt])
 }

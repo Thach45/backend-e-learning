@@ -30,7 +30,7 @@ const AddToCollection = ({ courseId }: { courseId: string }) => {
   return (
     <div className="relative">
       <button
-        onClick={() => (isAuthenticated ? setOpen((o) => !o) : navigate('/login'))}
+        onClick={() => (isAuthenticated ? setOpen((o) => !o) : navigate('/auth/login'))}
         aria-label="Lưu vào bộ sưu tập"
         title="Lưu vào bộ sưu tập"
         className="px-4 py-3.5 border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-400 hover:text-indigo-600 hover:border-indigo-200 rounded-xl active:scale-95 transition-all"

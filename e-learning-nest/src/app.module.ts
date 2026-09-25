@@ -62,6 +62,7 @@ import { HomeConfigModule } from "./routes/home-config/home-config.module";
 import { CollectionsModule } from "./routes/collections/collections.module";
 import { PublicProfileModule } from "./routes/public-profile/public-profile.module";
 import { LearningPathsModule } from "./routes/learning-paths/learning-paths.module";
+import { MessagesModule } from "./routes/messages/messages.module";
 
 @Module({
   imports: [
@@ -137,6 +138,7 @@ import { LearningPathsModule } from "./routes/learning-paths/learning-paths.modu
     CollectionsModule,
     PublicProfileModule,
     LearningPathsModule,
+    MessagesModule,
   ],
   controllers: [AppController],
   providers: [
