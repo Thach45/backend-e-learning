@@ -47,6 +47,12 @@ apiClient.interceptors.response.use(
   async (error: AxiosError) => {
     const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean };
 
+    // Đang bảo trì: báo cho AppShell chuyển ngay sang layout bảo trì (không chờ chu kỳ làm mới cấu hình)
+    const maintenanceBody = error.response?.data as { code?: string; message?: string; until?: string | null } | undefined;
+    if (error.response?.status === 503 && maintenanceBody?.code === 'MAINTENANCE') {
+      window.dispatchEvent(new CustomEvent('maintenance:on', { detail: { message: maintenanceBody.message, until: maintenanceBody.until } }));
+    }
+
     // Chỉ xử lý 401 Unauthorized, không phải các lỗi khác
     // Và chỉ khi request có thể retry (không phải login/register/forgot-password)
     if (

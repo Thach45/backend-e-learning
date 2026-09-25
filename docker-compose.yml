@@ -200,6 +200,10 @@ services:
       args:
         # Mặc định "/api" (cùng domain). Đổi nếu bạn tách API sang domain khác.
         VITE_API_BASE_URL: ${VITE_API_BASE_URL:-/api}
+        # Thông tin liên hệ hiển thị ở chân trang (để trống thì ẩn)
+        VITE_CONTACT_EMAIL: ${VITE_CONTACT_EMAIL:-}
+        VITE_CONTACT_PHONE: ${VITE_CONTACT_PHONE:-}
+        VITE_CONTACT_ADDRESS: ${VITE_CONTACT_ADDRESS:-}
     image: elearning-frontend
     restart: unless-stopped
     logging: *default-logging

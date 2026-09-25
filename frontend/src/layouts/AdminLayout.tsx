@@ -41,7 +41,7 @@ const AdminLayout = () => {
     { icon: BarChart3, label: 'Báo cáo & thống kê', path: '/admin/analytics' },
     { icon: Shield, label: 'Phân quyền', path: '/admin/permissions' },
     { icon: ScrollText, label: 'Nhật ký', path: '/admin/audit-logs' },
-    // { icon: Settings, label: 'Cài đặt', path: '/admin/settings' },
+    { icon: Settings, label: 'Cài đặt', path: '/admin/settings' },
   ];
 
   const isActive = (path: string) => location.pathname === path;

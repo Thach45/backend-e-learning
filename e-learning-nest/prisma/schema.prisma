@@ -1037,3 +1037,22 @@ model CouponRedemption {
   @@unique([couponId, userId, slot])
   @@index([couponId])
 }
+
+
+// ===== Cài đặt hệ thống (một dòng duy nhất: link mạng xã hội + chế độ bảo trì) =====
+
+model SiteSetting {
+  id                 String    @id @default("singleton")
+  facebookUrl        String?
+  instagramUrl       String?
+  twitterUrl         String?
+  youtubeUrl         String?
+  linkedinUrl        String?
+  tiktokUrl          String?
+  zaloUrl            String?
+  maintenanceEnabled Boolean   @default(false)
+  maintenanceMessage String?   @db.VarChar(500)
+  maintenanceUntil   DateTime? // dự kiến mở lại, chỉ để hiển thị
+  updatedById        String?
+  updatedAt          DateTime  @updatedAt
+}

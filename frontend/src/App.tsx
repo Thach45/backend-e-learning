@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation, Link } from 'react-router-dom';
 import { Toaster } from 'sonner';
 import MainLayout from './layouts/MainLayout';
 import AdminLayout from './layouts/AdminLayout';
@@ -53,22 +53,73 @@ import AdminAuditLogPage from './pages/admin/AdminAuditLogPage';
 import AdminModerationPage from './pages/admin/AdminModerationPage';
 import AdminCouponsPage from './pages/admin/AdminCouponsPage';
 import AdminAnalyticsPage from './pages/admin/AdminAnalyticsPage';
+import AdminSettingsPage from './pages/admin/AdminSettingsPage';
+import PrivacyPage from './pages/PrivacyPage';
+import TermsPage from './pages/TermsPage';
+import MaintenanceLayout from './components/common/MaintenanceLayout';
+import { usePublicSiteSettings } from './hooks/useSiteSettings';
+import { useAuthStatus } from './hooks/useAuthStatus';
 
 // Component để setup navigation
 const AppContent = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { data: siteSettings, refetch } = usePublicSiteSettings();
+  const { hasRole } = useAuthStatus();
+  // Đặt khi backend vừa trả 503 MAINTENANCE nhưng cấu hình công khai chưa kịp làm mới
+  const [forcedMaintenance, setForcedMaintenance] = useState<{ message?: string | null; until?: string | null } | null>(null);
 
   useEffect(() => {
     navigationUtils.setNavigate(navigate);
   }, [navigate]);
 
+  useEffect(() => {
+    const onMaintenance = (e: Event) => {
+      setForcedMaintenance((e as CustomEvent).detail ?? {});
+      void refetch();
+    };
+    window.addEventListener('maintenance:on', onMaintenance);
+    return () => window.removeEventListener('maintenance:on', onMaintenance);
+  }, [refetch]);
+
+  useEffect(() => {
+    if (siteSettings && !siteSettings.maintenance.enabled) setForcedMaintenance(null);
+  }, [siteSettings]);
+
+  // Bảo trì: người dùng thường thấy layout bảo trì thay cho toàn bộ ứng dụng.
+  // Admin và các trang đăng nhập (/auth, /google/callback) vẫn vào được để admin tắt bảo trì.
+  const maintenanceOn = !!siteSettings?.maintenance.enabled || !!forcedMaintenance;
+  const isAdmin = hasRole('ADMIN');
+  const isAuthRoute = location.pathname.startsWith('/auth') || location.pathname === '/google/callback';
+  if (maintenanceOn && !isAdmin && !isAuthRoute) {
+    return (
+      <MaintenanceLayout
+        message={siteSettings?.maintenance.message ?? forcedMaintenance?.message}
+        until={siteSettings?.maintenance.until ?? forcedMaintenance?.until}
+        onRetry={() => {
+          setForcedMaintenance(null);
+          void refetch().then(() => window.location.reload());
+        }}
+      />
+    );
+  }
+
   return (
+    <>
+    {maintenanceOn && isAdmin && (
+      <div className="sticky top-0 z-[90] bg-red-600 text-white text-sm text-center py-1.5 px-4">
+        Đang bật chế độ bảo trì: người dùng thường không truy cập được website.{' '}
+        <Link to="/admin/settings" className="underline font-semibold">Tắt bảo trì</Link>
+      </div>
+    )}
     <Routes>
         <Route path="/" element={<MainLayout />}>
           <Route index element={<HomePage />} />
           <Route path="courses" element={<CoursesPage />} />
           <Route path="courses/:id" element={<CourseDetailPage />} />
           <Route path="community" element={<CommunityPage />} />
+          <Route path="privacy" element={<PrivacyPage />} />
+          <Route path="terms" element={<TermsPage />} />
           <Route path="instructors/:id" element={<InstructorProfilePage />} />
           
           {/* Protected routes - require authentication */}
@@ -191,6 +242,7 @@ const AppContent = () => {
           <Route path="moderation" element={<AdminModerationPage />} />
           <Route path="coupons" element={<AdminCouponsPage />} />
           <Route path="analytics" element={<AdminAnalyticsPage />} />
+          <Route path="settings" element={<AdminSettingsPage />} />
         </Route>
         {/* Instructor routes - require INSTRUCTOR role */}
         <Route
@@ -217,6 +269,7 @@ const AppContent = () => {
         </Route>
         <Route path="*" element={<NotFoundPage />} />
     </Routes>
+    </>
   );
 };
 

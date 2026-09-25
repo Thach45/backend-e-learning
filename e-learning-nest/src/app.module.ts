@@ -46,6 +46,8 @@ import { LessonNotesModule } from "./routes/lesson-notes/lesson-notes.module";
 import { LessonQuestionsModule } from "./routes/lesson-questions/lesson-questions.module";
 import { QuizzesModule } from "./routes/quizzes/quizzes.module";
 import { CourseSurveyModule } from "./routes/course-survey/course-survey.module";
+import { SiteSettingsModule } from "./routes/site-settings/site-settings.module";
+import { MaintenanceGuard } from "./routes/site-settings/maintenance.guard";
 
 @Module({
   imports: [
@@ -106,6 +108,7 @@ import { CourseSurveyModule } from "./routes/course-survey/course-survey.module"
     ModerationModule,
     CouponsModule,
     AdminAnalyticsModule,
+    SiteSettingsModule,
   ],
   controllers: [AppController],
   providers: [
@@ -131,6 +134,11 @@ import { CourseSurveyModule } from "./routes/course-survey/course-survey.module"
     {
       provide: APP_GUARD,
       useClass: AuthenticationGuard,
+    },
+    // Sau AuthenticationGuard (cần req.user), trước PermissionGuard
+    {
+      provide: APP_GUARD,
+      useClass: MaintenanceGuard,
     },
     {
       provide: APP_GUARD,

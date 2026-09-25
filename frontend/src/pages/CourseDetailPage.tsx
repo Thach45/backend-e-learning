@@ -299,7 +299,7 @@ const CourseDetailPage = () => {
                 <Link to="/courses" className="hover:text-white cursor-pointer">Khóa học</Link>
                 <ChevronRight size={14} />
                 {course.category && (
-                  <Link to={`/courses?category=${course.category.id || ''}`} className="hover:text-white cursor-pointer">{course.category.name}</Link>
+                  <Link to={course.category.id ? `/courses?categoryId=${course.category.id}` : '/courses'} className="hover:text-white cursor-pointer">{course.category.name}</Link>
                 )}
                 {!course.category && <span className="text-white">Khác</span>}
                 <ChevronRight size={14} />

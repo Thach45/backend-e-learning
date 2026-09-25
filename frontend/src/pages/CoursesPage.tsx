@@ -152,7 +152,11 @@ const CourseListPage = () => {
     description: 'Duyệt qua danh sách khóa học đa dạng, từ lập trình, thiết kế đến kỹ năng mềm, phù hợp mọi trình độ.',
   });
 
-  const [selectedCategoryIds, setSelectedCategoryIds] = useState<string[]>([]);
+  // Cho phép mở thẳng từ link (footer, breadcrumb): /courses?categoryId=<id>
+  const [selectedCategoryIds, setSelectedCategoryIds] = useState<string[]>(() => {
+    const fromUrl = new URLSearchParams(window.location.search).get('categoryId');
+    return fromUrl ? [fromUrl] : [];
+  });
   const [expandedCategoryIds, setExpandedCategoryIds] = useState<string[]>([]);
   const [selectedLevel, setSelectedLevel] = useState<CourseListParams['level'] | null>(null);
   const [searchQuery, setSearchQuery] = useState('');

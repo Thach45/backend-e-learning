@@ -154,7 +154,7 @@ Khoá học đã có sẵn dữ liệu văn bản tốt cho embedding: `CourseDe
 - `OnboardingWizard`: mục tiêu, trình độ, chọn thẻ quan tâm, nghề nghiệp + giờ học mỗi tuần + ô đồng ý cá nhân hoá.
 - Tab "Hồ sơ học tập" trong Cài đặt tài khoản (sửa lại sau).
 - Trang admin `/admin/tags`, ô chọn thẻ ở trang soạn khoá học.
-- Trang tĩnh `/privacy` và `/terms` lấy từ hai bản nháp đã soạn: [docs/legal/privacy-policy.draft.md](legal/privacy-policy.draft.md) và [docs/legal/terms-of-use.draft.md](legal/terms-of-use.draft.md). Bản nháp bám đúng dữ liệu hệ thống thực sự thu thập; **cần chủ dự án điền thông tin đơn vị và rà pháp lý trước khi công bố.**
+- Trang tĩnh `/privacy` và `/terms` lấy từ hai bản nháp đã soạn: [frontend/src/content/legal/privacy-policy.md](../frontend/src/content/legal/privacy-policy.md) và [frontend/src/content/legal/terms-of-use.md](../frontend/src/content/legal/terms-of-use.md). Bản nháp bám đúng dữ liệu hệ thống thực sự thu thập; **cần chủ dự án điền thông tin đơn vị và rà pháp lý trước khi công bố.**
 - Hàng "Dành cho bạn" trên trang chủ (tuỳ chọn, để dữ liệu có ích ngay).
 
 **Nghiệm thu:** đăng ký thường và Google đều thấy wizard, bỏ qua 3 lần thì không hiện nữa, sửa được từ Cài đặt, người dùng không tick đồng ý thì không có gợi ý cá nhân hoá.
