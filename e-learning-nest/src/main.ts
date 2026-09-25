@@ -4,7 +4,8 @@ import { AppModule } from './app.module';
 import { AppLogger } from './shared/service/logging.service';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  // rawBody: cần thân thô để kiểm chữ ký webhook Resend
+  const app = await NestFactory.create(AppModule, { rawBody: true });
   // SIGTERM (docker stop / deploy): đóng worker BullMQ êm để job đang gửi dở không bị bỏ giữa chừng
   app.enableShutdownHooks();
   app.enableCors({

@@ -55,6 +55,11 @@ import AdminCouponsPage from './pages/admin/AdminCouponsPage';
 import AdminAnalyticsPage from './pages/admin/AdminAnalyticsPage';
 import AdminSettingsPage from './pages/admin/AdminSettingsPage';
 import AdminTagsPage from './pages/admin/AdminTagsPage';
+import AdminEmailCampaignsPage from './pages/admin/AdminEmailCampaignsPage';
+import AdminEmailCampaignEditorPage from './pages/admin/AdminEmailCampaignEditorPage';
+import InstructorAnnouncementsPage from './pages/instructor/InstructorAnnouncementsPage';
+import InstructorAnnouncementEditorPage from './pages/instructor/InstructorAnnouncementEditorPage';
+import UnsubscribePage from './pages/UnsubscribePage';
 import OnboardingWizard from './components/profile/OnboardingWizard';
 import PrivacyPage from './pages/PrivacyPage';
 import TermsPage from './pages/TermsPage';
@@ -122,6 +127,7 @@ const AppContent = () => {
           <Route path="courses" element={<CoursesPage />} />
           <Route path="courses/:id" element={<CourseDetailPage />} />
           <Route path="community" element={<CommunityPage />} />
+          <Route path="unsubscribe" element={<UnsubscribePage />} />
           <Route path="privacy" element={<PrivacyPage />} />
           <Route path="terms" element={<TermsPage />} />
           <Route path="instructors/:id" element={<InstructorProfilePage />} />
@@ -248,6 +254,8 @@ const AppContent = () => {
           <Route path="analytics" element={<AdminAnalyticsPage />} />
           <Route path="settings" element={<AdminSettingsPage />} />
           <Route path="tags" element={<AdminTagsPage />} />
+          <Route path="email-campaigns" element={<AdminEmailCampaignsPage />} />
+          <Route path="email-campaigns/:id" element={<AdminEmailCampaignEditorPage />} />
         </Route>
         {/* Instructor routes - require INSTRUCTOR role */}
         <Route
@@ -271,6 +279,8 @@ const AppContent = () => {
           <Route path="reviews" element={<InstructorReviewsPage />} />
           <Route path="analytics" element={<InstructorAnalyticsPage />} />
           <Route path="settings" element={<InstructorSettingsPage />} />
+          <Route path="announcements" element={<InstructorAnnouncementsPage />} />
+          <Route path="announcements/:id" element={<InstructorAnnouncementEditorPage />} />
         </Route>
         <Route path="*" element={<NotFoundPage />} />
     </Routes>

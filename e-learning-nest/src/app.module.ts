@@ -50,6 +50,7 @@ import { SiteSettingsModule } from "./routes/site-settings/site-settings.module"
 import { MaintenanceGuard } from "./routes/site-settings/maintenance.guard";
 import { TagsModule } from "./routes/tags/tags.module";
 import { LearningProfileModule } from "./routes/learning-profile/learning-profile.module";
+import { EmailCampaignsModule } from "./routes/email-campaigns/email-campaigns.module";
 
 @Module({
   imports: [
@@ -113,6 +114,7 @@ import { LearningProfileModule } from "./routes/learning-profile/learning-profil
     SiteSettingsModule,
     TagsModule,
     LearningProfileModule,
+    EmailCampaignsModule,
   ],
   controllers: [AppController],
   providers: [

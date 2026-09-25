@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { notificationLink } from '../../utils/notificationLink';
+import { useAuthStatus } from '../../hooks/useAuthStatus';
 import { Bell, CheckCheck } from 'lucide-react';
 import {
   useMyNotifications,
@@ -24,14 +26,17 @@ const timeAgo = (iso: string) => {
 const NotificationRow = ({
   item,
   onRead,
+  onOpen,
 }: {
   item: NotificationItem;
   onRead: (id: string) => void;
+  onOpen?: (item: NotificationItem) => void;
 }) => {
   return (
     <button
       onClick={() => {
         if (item.status === 'UNREAD') onRead(item.id);
+        if (onOpen) onOpen(item);
       }}
       className={`w-full text-left px-4 py-3 flex gap-3 hover:bg-slate-50 dark:bg-slate-950 transition-colors ${
         item.status === 'UNREAD' ? 'bg-indigo-50/50' : ''
@@ -53,6 +58,8 @@ const NotificationRow = ({
 
 const NotificationBell = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
+  const { hasRole } = useAuthStatus();
   const containerRef = useRef<HTMLDivElement>(null);
 
   useNotificationsRealtime();
@@ -113,6 +120,13 @@ const NotificationBell = () => {
                   key={item.id}
                   item={item}
                   onRead={(id) => markAsReadMutation.mutate(id)}
+                  onOpen={(n) => {
+                    const link = notificationLink(n, hasRole('ADMIN'));
+                    if (link) {
+                      setIsOpen(false);
+                      navigate(link);
+                    }
+                  }}
                 />
               ))
             ) : (

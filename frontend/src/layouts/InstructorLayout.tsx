@@ -11,7 +11,8 @@ import {
   Menu,
   X,
   LogOut,
-  Plus
+  Plus,
+  Mail
 } from 'lucide-react';
 import ThemeToggle from '../components/common/ThemeToggle';
 
@@ -25,12 +26,15 @@ const InstructorLayout = () => {
    
     { icon: Users, label: 'Học viên', path: '/instructor/students' },
     { icon: MessageSquare, label: 'Đánh giá', path: '/instructor/reviews' },
+    { icon: Mail, label: 'Thông báo email', path: '/instructor/announcements' },
     { icon: BarChart3, label: 'Thống kê', path: '/instructor/analytics' },
     { icon: FileText, label: 'Tài liệu', path: '/instructor/materials' },
     { icon: Settings, label: 'Cài đặt', path: '/instructor/settings' },
   ];
 
-  const isActive = (path: string) => location.pathname === path;
+  // Trang con (soạn/sửa) vẫn làm sáng mục cha; trang chủ dashboard chỉ khớp chính xác
+  const isActive = (path: string) =>
+    location.pathname === path || (path !== '/instructor' && location.pathname.startsWith(`${path}/`));
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950">

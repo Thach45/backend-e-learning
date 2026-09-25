@@ -1,4 +1,7 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { notificationLink } from '../utils/notificationLink';
+import { useAuthStatus } from '../hooks/useAuthStatus';
 import { Bell, CheckCheck } from 'lucide-react';
 import {
   useMyNotifications,
@@ -19,6 +22,8 @@ const formatDateTime = (iso: string) =>
 
 const NotificationsPage = () => {
   const [page, setPage] = useState(1);
+  const navigate = useNavigate();
+  const { hasRole } = useAuthStatus();
   const { data, isLoading } = useMyNotifications({ page, limit: LIMIT });
   const markAsReadMutation = useMarkNotificationAsRead();
   const markAllAsReadMutation = useMarkAllNotificationsAsRead();
@@ -59,6 +64,8 @@ const NotificationsPage = () => {
                   key={item.id}
                   onClick={() => {
                     if (item.status === 'UNREAD') markAsReadMutation.mutate(item.id);
+                    const link = notificationLink(item, hasRole('ADMIN'));
+                    if (link) navigate(link);
                   }}
                   className={`w-full text-left px-5 py-4 flex gap-3 hover:bg-slate-50 dark:bg-slate-950 transition-colors ${
                     item.status === 'UNREAD' ? 'bg-indigo-50/40' : ''

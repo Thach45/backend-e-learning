@@ -136,6 +136,40 @@ export class SendEmailService {
     );
   }
 
+  /** Mail của một chiến dịch gửi tới một người. jobId và idempotencyKey theo (chiến dịch, người) nên không bao giờ gửi trùng. */
+  async enqueueCampaignMail(input: {
+    campaignId: string;
+    userId: string;
+    to: string;
+    subject: string;
+    html: string;
+    headers?: Record<string, string>;
+    replyTo?: string;
+  }) {
+    const id = `campaign-${input.campaignId}-${input.userId}`;
+    return this.enqueue(
+      {
+        kind: 'campaign',
+        to: input.to,
+        subject: input.subject,
+        html: input.html,
+        idempotencyKey: id,
+        campaignId: input.campaignId,
+        headers: input.headers,
+        replyTo: input.replyTo,
+      },
+      { jobId: id, attempts: 5 },
+    );
+  }
+
+  /** Gửi thử một chiến dịch cho chính người soạn: không tính vào bộ đếm chiến dịch và không cần đã duyệt. */
+  async enqueueTestMail(input: { to: string; subject: string; html: string }) {
+    return this.enqueue(
+      { kind: 'campaign-test', to: input.to, subject: input.subject, html: input.html },
+      { attempts: 3, priority: 2 },
+    );
+  }
+
   async sendNewLoginAlert({
     recipientEmail,
     userName,

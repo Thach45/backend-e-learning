@@ -191,6 +191,11 @@ model User {
   couponRedemptions    CouponRedemption[]
   learningProfile      UserLearningProfile?
   interests            UserInterest[]
+
+  // Kênh email: người dùng có thể từ chối nhận thư thông báo/chiến dịch (thư giao dịch vẫn gửi)
+  emailCampaignOptOut Boolean   @default(false)
+  emailOptOutAt       DateTime?
+  emailCampaigns      EmailCampaign[]
 }
 
 enum BadgeCode {
@@ -1149,4 +1154,58 @@ model UserInterest {
 
   @@id([userId, tagId])
   @@index([tagId])
+}
+
+
+// ===== Kênh email: admin và giảng viên gửi thư cho người dùng, giảng viên cần admin duyệt (isApproved) =====
+
+enum CampaignStatus {
+  DRAFT
+  PENDING_APPROVAL
+  APPROVED
+  REJECTED
+  SCHEDULED
+  SENDING
+  SENT
+  CANCELLED
+}
+
+enum SuppressionReason {
+  BOUNCE
+  COMPLAINT
+  MANUAL
+}
+
+model EmailCampaign {
+  id              String         @id @default(uuid())
+  senderId        String
+  sender          User           @relation(fields: [senderId], references: [id])
+  subject         String         @db.VarChar(200)
+  body            String         @db.Text // markdown tối giản, được render và escape HTML ở server
+  audience        Json // { type: ALL_USERS | ROLE | COURSE_ENROLLEES | INSTRUCTOR_STUDENTS | INTEREST_TAG | SPECIFIC_USERS, ... }
+  status          CampaignStatus @default(DRAFT)
+  isApproved      Boolean        @default(false)
+  isServiceNotice Boolean        @default(false) // chỉ admin: bỏ qua việc người dùng đã từ chối nhận thư
+  approvedById    String?
+  approvedAt      DateTime?
+  rejectedReason  String?
+  scheduledAt     DateTime?
+  startedAt       DateTime?
+  finishedAt      DateTime?
+  totalRecipients Int            @default(0)
+  sentCount       Int            @default(0)
+  failedCount     Int            @default(0)
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  @@index([status])
+  @@index([senderId])
+  @@index([status, scheduledAt])
+}
+
+model EmailSuppression {
+  id        String            @id @default(uuid())
+  email     String            @unique
+  reason    SuppressionReason
+  createdAt DateTime          @default(now())
 }

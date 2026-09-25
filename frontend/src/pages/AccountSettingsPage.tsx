@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { User, Lock, Monitor, LogOut, GraduationCap } from 'lucide-react';
+import { User, Lock, Monitor, LogOut, GraduationCap, Mail } from 'lucide-react';
+import { useEmailPreferences, useSetEmailPreferences } from '../hooks/useEmailCampaigns';
 import LearningProfileForm from '../components/profile/LearningProfileForm';
 import { useAuthStatus } from '../hooks/useAuthStatus';
 import { useChangePassword, useUpdateProfile, useMyDevices, useRevokeDevice } from '../hooks/useAuth';
@@ -19,6 +20,8 @@ const AccountSettingsPage = () => {
   const changePasswordMutation = useChangePassword();
   const { data: devicesData, isLoading: devicesLoading } = useMyDevices();
   const revokeDeviceMutation = useRevokeDevice();
+  const { data: emailPrefs } = useEmailPreferences();
+  const setEmailPrefs = useSetEmailPreferences();
 
   const [profileForm, setProfileForm] = useState({ name: '', phoneNumber: '' });
   const [passwordForm, setPasswordForm] = useState({
@@ -205,6 +208,26 @@ const AccountSettingsPage = () => {
           ) : (
             <p className="text-sm text-slate-500 dark:text-slate-400">Không có thiết bị nào đang hoạt động.</p>
           )}
+        </section>
+
+        {/* Thư thông báo */}
+        <section className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6">
+          <h2 className="text-lg font-bold text-slate-900 dark:text-slate-50 flex items-center gap-2 mb-1">
+            <Mail size={20} className="text-indigo-600" /> Thư thông báo
+          </h2>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">
+            Thư từ giảng viên và ban quản trị (bài giảng mới, thông báo khóa học...). Các thư cần thiết như mã xác thực, xác nhận đơn hàng và cảnh báo đăng nhập vẫn luôn được gửi.
+          </p>
+          <label className="flex items-center gap-3 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={emailPrefs?.campaignEmails ?? true}
+              disabled={!emailPrefs || setEmailPrefs.isPending}
+              onChange={(e) => setEmailPrefs.mutate(e.target.checked)}
+              className="w-5 h-5 accent-indigo-600"
+            />
+            <span className="text-sm text-slate-700 dark:text-slate-200">Nhận thư thông báo qua email</span>
+          </label>
         </section>
 
         {/* Hồ sơ học tập */}

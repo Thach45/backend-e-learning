@@ -117,6 +117,13 @@ services:
       # Email qua Resend (domain gửi phải đã verify trên Resend) và ảnh
       RESEND_API_KEY: ${RESEND_API_KEY:?Thiếu RESEND_API_KEY}
       MAIL_FROM: ${MAIL_FROM:?Thiếu MAIL_FROM}
+      # Kênh email (chiến dịch): hạn mức mỗi ngày, phần dành cho mail giao dịch, giới hạn của giảng viên
+      MAIL_DAILY_CAP: ${MAIL_DAILY_CAP:-100}
+      MAIL_TRANSACTIONAL_RESERVE: ${MAIL_TRANSACTIONAL_RESERVE:-40}
+      INSTRUCTOR_CAMPAIGNS_PER_WEEK: ${INSTRUCTOR_CAMPAIGNS_PER_WEEK:-3}
+      MAIL_REPLY_TO: ${MAIL_REPLY_TO:-}
+      MAIL_COMPANY_ADDRESS: ${MAIL_COMPANY_ADDRESS:-}
+      RESEND_WEBHOOK_SECRET: ${RESEND_WEBHOOK_SECRET:-}
       CLOUDINARY_CLOUD_NAME: ${CLOUDINARY_CLOUD_NAME:-}
       CLOUDINARY_API_KEY: ${CLOUDINARY_API_KEY:-}
       CLOUDINARY_API_SECRET: ${CLOUDINARY_API_SECRET:-}

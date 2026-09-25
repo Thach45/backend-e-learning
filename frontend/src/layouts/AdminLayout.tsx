@@ -18,7 +18,8 @@ import {
   Flag,
   Ticket,
   BarChart3,
-  Tags
+  Tags,
+  Mail
 } from 'lucide-react';
 import ThemeToggle from '../components/common/ThemeToggle';
 import { usePendingReportCount } from '../hooks/useModeration';
@@ -42,11 +43,13 @@ const AdminLayout = () => {
     { icon: BarChart3, label: 'Báo cáo & thống kê', path: '/admin/analytics' },
     { icon: Shield, label: 'Phân quyền', path: '/admin/permissions' },
     { icon: ScrollText, label: 'Nhật ký', path: '/admin/audit-logs' },
+    { icon: Mail, label: 'Email', path: '/admin/email-campaigns' },
     { icon: Tags, label: 'Thẻ kỹ năng', path: '/admin/tags' },
     { icon: Settings, label: 'Cài đặt', path: '/admin/settings' },
   ];
 
-  const isActive = (path: string) => location.pathname === path;
+  const isActive = (path: string) =>
+    location.pathname === path || (path !== '/admin' && location.pathname.startsWith(`${path}/`));
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
