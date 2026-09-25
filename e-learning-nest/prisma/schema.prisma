@@ -489,6 +489,8 @@ model Lesson {
   notes                  LessonNote[]
   questions              LessonQuestion[]
   quiz                   Quiz?
+  attachments            LessonAttachment[]
+  subtitles              LessonSubtitle[]
   createdAt              DateTime                @default(now())
   updatedAt              DateTime?               @updatedAt
   deletedAt              DateTime?
@@ -1358,4 +1360,36 @@ model Faq {
   updatedAt   DateTime    @updatedAt
 
   @@index([categoryId, orderIndex])
+}
+
+/// Tài liệu đính kèm bài học (PDF, slide, mã nguồn...) do giảng viên tải lên. Tách khỏi SupplementaryMaterial (tài liệu cộng đồng).
+model LessonAttachment {
+  id        String   @id @default(uuid())
+  lessonId  String
+  title     String
+  fileName  String
+  url       String
+  sizeBytes Int?
+  position  Int      @default(0)
+  createdAt DateTime @default(now())
+  createdBy String?
+  lesson    Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@index([lessonId, position])
+}
+
+/// Phụ đề WebVTT theo ngôn ngữ, lưu thẳng dạng văn bản để phục vụ có kiểm soát quyền và không cần CORS.
+model LessonSubtitle {
+  id        String   @id @default(uuid())
+  lessonId  String
+  language  String // mã ngắn: vi, en, ja, pt-BR...
+  label     String
+  content   String // WebVTT đã làm sạch
+  isDefault Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  createdBy String?
+  lesson    Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@unique([lessonId, language])
 }

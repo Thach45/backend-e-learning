@@ -284,7 +284,7 @@ const CourseDetailPage = () => {
   const previewSource = showIntro
     ? { title: `Giới thiệu: ${course.title}`, storageType: guessStorageType(course.introVideo || ''), url: course.introVideo }
     : previewQuery.data
-      ? { title: previewQuery.data.title, storageType: previewQuery.data.storageType, url: previewQuery.data.storageUrl, text: previewQuery.data.contentText }
+      ? { lessonId: previewLessonId ?? undefined, title: previewQuery.data.title, storageType: previewQuery.data.storageType, url: previewQuery.data.storageUrl, text: previewQuery.data.contentText }
       : null;
 
   // Transform related courses

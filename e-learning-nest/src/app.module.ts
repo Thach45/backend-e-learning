@@ -56,6 +56,7 @@ import { InstructorStudentsModule } from "./routes/instructor-students/instructo
 import { SupportModule } from "./routes/support/support.module";
 import { QueueMonitorModule } from "./routes/queue-monitor/queue-monitor.module";
 import { DataTransferModule } from "./routes/data-transfer/data-transfer.module";
+import { LessonResourcesModule } from "./routes/lesson-resources/lesson-resources.module";
 
 @Module({
   imports: [
@@ -125,6 +126,7 @@ import { DataTransferModule } from "./routes/data-transfer/data-transfer.module"
     SupportModule,
     QueueMonitorModule,
     DataTransferModule,
+    LessonResourcesModule,
   ],
   controllers: [AppController],
   providers: [

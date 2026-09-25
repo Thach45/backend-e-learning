@@ -37,6 +37,7 @@ import type { CourseContentSection, LessonItem } from '../api/enrollments';
 import { useCommentsByLesson, useCreateComment, useUpdateComment, useDeleteComment, useToggleReaction } from '../hooks/useComments';
 import type { Comment, CreateCommentBody, ReactionType } from '../api/comments';
 import { useAuthStatus } from '../hooks/useAuthStatus';
+import { useSubtitleTracks } from '../hooks/useSubtitleTracks';
 import ReportButton from '../components/common/ReportButton';
 import { useLessonNotes, useCreateLessonNote, useUpdateLessonNote, useDeleteLessonNote } from '../hooks/useLessonNotes';
 import type { LessonNote } from '../api/lessonNotes';
@@ -85,12 +86,14 @@ const VideoProgressTracker = ({
 };
 
 const VideoPlayer = ({
+  lessonId,
   videoUrl,
   storageType,
   thumbnailUrl,
   onProgress,
   playerRef: externalPlayerRef,
 }: {
+  lessonId?: string;
   videoUrl?: string | null;
   storageType?: string;
   thumbnailUrl?: string | null;
@@ -98,6 +101,7 @@ const VideoPlayer = ({
   playerRef?: React.RefObject<MediaPlayerElement | null>;
 }) => {
   const [isPlaying, setIsPlaying] = useState(false);
+  const subtitleTracks = useSubtitleTracks(lessonId, 'enrolled');
   const internalPlayerRef = useRef<MediaPlayerElement>(null);
   const playerRef = externalPlayerRef ?? internalPlayerRef;
 
@@ -181,6 +185,9 @@ const VideoPlayer = ({
               autoplay={true}
             >
               <MediaOutlet>
+                {subtitleTracks.map((t) => (
+                  <track key={t.language} kind="subtitles" src={t.src} srcLang={t.language} label={t.label} default={t.isDefault} />
+                ))}
                 {thumbnailUrl && (
                   <MediaPoster
                     src={thumbnailUrl}
@@ -1262,6 +1269,8 @@ const LearningPage = () => {
             <div className="bg-black w-full">
                <div className="max-w-5xl mx-auto">
                   <VideoPlayer
+                    key={lessonData.id}
+                    lessonId={lessonData.id}
                     videoUrl={lessonData.storageUrl}
                     storageType={lessonData.storageType}
                     thumbnailUrl={contentsData.thumbnailUrl}

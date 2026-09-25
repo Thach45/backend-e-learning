@@ -1,7 +1,9 @@
 import { useEffect } from 'react';
 import { Loader2, X } from 'lucide-react';
+import { useSubtitleTracks } from '../../hooks/useSubtitleTracks';
 
 type Source = {
+  lessonId?: string; // bài học thử: có thì nạp phụ đề công khai
   title: string;
   storageType?: string | null; // YOUTUBE | GOOGLE_DRIVE | CLOUDINARY | DIRECT_UPLOAD | CLOUDFLARE_R2 | OTHER
   url?: string | null;
@@ -43,6 +45,8 @@ const MediaPreviewModal = ({ open, onClose, isLoading, error, source }: Props) =
     return () => window.removeEventListener('keydown', onKey);
   }, [open, onClose]);
 
+  const tracks = useSubtitleTracks(open ? source?.lessonId : undefined, 'preview');
+
   if (!open) return null;
 
   const type = source?.storageType || 'OTHER';
@@ -80,7 +84,9 @@ const MediaPreviewModal = ({ open, onClose, isLoading, error, source }: Props) =
               allowFullScreen
             />
           ) : url ? (
-            <video src={url} controls autoPlay className="w-full h-full" />
+            <video src={url} controls autoPlay className="w-full h-full">
+              {tracks.map((t) => <track key={t.language} kind="subtitles" src={t.src} srcLang={t.language} label={t.label} default={t.isDefault} />)}
+            </video>
           ) : source?.text ? (
             <div className="w-full h-full overflow-y-auto bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 p-6 text-sm whitespace-pre-wrap">
               {source.text}

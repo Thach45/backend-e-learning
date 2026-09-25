@@ -609,6 +609,12 @@ export class EnrollmentsRepository {
       },
     });
 
+    const attachments = await this.prisma.lessonAttachment.findMany({
+      where: { lessonId },
+      orderBy: [{ position: "asc" }, { createdAt: "asc" }],
+      select: { title: true, url: true, sizeBytes: true },
+    });
+
     // Get course detail for description
     const courseDetail = await this.prisma.courseDetail.findUnique({
       where: { courseId },
@@ -627,11 +633,19 @@ export class EnrollmentsRepository {
       duration: lesson.duration,
       transcript: lesson.transcript,
       description: courseDetail?.description || null,
-      resources: resources.map((res) => ({
-        name: res.title,
-        url: res.url,
-        type: res.materialType || "FILE",
-      })),
+      resources: [
+        ...resources.map((res) => ({
+          name: res.title,
+          url: res.url,
+          type: res.materialType || "FILE",
+        })),
+        ...attachments.map((a) => ({
+          name: a.title,
+          url: a.url,
+          type: "FILE",
+          ...(a.sizeBytes != null ? { size: formatBytes(a.sizeBytes) } : {}),
+        })),
+      ],
     };
   }
 
@@ -716,3 +730,8 @@ export class EnrollmentsRepository {
   }
 }
 
+function formatBytes(bytes: number): string {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} KB`;
+  return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
+}

@@ -12,6 +12,7 @@ import {
   AlertCircle,
   GripVertical,
   ClipboardCheck,
+  Paperclip,
 } from 'lucide-react';
 import {
   useCourseContents,
@@ -24,6 +25,7 @@ import {
   useDeleteLesson,
 } from '../../hooks/useCourseContent';
 import VideoUpload from '../common/VideoUpload';
+import LessonResourcesModal from './LessonResourcesModal';
 import type { CourseContent, Lesson, StorageType } from '../../api/courseContent';
 import { uploadApi } from '../../api/upload';
 
@@ -515,6 +517,7 @@ const LessonItem = ({
   isDeleting,
 }: LessonItemProps) => {
   const [editData, setEditData] = useState<Lesson>(lesson);
+  const [showResources, setShowResources] = useState(false);
 
   const handleSave = () => {
     onUpdate(editData);
@@ -644,6 +647,14 @@ const LessonItem = ({
         </Link>
         <button
           type="button"
+          onClick={() => setShowResources(true)}
+          className="p-1.5 text-slate-400 dark:text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+          title="Tài liệu và phụ đề"
+        >
+          <Paperclip size={16} />
+        </button>
+        <button
+          type="button"
           onClick={onEdit}
           disabled={isUpdating || isDeleting}
           className="p-1.5 text-slate-400 dark:text-slate-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
@@ -661,6 +672,7 @@ const LessonItem = ({
           {isDeleting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 size={16} />}
         </button>
       </div>
+      {showResources && <LessonResourcesModal lessonId={lesson.id} lessonTitle={lesson.title} onClose={() => setShowResources(false)} />}
     </div>
   );
 };
